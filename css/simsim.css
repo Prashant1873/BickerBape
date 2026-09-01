@@ -334,6 +334,135 @@ body.simsim-mode .simsim-add-btn.in-bucket {
   box-shadow: 0 10px 30px -6px rgba(255, 184, 0, 0.12), inset 0 1px 0 rgba(255, 184, 0, 0.25);
 }
 
+/* ==========================================================================
+   Multi-Segment Interactive 100% Allocation Split Bar with Movable Dividers
+   ========================================================================== */
+.simsim-split-bar {
+  position: relative;
+  width: 100%;
+  height: 56px;
+  background: #080C14;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7), 0 4px 18px rgba(0, 0, 0, 0.35);
+  user-select: none;
+  touch-action: none;
+}
+
+.simsim-split-segments-wrap {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.simsim-bar-segment {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  transition: width 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.simsim-bar-segment.is-dragging {
+  transition: none !important;
+}
+
+.simsim-bar-segment:not(:last-child) {
+  border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.simsim-seg-0 {
+  background: linear-gradient(135deg, #00F090 0%, #00B870 100%);
+  color: #000000;
+}
+
+.simsim-seg-1 {
+  background: linear-gradient(135deg, #00D2FF 0%, #0099FF 100%);
+  color: #000000;
+}
+
+.simsim-seg-2 {
+  background: linear-gradient(135deg, #C084FC 0%, #9333EA 100%);
+  color: #ffffff;
+}
+
+.simsim-seg-3 {
+  background: linear-gradient(135deg, #FBBF24 0%, #D97706 100%);
+  color: #000000;
+}
+
+.simsim-seg-4 {
+  background: linear-gradient(135deg, #FB7185 0%, #E11D48 100%);
+  color: #ffffff;
+}
+
+.simsim-seg-5 {
+  background: linear-gradient(135deg, #2DD4BF 0%, #0D9488 100%);
+  color: #ffffff;
+}
+
+.simsim-seg-default {
+  background: linear-gradient(135deg, #60A5FA 0%, #2563EB 100%);
+  color: #ffffff;
+}
+
+/* Movable Divider Handle */
+.simsim-bar-divider {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 14px;
+  border-radius: 7px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.9);
+  cursor: col-resize;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
+  touch-action: none;
+}
+
+.simsim-bar-divider::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  left: -12px;
+  right: -12px;
+  cursor: col-resize;
+}
+
+.simsim-bar-divider::after {
+  content: '';
+  width: 2px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 1px;
+}
+
+.simsim-bar-divider:hover,
+.simsim-bar-divider.is-dragging {
+  background: #00F090;
+  transform: scaleY(1.08) scaleX(1.18);
+  box-shadow: 0 0 16px rgba(0, 240, 144, 0.85), 0 4px 12px rgba(0, 0, 0, 0.6);
+  z-index: 30;
+}
+
+.simsim-bar-divider:hover::after,
+.simsim-bar-divider.is-dragging::after {
+  background: #000000;
+}
+
 .simsim-card:hover {
   border-color: rgba(255, 255, 255, 0.14);
 }

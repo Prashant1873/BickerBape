@@ -133,6 +133,42 @@ def test_all():
         print("  PASSED: Reducing Fund 1 distributes remaining budget so total remains 100%!")
 
         # -------------------------------------------------------------
+        # 3.5 Test Multi-Segment Split Bar with Draggable Dividers
+        # -------------------------------------------------------------
+        print("\n[Test 3.5] Testing Multi-Segment Split Bar & Draggable Dividers...")
+        split_bar = page.locator("#simsim-split-bar")
+        assert split_bar.is_visible(), "Split bar must be visible in SimSim stage"
+
+        segments = page.locator(".simsim-bar-segment")
+        print(f"  Split bar segments count: {segments.count()}")
+        assert segments.count() == 3, "Split bar should have 3 segments for 3 funds"
+
+        dividers = page.locator(".simsim-bar-divider")
+        print(f"  Movable dividers count: {dividers.count()}")
+        assert dividers.count() == 2, "3 funds should have 2 movable dividers"
+
+        # Check divider drag with pointer
+        d0 = dividers.nth(0)
+        box = d0.bounding_box()
+        print(f"  Divider 0 bounding box: {box}")
+
+        # Drag divider 0 by +60px to the right
+        page.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+        page.mouse.down()
+        page.mouse.move(box["x"] + 80, box["y"] + box["height"] / 2, steps=5)
+        page.mouse.up()
+        page.wait_for_timeout(400)
+
+        # Verify new weights after dragging divider
+        d_v0 = int(sliders.nth(0).input_value())
+        d_v1 = int(sliders.nth(1).input_value())
+        d_v2 = int(sliders.nth(2).input_value())
+        print(f"  Weights after dragging divider 0: Fund1={d_v0}%, Fund2={d_v1}%, Fund3={d_v2}% | Sum={d_v0+d_v1+d_v2}%")
+        assert d_v0 > 50, f"Fund 1 should have increased above 50%, got {d_v0}"
+        assert d_v0 + d_v1 + d_v2 == 100, f"Total must stay 100%, got {d_v0+d_v1+d_v2}"
+        print("  PASSED: Multi-Segment Split Bar drag reallocated weights seamlessly while keeping sum at 100%!")
+
+        # -------------------------------------------------------------
         # 4. Verify SimSim KPI Cards Depth (No border-l-4)
         # -------------------------------------------------------------
         print("\n[Test 4] Verifying SimSim KPI Cards depth and aura...")

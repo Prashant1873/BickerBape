@@ -361,6 +361,189 @@ export class SimSimUI {
     this.runSimulation();
   }
 
+  /**
+   * Renders the interactive multi-segment split bar representing 100% portfolio allocation
+   */
+  renderSplitBar(funds) {
+    if (!funds || funds.length === 0) return '';
+    
+    let accumPct = 0;
+    const segmentsHtml = funds.map((f, idx) => {
+      const w = this.weights[f.code] !== undefined ? this.weights[f.code] : (1.0 / funds.length);
+      const pct = Math.round(w * 100);
+      const rupeeShare = Math.round(this.capital * (pct / 100));
+      const colorClass = idx < 6 ? `simsim-seg-${idx}` : 'simsim-seg-default';
+      const shortName = f.name.split(' - Direct')[0];
+
+      return `
+        <div class="simsim-bar-segment ${colorClass}" data-seg-code="${f.code}" style="width: ${pct}%;">
+          <div class="flex items-center gap-1.5 w-full justify-center px-1 pointer-events-none overflow-hidden">
+            <span class="text-[11px] font-bold truncate leading-tight" title="${f.name}">${shortName}</span>
+            <span class="text-xs font-black font-mono leading-tight segment-pct-text">${pct}%</span>
+          </div>
+          <span class="text-[10px] opacity-80 font-mono leading-none mt-0.5 segment-rupee-text pointer-events-none">₹${rupeeShare.toLocaleString('en-IN')}</span>
+        </div>
+      `;
+    }).join('');
+
+    let dividerHtml = '';
+    accumPct = 0;
+    for (let i = 0; i < funds.length - 1; i++) {
+      const w = this.weights[funds[i].code] !== undefined ? this.weights[funds[i].code] : (1.0 / funds.length);
+      accumPct += Math.round(w * 100);
+      dividerHtml += `
+        <div class="simsim-bar-divider" data-divider-idx="${i}" style="left: calc(${accumPct}% - 7px);" title="Drag divider to reallocate between ${funds[i].name.split(' - Direct')[0]} and ${funds[i+1].name.split(' - Direct')[0]}"></div>
+      `;
+    }
+
+    return `
+      <div class="space-y-2 pt-1 pb-1">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-[#00F090]">tune</span>
+            Interactive 100% Split Bar (Drag Dividers to Reallocate)
+          </span>
+          <span class="text-[11px] font-mono text-[#00F090] font-bold" id="split-bar-sum-badge">100% Allocated</span>
+        </div>
+
+        <div id="simsim-split-bar" class="simsim-split-bar">
+          <div class="simsim-split-segments-wrap" id="simsim-split-segments">
+            ${segmentsHtml}
+          </div>
+          <div id="simsim-split-dividers">
+            ${dividerHtml}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Updates split bar segments and divider positions in real-time without DOM re-render
+   */
+  updateSplitBarVisuals() {
+    const funds = this.getBucketFunds();
+    if (funds.length === 0) return;
+
+    let accumPct = 0;
+    funds.forEach((f, idx) => {
+      const w = this.weights[f.code] !== undefined ? this.weights[f.code] : (1.0 / funds.length);
+      const pct = Math.round(w * 100);
+      const rupeeShare = Math.round(this.capital * (pct / 100));
+
+      const seg = document.querySelector(`.simsim-bar-segment[data-seg-code="${f.code}"]`);
+      if (seg) {
+        seg.style.width = `${pct}%`;
+        const pctText = seg.querySelector('.segment-pct-text');
+        if (pctText) pctText.textContent = `${pct}%`;
+        const rupeeText = seg.querySelector('.segment-rupee-text');
+        if (rupeeText) rupeeText.textContent = `₹${rupeeShare.toLocaleString('en-IN')}`;
+      }
+
+      if (idx < funds.length - 1) {
+        accumPct += pct;
+        const divider = document.querySelector(`.simsim-bar-divider[data-divider-idx="${idx}"]`);
+        if (divider) {
+          divider.style.left = `calc(${accumPct}% - 7px)`;
+        }
+      }
+    });
+  }
+
+  /**
+   * Binds pointer events on split bar dividers for smooth horizontal dragging
+   */
+  bindSplitBarEvents() {
+    const splitBar = document.getElementById('simsim-split-bar');
+    if (!splitBar) return;
+
+    const dividers = splitBar.querySelectorAll('.simsim-bar-divider');
+    const segments = splitBar.querySelectorAll('.simsim-bar-segment');
+    const funds = this.getBucketFunds();
+    const n = funds.length;
+    if (n <= 1) return;
+
+    dividers.forEach(divider => {
+      divider.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        const k = parseInt(divider.getAttribute('data-divider-idx'));
+        divider.setPointerCapture(e.pointerId);
+        divider.classList.add('is-dragging');
+        segments.forEach(s => s.classList.add('is-dragging'));
+
+        const onPointerMove = (ev) => {
+          const rect = splitBar.getBoundingClientRect();
+          if (rect.width <= 0) return;
+          const rawPct = ((ev.clientX - rect.left) / rect.width) * 100;
+
+          // Left bound: sum of segments 0..k-1 + 1 (or 1 if k=0)
+          let leftBound = 1;
+          for (let j = 0; j < k; j++) {
+            leftBound += Math.round((this.weights[funds[j].code] || 0) * 100);
+          }
+
+          // Right bound: sum of segments 0..k+1 - 1 (or 99 if k=n-2)
+          let rightBound = 99;
+          if (k < n - 2) {
+            let sumUntilK1 = 0;
+            for (let j = 0; j <= k + 1; j++) {
+              sumUntilK1 += Math.round((this.weights[funds[j].code] || 0) * 100);
+            }
+            rightBound = sumUntilK1 - 1;
+          }
+
+          const clamped = Math.max(leftBound, Math.min(rightBound, Math.round(rawPct)));
+
+          const prevSumLeft = (k > 0) ? (leftBound - 1) : 0;
+          let sumBoth = 0;
+          if (k < n - 2) {
+            sumBoth = (rightBound + 1) - prevSumLeft;
+          } else {
+            sumBoth = 100 - prevSumLeft;
+          }
+
+          const newPctK = clamped - prevSumLeft;
+          const newPctK1 = sumBoth - newPctK;
+
+          this.weights[funds[k].code] = newPctK / 100.0;
+          this.weights[funds[k + 1].code] = newPctK1 / 100.0;
+
+          // Live update split bar visual segments & divider
+          this.updateSplitBarVisuals();
+
+          // Sync card sliders & number inputs below
+          [funds[k], funds[k + 1]].forEach(f => {
+            const p = Math.round((this.weights[f.code] || 0) * 100);
+            const s = document.querySelector(`.weight-slider[data-code="${f.code}"]`);
+            if (s) s.value = p;
+            const num = document.querySelector(`.weight-number[data-code="${f.code}"]`);
+            if (num) num.value = p;
+            const sh = document.querySelector(`[data-share-for="${f.code}"]`);
+            if (sh) {
+              const share = Math.round(this.capital * (p / 100.0));
+              sh.textContent = `₹${share.toLocaleString('en-IN')}`;
+            }
+          });
+        };
+
+        const onPointerUp = (ev) => {
+          divider.releasePointerCapture(ev.pointerId);
+          divider.classList.remove('is-dragging');
+          segments.forEach(s => s.classList.remove('is-dragging'));
+          divider.removeEventListener('pointermove', onPointerMove);
+          divider.removeEventListener('pointerup', onPointerUp);
+          divider.removeEventListener('pointercancel', onPointerUp);
+          this.saveBucketToStorage();
+          this.runSimulation();
+        };
+
+        divider.addEventListener('pointermove', onPointerMove);
+        divider.addEventListener('pointerup', onPointerUp);
+        divider.addEventListener('pointercancel', onPointerUp);
+      });
+    });
+  }
+
   getBucketFunds() {
     if (!this.app.allFunds) return [];
     return this.bucket.map(code => this.app.allFunds.find(f => f.code === code)).filter(Boolean);
@@ -622,13 +805,16 @@ export class SimSimUI {
           <div class="flex items-center justify-between flex-wrap gap-2">
             <div>
               <h3 class="text-xs font-bold uppercase tracking-wider text-white">Portfolio Allocation (${funds.length} Schemes)</h3>
-              <p class="text-[11px] text-[#94A3B8]">Adjust weights to distribute your capital (Auto-balanced to max 100%)</p>
+              <p class="text-[11px] text-[#94A3B8]">Adjust weights to distribute your capital (Drag bar dividers or card sliders)</p>
             </div>
             <button id="simsim-recalc-btn" type="button" class="px-3 py-1.5 rounded-lg bg-[#00F090] text-black font-bold text-xs hover:bg-[#00d880] transition-colors flex items-center gap-1 cursor-pointer touch-spring shadow-sm">
               <span class="material-symbols-outlined text-sm">rocket_launch</span>
               <span>Re-Simulate ⚡</span>
             </button>
           </div>
+
+          <!-- Interactive 100% Split Bar with Movable Dividers -->
+          ${this.renderSplitBar(funds)}
 
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" id="simsim-holdings-grid">
             ${funds.length === 0 ? `
@@ -907,7 +1093,13 @@ export class SimSimUI {
         badge.textContent = `Total: 100%`;
         badge.className = 'text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-[#00F090]/10 text-[#00F090] border border-[#00F090]/30';
       }
+
+      // Live update the split bar segments and dividers
+      this.updateSplitBarVisuals();
     };
+
+    // Bind split bar interactive draggable dividers
+    this.bindSplitBarEvents();
 
     document.querySelectorAll('.weight-slider').forEach(slider => {
       slider.addEventListener('input', (e) => {
