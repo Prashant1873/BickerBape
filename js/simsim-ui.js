@@ -20,7 +20,7 @@ export class SimSimUI {
     this.isTrayDismissed = false;
     this.initBucketFromStorage();
 
-    // Global delegated listener for exiting SimSim mode
+    // Global delegated listener for exiting SimSim mode & floating tray interaction
     document.addEventListener('click', (e) => {
       const exitTrigger = e.target.closest('.simsim-exit-trigger') || e.target.closest('#simsim-exit-btn');
       if (exitTrigger) {
@@ -30,13 +30,26 @@ export class SimSimUI {
       // Floating tray clear & dismiss buttons
       const trayClear = e.target.closest('#simsim-tray-clear-btn');
       if (trayClear) {
+        e.stopPropagation();
         this.clearBucket();
+        return;
       }
 
       const trayDismiss = e.target.closest('#simsim-tray-dismiss-btn');
       if (trayDismiss) {
+        e.stopPropagation();
         this.isTrayDismissed = true;
         this.hideTray();
+        return;
+      }
+
+      // Click on floating tray (tab/handle) toggles full expansion from edge
+      const tray = document.getElementById('simsim-floating-tray');
+      const trayTarget = e.target.closest('#simsim-floating-tray');
+      if (trayTarget && !e.target.closest('button')) {
+        tray.classList.toggle('is-expanded');
+      } else if (!trayTarget && tray && tray.classList.contains('is-expanded')) {
+        tray.classList.remove('is-expanded');
       }
     });
   }
@@ -254,19 +267,21 @@ export class SimSimUI {
   updateTray() {
     const tray = document.getElementById('simsim-floating-tray');
     const countEl = document.getElementById('simsim-tray-count');
+    const badgeEl = document.getElementById('simsim-tray-badge-pill');
     if (!tray) return;
 
     if (this.isTrayDismissed || this.isSimSimMode || this.bucket.length === 0) {
-      tray.classList.remove('visible');
+      tray.classList.remove('visible', 'is-expanded');
     } else {
       if (countEl) countEl.textContent = `${this.bucket.length} Fund${this.bucket.length > 1 ? 's' : ''}`;
+      if (badgeEl) badgeEl.textContent = this.bucket.length;
       tray.classList.add('visible');
     }
   }
 
   hideTray() {
     const tray = document.getElementById('simsim-floating-tray');
-    if (tray) tray.classList.remove('visible');
+    if (tray) tray.classList.remove('visible', 'is-expanded');
   }
 
   updateScreenerButtons() {

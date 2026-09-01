@@ -694,18 +694,19 @@
   <!-- ====================================================================
        FLOATING SIMSIM PORTFOLIO BUCKET TRAY
        ==================================================================== -->
-  <div id="simsim-floating-tray" class="simsim-tray" role="region" aria-label="SimSim Portfolio Bucket">
-    <div class="flex items-center gap-2.5">
-      <div class="w-8 h-8 rounded-xl bg-[#00F090]/15 border border-[#00F090]/30 flex items-center justify-center text-[#00F090]">
+  <div id="simsim-floating-tray" class="simsim-tray" role="region" aria-label="SimSim Portfolio Bucket" title="SimSim Portfolio Bucket (Hover or click to expand)">
+    <div class="flex items-center gap-2.5 simsim-tray-peek-tab">
+      <div class="relative w-8 h-8 rounded-xl bg-[#00F090]/15 border border-[#00F090]/35 flex items-center justify-center text-[#00F090] flex-shrink-0">
         <span class="material-symbols-outlined text-lg simsim-pulse-icon">hourglass_top</span>
+        <span id="simsim-tray-badge-pill" class="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-[#00F090] text-black font-mono font-bold text-[9px] flex items-center justify-center shadow-xs">0</span>
       </div>
-      <div>
+      <div class="min-w-[85px] simsim-tray-label">
         <p class="text-xs font-bold text-white leading-tight">SimSim™ Bucket</p>
         <p id="simsim-tray-count" class="text-[11px] text-[#00F090] font-mono">0 Funds</p>
       </div>
     </div>
     
-    <div class="flex items-center gap-1.5">
+    <div class="flex items-center gap-1.5 flex-shrink-0 simsim-tray-actions">
       <button id="simsim-tray-launch-btn" type="button" class="px-3.5 py-1.5 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5 shadow-md">
         <span class="material-symbols-outlined text-sm">rocket_launch</span>
         <span>Simulate ⚡</span>
@@ -717,7 +718,7 @@
       </button>
 
       <!-- Dismiss/Remove floating bar button with small close icon -->
-      <button id="simsim-tray-dismiss-btn" type="button" class="p-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-[#94A3B8] hover:text-white transition-colors cursor-pointer touch-spring flex items-center justify-center" title="Dismiss floating bar">
+      <button id="simsim-tray-dismiss-btn" type="button" class="p-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-[#94A3B8] hover:text-white transition-colors cursor-pointer touch-spring flex items-center justify-center" title="Hide floating bar">
         <span class="material-symbols-outlined text-base">close</span>
       </button>
     </div>

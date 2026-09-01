@@ -27,18 +27,28 @@ def test_all():
         # -------------------------------------------------------------
         # 2. Test Floating Tray: Add, Clear, and Dismiss
         # -------------------------------------------------------------
-        print("\n[Test 2] Testing Floating Tray Clear and Dismiss buttons...")
+        print("\n[Test 2] Testing Floating Tray Docked in Right Edge, Hover & Click to Expand...")
         # Add 1st fund to bucket
         page.locator(".card-interactive").nth(0).locator(".simsim-add-btn").click()
         page.wait_for_timeout(300)
 
-        # Check tray is visible
+        # Check tray is visible and docked at right edge
         tray_vis = page.locator("#simsim-floating-tray").evaluate("el => el.classList.contains('visible')")
         assert tray_vis, "Tray should be visible after adding fund"
-        print("  Tray is visible with added fund.")
+        print("  Tray is visible and docked at right edge of screen.")
 
+        # Capture docked screenshot
+        shot_docked = "C:/Users/u1233270/.gemini/antigravity-ide/brain/d0626913-2eb8-4457-92b7-05d7498ebcdb/18_simsim_tray_docked_edge.png"
+        page.screenshot(path=shot_docked)
+        print(f"  Captured docked edge screenshot: {shot_docked}")
+
+        # Hover over tray to slide out
+        print("  Hovering over tray to expand...")
+        page.hover("#simsim-floating-tray")
+        page.wait_for_timeout(400)
+        
         # Test Dismiss button (small close icon)
-        print("  Clicking dismiss button on tray...")
+        print("  Clicking dismiss button on expanded tray...")
         page.click("#simsim-tray-dismiss-btn")
         page.wait_for_timeout(400)
         tray_after_dismiss = page.locator("#simsim-floating-tray").evaluate("el => el.classList.contains('visible')")
@@ -52,6 +62,14 @@ def test_all():
         tray_reappeared = page.locator("#simsim-floating-tray").evaluate("el => el.classList.contains('visible')")
         assert tray_reappeared, "Tray should reappear when adding a new fund"
         print("  Tray reappeared with 2 funds.")
+
+        # Test clicking tray to toggle expansion
+        print("  Clicking tray to toggle is-expanded...")
+        page.click("#simsim-floating-tray")
+        page.wait_for_timeout(300)
+        has_expanded = page.locator("#simsim-floating-tray").evaluate("el => el.classList.contains('is-expanded')")
+        print(f"  Tray has is-expanded class on click: {has_expanded}")
+        assert has_expanded, "Tray should have is-expanded on click"
 
         # Test Clear Bucket button on tray
         print("  Clicking clear bucket button on tray...")
