@@ -1545,8 +1545,8 @@ class BickerBapeApp {
 
           <div class="flex gap-2 items-center">
             <button class="flex-grow analyze-card-btn touch-spring cursor-pointer" data-code="${fund.code}">
-              <span class="material-symbols-outlined text-sm">insights</span>
-              <span>SmartScore™</span>
+              <span class="material-symbols-outlined text-sm">visibility</span>
+              <span>Details</span>
             </button>
             <button class="compare-toggle-btn ${isComparing ? 'is-comparing' : ''} touch-spring cursor-pointer" data-code="${fund.code}" title="${isComparing ? 'Remove from comparison' : 'Add to comparison'}">
               <span class="material-symbols-outlined text-xs">${isComparing ? 'check' : 'add'}</span>
