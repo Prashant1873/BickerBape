@@ -184,6 +184,51 @@
           </button>
         </div>
 
+        <!-- ==========================================================
+             GLOBAL PRODUCT: INVESTOR MOOD (Growth / Safety / Income)
+             ========================================================== -->
+        <div class="p-3 rounded-2xl bg-surface-container-low border border-surface-container space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1">
+              <span class="text-xs font-label-bold text-on-surface uppercase tracking-wider">Investor Mood</span>
+              <span class="info-wrapper" onclick="event.stopPropagation()">
+                <button type="button" class="info-btn" title="About Investor Mood">i</button>
+                <span class="info-popup">
+                  <strong class="block font-bold text-white mb-0.5">Investor Mood Engine</strong>
+                  <span>Dynamically recalibrates SmartScore™ weights to match your target strategy: 
+                  <br>• <strong>Growth</strong>: Boosts Alpha & Return Ratios (45% weight)
+                  <br>• <strong>Safety</strong>: Boosts Downside Resilience & Low Volatility (45% weight)
+                  <br>• <strong>Income</strong>: Boosts Direct Expense Efficiency & Stability (35% weight)</span>
+                </span>
+              </span>
+            </div>
+            <span id="active-mood-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase mood-tag-growth">Growth</span>
+          </div>
+
+          <!-- 3-Way Segmented Controller -->
+          <div class="grid grid-cols-3 p-1 bg-surface-container rounded-xl gap-1" id="mood-toggle-group">
+            <button type="button" class="mood-btn active flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="growth" title="Growth: Wealth Long Term">
+              <span class="text-sm mb-0.5">🚀</span>
+              <span class="text-[11px] leading-none">Growth</span>
+              <span class="text-[9px] font-normal text-on-surface-variant mt-0.5">Alpha</span>
+            </button>
+            <button type="button" class="mood-btn flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="safety" title="Safety: Low Risk & Downside Protection">
+              <span class="text-sm mb-0.5">🛡️</span>
+              <span class="text-[11px] leading-none">Safety</span>
+              <span class="text-[9px] font-normal text-on-surface-variant mt-0.5">Low Risk</span>
+            </button>
+            <button type="button" class="mood-btn flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="income" title="Income: Low Direct Fees & Efficiency">
+              <span class="text-sm mb-0.5">💰</span>
+              <span class="text-[11px] leading-none">Income</span>
+              <span class="text-[9px] font-normal text-on-surface-variant mt-0.5">Low Cost</span>
+            </button>
+          </div>
+
+          <p id="mood-target-desc" class="text-[10px] text-on-surface-variant text-center pt-0.5 font-medium">
+            Wealth Long Term: Outperformance Ratios receive a 45% multiplier
+          </p>
+        </div>
+
         <!-- 1. Strategy Presets (Prashant's 10-Step Formula) -->
         <div>
           <label class="block font-label-bold text-xs text-on-surface-variant uppercase tracking-wider mb-2">
@@ -384,7 +429,10 @@
           </button>
 
           <div>
-            <h2 class="font-headline-md text-base md:text-lg text-on-surface leading-tight">Indian Equity Screener</h2>
+            <div class="flex items-center gap-2">
+              <h2 class="font-headline-md text-base md:text-lg text-on-surface leading-tight">Indian Equity Screener</h2>
+              <span id="header-mood-indicator" class="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full mood-tag-growth">Mood: Growth 🚀</span>
+            </div>
             <p id="funds-count" class="font-label-sm text-[11px] text-on-surface-variant">Loading 620 funds...</p>
           </div>
         </div>

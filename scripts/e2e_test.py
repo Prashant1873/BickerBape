@@ -89,6 +89,34 @@ def run_tests():
         page.screenshot(path=shot1, full_page=False)
         print(f"  Captured: {shot1}")
 
+        # [Step 1.5] Verify Global Investor Mood Product (Growth / Safety / Income)
+        print("\n[Step 1.5] Testing Global Investor Mood Product...")
+        mood_badge_text = page.locator("#active-mood-badge").text_content()
+        print(f"Initial Mood Badge: {mood_badge_text}")
+        assert "Growth" in mood_badge_text, "Initial mood should be Growth"
+
+        print("Toggling to Safety Mood...")
+        page.click(".mood-btn[data-mood='safety']")
+        time.sleep(0.3)
+        safety_badge = page.locator("#active-mood-badge").text_content()
+        safety_header = page.locator("#header-mood-indicator").text_content()
+        print(f"Safety Badge: {safety_badge} | Header: {safety_header}")
+        assert "Safety" in safety_badge, "Active mood should now be Safety"
+        assert "Protection 45%" in safety_header or "45%" in safety_header, "Safety mood should state 45% risk protection"
+
+        print("Toggling to Income Mood...")
+        page.click(".mood-btn[data-mood='income']")
+        time.sleep(0.3)
+        income_badge = page.locator("#active-mood-badge").text_content()
+        income_header = page.locator("#header-mood-indicator").text_content()
+        print(f"Income Badge: {income_badge} | Header: {income_header}")
+        assert "Income" in income_badge, "Active mood should now be Income"
+        assert "Fees 35%" in income_header or "35%" in income_header, "Income mood should state 35% low fees"
+
+        page.click(".mood-btn[data-mood='growth']")
+        time.sleep(0.3)
+        print("  Investor Mood 3-way toggle and dynamic recalculation verified!")
+
         # [Step 2] Switch to Table View & Check Unified SmartScore Pills
         print("\n[Step 2] Switching to Screener Table view...")
         page.click("#view-table-btn")

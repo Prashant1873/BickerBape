@@ -21,6 +21,7 @@ class BickerBapeApp {
     this.allFunds = [];
     this.categoriesSummary = {};
     this.state = {
+      mood: 'growth', // 'growth' | 'safety' | 'income'
       category: 'All Funds',
       preset: 'all',
       searchQuery: '',
@@ -48,11 +49,140 @@ class BickerBapeApp {
     this.allFunds = await DataService.loadFunds();
     this.categoriesSummary = await DataService.loadCategoriesSummary();
 
+    // Initialize with default Growth Mood
+    this.recalculateSmartScoresForMood('growth');
+
     // 2. Setup all listeners
     this.setupEventListeners();
 
     // 3. Initial Render
     this.updateUI();
+  }
+
+  setMood(mood) {
+    if (this.state.mood === mood) return;
+    this.state.mood = mood;
+
+    // Update button active states
+    document.querySelectorAll('#mood-toggle-group .mood-btn').forEach(b => {
+      if (b.getAttribute('data-mood') === mood) {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+      }
+    });
+
+    const badgeEl = document.getElementById('active-mood-badge');
+    const headerIndicator = document.getElementById('header-mood-indicator');
+    const descEl = document.getElementById('mood-target-desc');
+
+    const moodConfig = {
+      growth: {
+        label: 'Growth',
+        tagClass: 'mood-tag-growth',
+        headerText: 'Mood: Growth 🚀 (Alpha 45%)',
+        desc: 'Wealth Long Term: Outperformance Ratios receive a 45% multiplier'
+      },
+      safety: {
+        label: 'Safety',
+        tagClass: 'mood-tag-safety',
+        headerText: 'Mood: Safety 🛡️ (Protection 45%)',
+        desc: 'Low Risk: Downside Protection & Low Volatility receive a 45% multiplier'
+      },
+      income: {
+        label: 'Income',
+        tagClass: 'mood-tag-income',
+        headerText: 'Mood: Income 💰 (Low Fees 35%)',
+        desc: 'Cost Efficiency: Low Direct Fees (TER) receive a 35% multiplier'
+      }
+    };
+
+    const cfg = moodConfig[mood] || moodConfig.growth;
+
+    if (badgeEl) {
+      badgeEl.textContent = cfg.label;
+      badgeEl.className = `text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${cfg.tagClass}`;
+    }
+
+    if (headerIndicator) {
+      headerIndicator.textContent = cfg.headerText;
+      headerIndicator.className = `hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full ${cfg.tagClass}`;
+    }
+
+    if (descEl) {
+      descEl.textContent = cfg.desc;
+    }
+
+    // Dynamic Recalculation across all funds
+    this.recalculateSmartScoresForMood(mood);
+
+    // If fund drawer is currently open, refresh scorecard with new mood weights
+    if (this.state.selectedFund) {
+      this.renderScorecard(this.state.selectedFund);
+      const drawerBadge = document.getElementById('drawer-smartscore-badge');
+      if (drawerBadge && this.state.selectedFund.smart_score) {
+        drawerBadge.outerHTML = `<div id="drawer-smartscore-badge">${this.getSmartScorePill(this.state.selectedFund.smart_score.overall)}</div>`;
+      }
+    }
+
+    // Refresh UI
+    this.updateUI(false);
+  }
+
+  recalculateSmartScoresForMood(mood) {
+    const weights = {
+      growth: { perf: 0.45, track: 0.25, risk: 0.20, cost: 0.10 },
+      safety: { risk: 0.45, track: 0.25, perf: 0.20, cost: 0.10 },
+      income: { cost: 0.35, risk: 0.30, track: 0.20, perf: 0.15 }
+    };
+
+    const w = weights[mood] || weights.growth;
+
+    // 1. Calculate weighted score for every fund
+    this.allFunds.forEach(fund => {
+      const p = fund.smart_score?.pillars || {};
+      const sp = p.performance?.score !== undefined ? p.performance.score : 6.0;
+      const sr = p.risk?.score !== undefined ? p.risk.score : 6.0;
+      const sc = p.cost?.score !== undefined ? p.cost.score : 6.0;
+      const st = p.track_record?.score !== undefined ? p.track_record.score : 6.0;
+
+      let raw = (w.perf * sp) + (w.risk * sr) + (w.cost * sc) + (w.track * st);
+
+      // Fiduciary seasoning penalties remain strictly enforced across all moods
+      const age = fund.history_years !== undefined ? fund.history_years : 3.0;
+      if (age < 1.0) {
+        raw = Math.min(5.8, raw);
+      } else if (age < 3.0) {
+        raw = Math.min(7.0, raw);
+      }
+
+      if (!fund.smart_score) fund.smart_score = {};
+      fund.smart_score.overall = parseFloat(raw.toFixed(1));
+    });
+
+    // 2. Re-rank each fund within its category
+    const catGroups = {};
+    this.allFunds.forEach(fund => {
+      if (!catGroups[fund.category]) catGroups[fund.category] = [];
+      catGroups[fund.category].push(fund);
+    });
+
+    Object.entries(catGroups).forEach(([catName, cfunds]) => {
+      const total = cfunds.length;
+      cfunds.sort((a, b) => b.smart_score.overall - a.smart_score.overall);
+      cfunds.forEach((f, idx) => {
+        const rk = idx + 1;
+        f.smart_score.rank_in_category = rk;
+        f.smart_score.total_in_category = total;
+        let suffix = 'th';
+        if (!(rk % 100 >= 11 && rk % 100 <= 13)) {
+          if (rk % 10 === 1) suffix = 'st';
+          else if (rk % 10 === 2) suffix = 'nd';
+          else if (rk % 10 === 3) suffix = 'rd';
+        }
+        f.smart_score.rank_text = `${rk}${suffix} of ${total} ${catName} funds`;
+      });
+    });
   }
 
   setupEventListeners() {
@@ -122,6 +252,16 @@ class BickerBapeApp {
         }
 
         this.updateUI(false);
+      });
+    });
+
+    // ------------------------------------------------------------------
+    // Investor Mood 3-Way Controller
+    // ------------------------------------------------------------------
+    document.querySelectorAll('#mood-toggle-group .mood-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mood = btn.getAttribute('data-mood');
+        this.setMood(mood);
       });
     });
 
@@ -1092,9 +1232,18 @@ class BickerBapeApp {
     const catName = fund.category || 'Category';
     const rankText = smart.rank_text || `Rank vs ${catName} peers`;
 
+    const mood = this.state.mood || 'growth';
+    const moodWeights = {
+      growth: { perf: '45%', track: '25%', risk: '20%', cost: '10%' },
+      safety: { risk: '45%', track: '25%', perf: '20%', cost: '10%' },
+      income: { cost: '35%', risk: '30%', track: '20%', perf: '15%' }
+    };
+    const mw = moodWeights[mood] || moodWeights.growth;
+    const moodLabel = mood.charAt(0).toUpperCase() + mood.slice(1);
+
     if (overallEl) {
       overallEl.innerHTML = `
-        <span class="text-on-surface font-bold text-xs">SmartScore™</span>
+        <span class="text-on-surface font-bold text-xs">SmartScore™ (${moodLabel} Mood)</span>
         <span class="text-primary font-extrabold text-sm ml-1">${overall}/10</span>
         <span class="text-[10px] text-on-surface-variant font-medium block">Rank vs <strong class="text-on-surface">${catName}</strong> peers: <strong class="text-on-surface">${rankText}</strong></span>
       `;
@@ -1115,10 +1264,10 @@ class BickerBapeApp {
 
     // On first open, keep ALL scorecard expands closed!
     const pillarsConfig = [
-      { key: 'performance', name: 'Performance & Returns', icon: 'trending_up', data: perf, isRisk: false, defaultOpen: false },
-      { key: 'risk', name: 'Risk & Capital Protection', icon: 'shield', data: risk, isRisk: true, defaultOpen: false },
-      { key: 'cost', name: 'Cost & Direct Plan Fees', icon: 'payments', data: cost, isRisk: false, defaultOpen: false },
-      { key: 'track_record', name: 'Track Record & Stability', icon: 'history_edu', data: track, isRisk: false, defaultOpen: false }
+      { key: 'performance', name: `Performance & Returns (${mw.perf})`, icon: 'trending_up', data: perf, isRisk: false, defaultOpen: false },
+      { key: 'risk', name: `Risk & Capital Protection (${mw.risk})`, icon: 'shield', data: risk, isRisk: true, defaultOpen: false },
+      { key: 'cost', name: `Cost & Direct Plan Fees (${mw.cost})`, icon: 'payments', data: cost, isRisk: false, defaultOpen: false },
+      { key: 'track_record', name: `Track Record & Stability (${mw.track})`, icon: 'history_edu', data: track, isRisk: false, defaultOpen: false }
     ];
 
     container.innerHTML = pillarsConfig.map(cfg => {

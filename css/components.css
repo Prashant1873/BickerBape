@@ -103,6 +103,82 @@
   box-shadow: 0 2px 6px rgba(9, 30, 66, 0.1);
 }
 
+/* ==========================================================================
+   Investor Mood 3-Way Segmented Controller
+   ========================================================================== */
+.mood-btn {
+  transition: all 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: 1px solid transparent;
+  background: transparent;
+  color: #5c5e63;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mood-btn:hover {
+  background: #ffffff;
+  color: #191c1e;
+}
+
+.mood-btn:active {
+  transform: scale(0.96);
+}
+
+/* 1. Growth Active (Emerald Green) */
+.mood-btn[data-mood="growth"].active {
+  background: #ecfdf5 !important;
+  color: #065f46 !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25) !important;
+}
+
+.mood-btn[data-mood="growth"].active span {
+  color: #065f46 !important;
+}
+
+/* 2. Safety Active (Royal Blue) */
+.mood-btn[data-mood="safety"].active {
+  background: #eff6ff !important;
+  color: #1e40af !important;
+  border-color: #60a5fa !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
+}
+
+.mood-btn[data-mood="safety"].active span {
+  color: #1e40af !important;
+}
+
+/* 3. Income Active (Amber Gold) */
+.mood-btn[data-mood="income"].active {
+  background: #fffbeb !important;
+  color: #92400e !important;
+  border-color: #fbbf24 !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25) !important;
+}
+
+.mood-btn[data-mood="income"].active span {
+  color: #92400e !important;
+}
+
+/* Color-Coded Mood Tags */
+.mood-tag-growth {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.mood-tag-safety {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.mood-tag-income {
+  background-color: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
 /* 10-Step Checklist Card */
 .checklist-item {
   display: flex;

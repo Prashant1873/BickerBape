@@ -25,7 +25,8 @@ class BickerBapeHandler(http.server.SimpleHTTPRequestHandler):
 
 def run():
     os.chdir(DIRECTORY)
-    with socketserver.TCPServer(("", PORT), BickerBapeHandler) as httpd:
+    http.server.ThreadingHTTPServer.allow_reuse_address = True
+    with http.server.ThreadingHTTPServer(("", PORT), BickerBapeHandler) as httpd:
         url = f"http://localhost:{PORT}"
         print("=" * 60)
         print("  BICKERBAPE - INDIAN EQUITY MUTUAL FUND SCREENER")

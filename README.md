@@ -50,12 +50,30 @@ Unlike standard retail screeners that scale funds against arbitrary sample perce
   - **Interpolated Smooth Gradient**: Transitioning through purple and amber based on score tier.
   - **Warning Red (`#dc2626`)**: Lagging funds ($< 5.0$) with subtle warning tint.
 
-### 2. Zero Estimations Policy
+### 2. Global Product: "Investor Mood" Dynamic Recalibration Engine
+BickerBape introduces a first-of-its-kind dynamic portfolio allocation engine called **Investor Mood**:
+- **3 Color-Coded Moods**:
+  1. **🚀 Growth (Emerald Green)**:
+     - **Goal**: Long-term wealth creation and compounding.
+     - **Weight Multipliers**: **Performance & Category Return Ratios (45%)**, Track Record & Stability (25%), Risk & Volatility (20%), Direct Fees & Costs (10%).
+     - Highlights top compounders and alpha generators beating category benchmarks.
+  2. **🛡️ Safety (Royal Blue)**:
+     - **Goal**: Capital protection, calm sleep, and downside resilience.
+     - **Weight Multipliers**: **Risk & Downside Protection (45%)**, Track Record & Multi-Cycle History (25%), Performance (20%), Direct Fees (10%).
+     - Highlights funds with minimal drawdowns, low volatility ($\sigma < 14\%$), and high Sortino ratios.
+  3. **💰 Income (Amber Gold)**:
+     - **Goal**: Ultra-low expense drag, dividend/debt type stability, and fee efficiency.
+     - **Weight Multipliers**: **Cost & Direct Plan Fees (35%)**, Risk & Stability (30%), Track Record (20%), Performance (15%).
+     - Rewards funds with rock-bottom Direct Expense Ratios (TER 0.40–0.60%) and steady compounding.
+- **Instant Client-Side Dynamic Recalibration**:
+  Switching moods instantly recalculates SmartScore™ across all 620 funds and re-ranks each category in real-time, while preserving strict fiduciary seasoning caps for young schemes.
+
+### 3. Zero Estimations Policy
 - **No Fabricated Data**: This platform never estimates or invents missing financial metrics.
 - If a fund was launched 1.5 years ago, its 3Y, 5Y, and 10Y CAGRs are strictly displayed as **`N/A`** (or `-`), not fabricated.
 - The absolute scoring engine evaluates the fund based solely on its **actual verified history** (1Y return, 3M growth, volatility, Sharpe, and expense ratio), normalizing weights across available metrics.
 
-### 3. Relational SQLite Database (`data/bickerbape.db`)
+### 4. Relational SQLite Database (`data/bickerbape.db`)
 - Complete persistence layer tracking:
   - `schemes`: SEBI scheme metadata, ISINs, fund houses, launch dates, AUM, and managers.
   - `nav_history`: Over **1,050,000+ audited daily NAV records**.
