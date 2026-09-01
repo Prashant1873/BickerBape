@@ -211,6 +211,61 @@ def test_all():
         page.screenshot(path=shot_simsim2)
         print(f"  Captured: {shot_simsim2}")
 
+        # -------------------------------------------------------------
+        # 5. Test Curated Model Basket Customizer Dialogue Box
+        # -------------------------------------------------------------
+        print("\n[Test 5] Testing Curated Model Basket Customizer Dialogue Box...")
+        page.evaluate("document.getElementById('main-content').scrollTop = 0")
+        page.wait_for_timeout(300)
+
+        # Click "The Titan" preset button in sidebar
+        print("  Clicking 'The Titan' model preset button in sidebar...")
+        page.click(".model-preset-btn[data-preset='titan']")
+        page.wait_for_timeout(500)
+
+        # Verify modal opens
+        basket_modal = page.locator("#simsim-basket-modal")
+        modal_visible = basket_modal.is_visible()
+        print(f"  Model basket modal is visible: {modal_visible}")
+        assert modal_visible, "Model basket modal should open on clicking preset card"
+
+        modal_title = page.locator("#basket-modal-title").text_content()
+        print(f"  Modal title: '{modal_title}'")
+        assert "The Titan" in modal_title
+
+        # Verify 3 category slot dropdowns
+        slot_selects = page.locator(".basket-slot-select")
+        print(f"  Category slot select dropdowns: {slot_selects.count()}")
+        assert slot_selects.count() == 3, "The Titan should show 3 category slots"
+
+        # Capture screenshot of Model Basket Customizer Modal
+        shot_basket_modal = "C:/Users/u1233270/.gemini/antigravity-ide/brain/d0626913-2eb8-4457-92b7-05d7498ebcdb/19_simsim_model_basket_modal.png"
+        page.screenshot(path=shot_basket_modal)
+        print(f"  Captured basket modal screenshot: {shot_basket_modal}")
+
+        # Pick 2nd fund in 1st slot dropdown (Flexi Cap)
+        slot0 = slot_selects.nth(0)
+        options = slot0.locator("option")
+        opt_count = options.count()
+        print(f"  Flexi Cap category options count: {opt_count}")
+        assert opt_count > 1
+        opt1_val = options.nth(1).get_attribute("value")
+        slot0.select_option(value=opt1_val)
+        page.wait_for_timeout(300)
+
+        # Click Apply Basket & Simulate
+        print("  Clicking 'Apply Basket & Simulate' button...")
+        page.click("#basket-modal-apply-btn")
+        page.wait_for_timeout(800)
+
+        # Verify modal closed
+        assert not basket_modal.is_visible(), "Modal should close after applying basket"
+
+        # Verify new constituent is loaded into bucket
+        updated_funds = page.locator(".simsim-bar-segment")
+        assert updated_funds.count() == 3, "Bucket should have 3 selected funds"
+        print("  PASSED: Model Basket Customizer dialogue box allows selecting funds per category and applies them to backtest!")
+
         browser.close()
 
     print("\n=== ALL TESTS PASSED SUCCESSFULLY! ===")

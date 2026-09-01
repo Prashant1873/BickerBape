@@ -109,11 +109,14 @@ def run_tests():
         page.screenshot(path=shot2, full_page=False)
         print(f"  Captured: {shot2}")
 
-        # [Step 5] Test Curated Model Portfolios
-        print("\n[Step 5] Testing Curated Model Portfolios...")
+        # [Step 5] Test Curated Model Portfolios Dialogue Box
+        print("\n[Step 5] Testing Curated Model Portfolios Dialogue Box...")
         # Click High-Alpha Rocket
         page.click(".model-preset-btn[data-preset='aggressive']")
         time.sleep(0.5)
+        assert page.locator("#simsim-basket-modal").is_visible(), "Modal should open"
+        page.click("#basket-modal-apply-btn")
+        time.sleep(0.8)
         new_row_count = page.locator(".simsim-table tbody tr").count()
         print(f"  High-Alpha Rocket constituents: {new_row_count}")
         assert new_row_count >= 2, "High-Alpha preset should load constituents"
@@ -157,7 +160,9 @@ def run_tests():
         page.screenshot(path=shot3, full_page=False)
         print(f"  Captured: {shot3}")
 
-        # Click Simulate on floating tray to re-enter SimSim
+        # Hover on docked floating tray to expand it, then click Simulate
+        page.hover("#simsim-floating-tray")
+        time.sleep(0.3)
         page.click("#simsim-tray-launch-btn")
         time.sleep(0.5)
         re_entered = page.locator("body").evaluate("el => el.classList.contains('simsim-mode')")

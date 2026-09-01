@@ -7,6 +7,84 @@
 
 import { SimSimEngine } from './simsim-engine.js';
 
+export const MODEL_BASKETS = {
+  titan: {
+    name: 'The Titan',
+    emoji: '🛡️',
+    description: 'All-weather balanced compounder combining resilient Flexi Cap core with high-growth Mid & Small Cap alpha.',
+    slots: [
+      {
+        category: 'Flexi Cap',
+        categoryMatch: ['Flexi Cap'],
+        suggestedWeight: 40,
+        defaultSubstr: 'Parag Parikh Flexi'
+      },
+      {
+        category: 'Mid Cap',
+        categoryMatch: ['Mid Cap'],
+        suggestedWeight: 35,
+        defaultSubstr: 'HDFC Mid-Cap'
+      },
+      {
+        category: 'Small Cap',
+        categoryMatch: ['Small Cap'],
+        suggestedWeight: 25,
+        defaultSubstr: 'Nippon India Small'
+      }
+    ]
+  },
+  aggressive: {
+    name: 'High-Alpha Rocket',
+    emoji: '🚀',
+    description: 'High-octane multi-cycle wealth creation prioritizing maximum alpha through proven Mid & Small Cap compounding champions.',
+    slots: [
+      {
+        category: 'Mid Cap',
+        categoryMatch: ['Mid Cap'],
+        suggestedWeight: 40,
+        defaultSubstr: 'Motilal Oswal Midcap'
+      },
+      {
+        category: 'Small Cap Alpha 1',
+        categoryMatch: ['Small Cap'],
+        suggestedWeight: 30,
+        defaultSubstr: 'Quant Small Cap'
+      },
+      {
+        category: 'Small Cap Alpha 2',
+        categoryMatch: ['Small Cap'],
+        suggestedWeight: 30,
+        defaultSubstr: 'Bandhan Small Cap'
+      }
+    ]
+  },
+  defensive: {
+    name: 'Defensive Compounder',
+    emoji: '💰',
+    description: 'Downside-protected wealth preservation combining large-cap stability with value-oriented contra alpha.',
+    slots: [
+      {
+        category: 'Large & Mid Cap',
+        categoryMatch: ['Large & Mid Cap', 'Large Cap'],
+        suggestedWeight: 40,
+        defaultSubstr: 'Mirae Asset Large & Midcap'
+      },
+      {
+        category: 'Large Cap Bluechip',
+        categoryMatch: ['Large Cap'],
+        suggestedWeight: 30,
+        defaultSubstr: 'ICICI Prudential Bluechip'
+      },
+      {
+        category: 'Value / Contra',
+        categoryMatch: ['Value', 'Contra'],
+        suggestedWeight: 30,
+        defaultSubstr: 'SBI Contra'
+      }
+    ]
+  }
+};
+
 export class SimSimUI {
   constructor(app) {
     this.app = app;
@@ -18,6 +96,7 @@ export class SimSimUI {
     this.selectedHorizon = '3Y'; // '6M', '1Y', '2Y', '3Y', '5Y', 'ALL'
     this.chartInstance = null;
     this.isTrayDismissed = false;
+    this.activeBasketKey = 'titan';
     this.initBucketFromStorage();
 
     // Global delegated listener for exiting SimSim mode & floating tray interaction
@@ -25,6 +104,25 @@ export class SimSimUI {
       const exitTrigger = e.target.closest('.simsim-exit-trigger') || e.target.closest('#simsim-exit-btn');
       if (exitTrigger) {
         this.disableSimSimMode();
+      }
+
+      // Model Basket Customizer Modal controls
+      const basketClose = e.target.closest('#basket-modal-close-btn') || e.target.closest('#basket-modal-cancel-btn');
+      if (basketClose) {
+        this.closeBasketModal();
+        return;
+      }
+
+      const basketApply = e.target.closest('#basket-modal-apply-btn');
+      if (basketApply) {
+        this.applyBasketFromModal();
+        return;
+      }
+
+      const basketModal = document.getElementById('simsim-basket-modal');
+      if (e.target === basketModal) {
+        this.closeBasketModal();
+        return;
       }
 
       // Floating tray clear & dismiss buttons
@@ -300,7 +398,155 @@ export class SimSimUI {
   }
 
   /**
-   * Loads curated starter portfolios
+   * Opens the Model Basket Customizer Dialogue Box allowing users to pick which fund
+   * to use for each suggested category slot before backtesting.
+   */
+  openBasketModal(presetKey) {
+    if (!this.app.allFunds || this.app.allFunds.length === 0) return;
+
+    const modal = document.getElementById('simsim-basket-modal');
+    if (!modal) return;
+
+    const basketDef = MODEL_BASKETS[presetKey] || MODEL_BASKETS.titan;
+    this.activeBasketKey = presetKey;
+
+    const emblemEl = document.getElementById('basket-modal-emblem');
+    const titleEl = document.getElementById('basket-modal-title');
+    const descEl = document.getElementById('basket-modal-desc');
+    const slotsContainer = document.getElementById('basket-modal-slots');
+
+    if (emblemEl) emblemEl.textContent = basketDef.emoji;
+    if (titleEl) titleEl.textContent = `Customize Model Basket: ${basketDef.name}`;
+    if (descEl) descEl.textContent = basketDef.description;
+
+    const getCatClass = (catName) => {
+      if (catName.includes('Small')) return 'cat-badge-amber';
+      if (catName.includes('Mid')) return 'cat-badge-cyan';
+      if (catName.includes('Sectoral') || catName.includes('Thematic')) return 'cat-badge-ruby';
+      if (catName.includes('ELSS')) return 'cat-badge-emerald';
+      return 'cat-badge-indigo';
+    };
+
+    if (slotsContainer) {
+      slotsContainer.innerHTML = basketDef.slots.map((slot, idx) => {
+        // Find matching funds for this slot's category
+        const matchingFunds = this.app.allFunds.filter(f => {
+          const hasHistory = f.nav_history && f.nav_history.length > 40;
+          if (!hasHistory) return false;
+          return slot.categoryMatch.some(cat => f.category && f.category.toLowerCase().includes(cat.toLowerCase()));
+        });
+
+        // Sort matching funds by SmartScore overall descending, then 3Y return
+        matchingFunds.sort((a, b) => {
+          const sA = parseFloat((a.smart_score && a.smart_score.overall) || (a.suggester_score / 10) || 0);
+          const sB = parseFloat((b.smart_score && b.smart_score.overall) || (b.suggester_score / 10) || 0);
+          return sB - sA;
+        });
+
+        // Determine default pre-selected fund
+        let defaultFund = matchingFunds.find(f => f.name.toLowerCase().includes(slot.defaultSubstr.toLowerCase()));
+        if (!defaultFund && matchingFunds.length > 0) defaultFund = matchingFunds[0];
+        if (!defaultFund) defaultFund = this.app.allFunds[idx] || this.app.allFunds[0];
+
+        const catBadgeClass = getCatClass(slot.category);
+
+        return `
+          <div class="p-4 rounded-xl bg-[#101624] border border-white/10 space-y-2.5" data-slot-idx="${idx}">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="cat-badge ${catBadgeClass}">${slot.category}</span>
+                <span class="text-xs font-bold text-white">${slot.category} Scheme</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-[#00F090] px-2 py-0.5 rounded bg-[#00F090]/10 border border-[#00F090]/30">
+                ${slot.suggestedWeight}% Allocation
+              </span>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-[11px] text-[#94A3B8] block">Choose scheme for this allocation:</label>
+              <div class="relative">
+                <select class="basket-slot-select w-full bg-[#070A12] border border-white/15 rounded-xl py-2 pl-3 pr-8 text-xs text-white outline-none focus:border-[#00F090] transition-colors cursor-pointer" data-slot-idx="${idx}">
+                  ${matchingFunds.map(f => {
+                    const ret = f.rolling_3y_avg ? `${f.rolling_3y_avg}%` : (f.cagr_3y ? `+${f.cagr_3y}%` : 'N/A');
+                    const score = f.smart_score ? f.smart_score.overall : '7.5';
+                    const isSel = f.code === defaultFund.code;
+                    return `<option value="${f.code}" ${isSel ? 'selected' : ''}>${f.name.split(' - Direct')[0]} (Score: ${score} • 3Y: ${ret})</option>`;
+                  }).join('')}
+                </select>
+              </div>
+            </div>
+
+            <!-- Live Mini Preview Line -->
+            <div class="slot-fund-preview text-[11px] text-[#94A3B8] flex items-center justify-between px-1 pt-0.5" id="slot-preview-${idx}">
+              <span class="preview-amc">${defaultFund.fund_house}</span>
+              <span class="preview-metrics text-[#00F090] font-mono font-medium">3Y: +${defaultFund.cagr_3y || defaultFund.cagr_1y || 20}% • SmartScore™ ${defaultFund.smart_score ? defaultFund.smart_score.overall : '8.0'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Bind change listeners on select dropdowns to update the preview line live
+      slotsContainer.querySelectorAll('.basket-slot-select').forEach(sel => {
+        sel.addEventListener('change', (e) => {
+          const slotIdx = sel.getAttribute('data-slot-idx');
+          const code = Number(e.target.value);
+          const f = this.app.allFunds.find(fund => fund.code === code);
+          const previewEl = document.getElementById(`slot-preview-${slotIdx}`);
+          if (f && previewEl) {
+            const ret = f.cagr_3y ? `+${f.cagr_3y}%` : (f.cagr_1y ? `+${f.cagr_1y}%` : 'N/A');
+            const score = f.smart_score ? f.smart_score.overall : '7.5';
+            previewEl.innerHTML = `
+              <span class="preview-amc">${f.fund_house}</span>
+              <span class="preview-metrics text-[#00F090] font-mono font-medium">3Y: ${ret} • SmartScore™ ${score}</span>
+            `;
+          }
+        });
+      });
+    }
+
+    modal.classList.remove('hidden');
+  }
+
+  /**
+   * Closes the Model Basket Customizer Dialogue Box
+   */
+  closeBasketModal() {
+    const modal = document.getElementById('simsim-basket-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  /**
+   * Applies the selected funds from the Model Basket dialogue box and starts simulation
+   */
+  applyBasketFromModal() {
+    const modal = document.getElementById('simsim-basket-modal');
+    if (!modal) return;
+
+    const basketDef = MODEL_BASKETS[this.activeBasketKey] || MODEL_BASKETS.titan;
+    const selects = modal.querySelectorAll('.basket-slot-select');
+    if (selects.length === 0) return;
+
+    const selectedCodes = [];
+    const newWeights = {};
+
+    selects.forEach((sel, idx) => {
+      const code = Number(sel.value);
+      const slot = basketDef.slots[idx] || { suggestedWeight: Math.round(100 / selects.length) };
+      selectedCodes.push(code);
+      newWeights[code] = (slot.suggestedWeight || 33) / 100.0;
+    });
+
+    this.bucket = selectedCodes;
+    this.weights = newWeights;
+    this.saveBucketToStorage();
+    this.closeBasketModal();
+    this.renderSimSimSidebar();
+    this.renderSimSimStage();
+    this.runSimulation();
+  }
+
+  /**
+   * Loads curated starter portfolios directly
    */
   loadTemplate(templateKey) {
     if (!this.app.allFunds || this.app.allFunds.length === 0) return;
@@ -892,11 +1138,11 @@ export class SimSimUI {
       btn.addEventListener('click', () => this.disableSimSimMode());
     });
 
-    // Model presets in sidebar
+    // Model presets in sidebar - open dialogue box to choose specific funds per category
     document.querySelectorAll('.model-preset-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const preset = btn.getAttribute('data-preset');
-        this.loadTemplate(preset);
+        this.openBasketModal(preset);
       });
     });
 
