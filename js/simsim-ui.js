@@ -462,26 +462,26 @@ export class SimSimUI {
         <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-2.5">
           <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block">Curated Model Baskets:</span>
           <div class="space-y-1.5">
-            <button type="button" class="model-preset-btn w-full text-left p-2 rounded-xl bg-[#121826] hover:bg-[#172033] border border-white/10 hover:border-[#00F090]/40 transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="titan">
+            <button type="button" class="model-preset-btn w-full text-left p-3 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="titan">
               <div>
                 <span class="text-xs font-bold text-white block">🛡️ The Titan</span>
                 <span class="text-[10px] text-[#94A3B8]">Flexi + Mid + Small (3-Fund Core)</span>
               </div>
-              <span class="text-[10px] font-mono text-[#00F090] font-bold">40/35/25</span>
+              <span class="text-[10px] font-mono text-[#00F090] font-bold px-2 py-0.5 rounded-full bg-[#00F090]/10 border border-[#00F090]/30">40/35/25</span>
             </button>
-            <button type="button" class="model-preset-btn w-full text-left p-2 rounded-xl bg-[#121826] hover:bg-[#172033] border border-white/10 hover:border-[#00F090]/40 transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="aggressive">
+            <button type="button" class="model-preset-btn w-full text-left p-3 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="aggressive">
               <div>
                 <span class="text-xs font-bold text-white block">🚀 High-Alpha Rocket</span>
                 <span class="text-[10px] text-[#94A3B8]">Aggressive Mid & Small Cap Alpha</span>
               </div>
-              <span class="text-[10px] font-mono text-[#00F090] font-bold">40/30/30</span>
+              <span class="text-[10px] font-mono text-[#FF5630] font-bold px-2 py-0.5 rounded-full bg-[#FF5630]/10 border border-[#FF5630]/30">40/30/30</span>
             </button>
-            <button type="button" class="model-preset-btn w-full text-left p-2 rounded-xl bg-[#121826] hover:bg-[#172033] border border-white/10 hover:border-[#00F090]/40 transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="defensive">
+            <button type="button" class="model-preset-btn w-full text-left p-3 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="defensive">
               <div>
                 <span class="text-xs font-bold text-white block">💰 Defensive Compounder</span>
                 <span class="text-[10px] text-[#94A3B8]">Bluechip + Large & Mid + Contra</span>
               </div>
-              <span class="text-[10px] font-mono text-[#00F090] font-bold">40/30/30</span>
+              <span class="text-[10px] font-mono text-[#FFB800] font-bold px-2 py-0.5 rounded-full bg-[#FFB800]/10 border border-[#FFB800]/30">40/30/30</span>
             </button>
           </div>
         </div>
@@ -489,11 +489,11 @@ export class SimSimUI {
         <!-- 2. Investment Style Selector -->
         <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-2">
           <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block">Investment Style:</span>
-          <div class="grid grid-cols-2 gap-1.5 p-1 bg-[#07090E] rounded-xl border border-white/10">
-            <button id="simsim-mode-lumpsum" type="button" class="py-2 rounded-lg text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'lumpsum' ? 'bg-[#00F090] text-black shadow-md' : 'text-[#94A3B8] hover:text-white'}">
+          <div class="grid grid-cols-2 gap-1.5 p-1 bg-[#07090E] rounded-full border border-white/10">
+            <button id="simsim-mode-lumpsum" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'lumpsum' ? 'bg-[#00F090] text-black shadow-md' : 'text-[#94A3B8] hover:text-white'}">
               💎 Lumpsum
             </button>
-            <button id="simsim-mode-sip" type="button" class="py-2 rounded-lg text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'sip' ? 'bg-[#00F090] text-black shadow-md' : 'text-[#94A3B8] hover:text-white'}">
+            <button id="simsim-mode-sip" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'sip' ? 'bg-[#00F090] text-black shadow-md' : 'text-[#94A3B8] hover:text-white'}">
               🗓️ Monthly SIP
             </button>
           </div>
@@ -510,22 +510,22 @@ export class SimSimUI {
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white font-mono text-sm font-bold">₹</span>
               <input id="simsim-capital-input" type="number" min="1000" step="5000" value="${this.capital}" class="w-full bg-[#07090E] border border-white/10 rounded-xl py-2 pl-7 pr-3 text-sm text-white font-mono outline-none focus:border-[#00F090] transition-colors"/>
             </div>
-            <!-- Quick Chips -->
+            <!-- Quick Chips with Pill Curvature -->
             <div class="flex items-center gap-1.5 flex-wrap mt-2">
               ${(this.investmentMode === 'lumpsum' ? [25000, 50000, 100000, 250000, 500000] : [2000, 5000, 10000, 20000, 25000]).map(val => `
-                <button type="button" class="capital-chip px-2 py-0.5 rounded-md bg-[#161e2e] border border-white/10 text-[10px] text-[#94A3B8] hover:text-white hover:border-[#00F090] cursor-pointer touch-spring" data-val="${val}">
+                <button type="button" class="capital-chip px-2.5 py-1 rounded-full bg-[#161e2e] border border-white/10 text-[10px] text-[#94A3B8] hover:text-white hover:border-[#00F090] cursor-pointer touch-spring" data-val="${val}">
                   ₹${val >= 100000 ? `${val/100000}L` : `${val/1000}k`}
                 </button>
               `).join('')}
             </div>
           </div>
 
-          <!-- Time Horizon -->
+          <!-- Time Horizon with Pill Curvature -->
           <div>
             <label class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block mb-1.5">Backtest Horizon:</label>
             <div class="grid grid-cols-3 gap-1.5">
               ${['6M', '1Y', '2Y', '3Y', '5Y', 'ALL'].map(h => `
-                <button type="button" class="horizon-pill py-1.5 text-center rounded-lg text-xs font-bold border transition-all cursor-pointer touch-spring ${this.selectedHorizon === h ? 'bg-[#00D2FF]/20 border-[#00D2FF] text-[#00D2FF]' : 'bg-[#07090E] border-white/10 text-[#94A3B8] hover:text-white'}" data-h="${h}">
+                <button type="button" class="horizon-pill py-1.5 text-center rounded-full text-xs font-bold border transition-all cursor-pointer touch-spring ${this.selectedHorizon === h ? 'bg-[#00F090] border-[#00F090] text-black shadow-md' : 'bg-[#07090E] border-white/10 text-[#94A3B8] hover:text-white'}" data-h="${h}">
                   ${h === 'ALL' ? 'Max' : h}
                 </button>
               `).join('')}

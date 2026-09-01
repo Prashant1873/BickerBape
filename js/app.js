@@ -1485,14 +1485,20 @@ class BickerBapeApp {
       ` : '');
 
       const seasoningBadge = fund.history_years < 1.0 
-        ? `<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] px-1.5 py-0.5 rounded font-bold" title="New Scheme (< 1Y): Lacks market cycle operating history">New Scheme (<1Y)</span>`
+        ? `<span class="meta-tag meta-tag-warn" title="New Scheme (< 1Y): Lacks market cycle operating history">New Scheme (<1Y)</span>`
         : (fund.history_years < 3.0 
-            ? `<span class="bg-slate-100 text-slate-700 border border-slate-200 text-[10px] px-1.5 py-0.5 rounded font-medium" title="Emerging (${fund.history_years}Y): Lacks 3-year full cycle testing">Emerging (${fund.history_years}Y)</span>` 
+            ? `<span class="meta-tag meta-tag-track" title="Emerging (${fund.history_years}Y): Lacks 3-year full cycle testing">Emerging (${fund.history_years}Y)</span>` 
             : '');
 
       const concentrationBadge = fund.category === 'Sectoral / Thematic'
-        ? `<span class="bg-red-50 text-red-700 border border-red-200 text-[10px] px-1.5 py-0.5 rounded font-semibold" title="High single-sector concentration risk. Recommended only as a satellite play (max 10-15%).">Sector Risk</span>`
+        ? `<span class="meta-tag meta-tag-warn" title="High single-sector concentration risk. Recommended only as a satellite play (max 10-15%).">Sector Risk</span>`
         : '';
+
+      let catBadgeClass = 'cat-badge-indigo';
+      if (fund.category.includes('Small')) catBadgeClass = 'cat-badge-amber';
+      else if (fund.category.includes('Mid')) catBadgeClass = 'cat-badge-cyan';
+      else if (fund.category.includes('Sectoral') || fund.category.includes('Thematic')) catBadgeClass = 'cat-badge-ruby';
+      else if (fund.category.includes('ELSS')) catBadgeClass = 'cat-badge-emerald';
 
       const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
       const scoreNum = parseFloat(smart.overall);
@@ -1502,7 +1508,7 @@ class BickerBapeApp {
           <div class="flex justify-between items-start mb-sm">
             <div class="min-w-0 pr-2">
               <div class="flex items-center gap-1.5 mb-1.5 flex-wrap">
-                <span class="bg-secondary-fixed-dim text-on-secondary-fixed px-2 py-0.5 rounded text-xs font-label-bold">${fund.category}</span>
+                <span class="cat-badge ${catBadgeClass}">${fund.category}</span>
                 ${concentrationBadge}
                 ${seasoningBadge}
                 ${ratioBadge}
@@ -1537,11 +1543,12 @@ class BickerBapeApp {
             </div>
           </div>
 
-          <div class="flex gap-1.5 pl-2">
-            <button class="flex-grow bg-transparent border border-primary-container text-primary-container font-label-bold text-xs py-2 rounded-xl hover:bg-primary-container hover:text-on-primary transition-colors touch-spring cursor-pointer analyze-card-btn" data-code="${fund.code}">
-              SmartScore™
+          <div class="flex gap-2 items-center">
+            <button class="flex-grow analyze-card-btn touch-spring cursor-pointer" data-code="${fund.code}">
+              <span class="material-symbols-outlined text-sm">insights</span>
+              <span>SmartScore™</span>
             </button>
-            <button class="px-2.5 py-2 border rounded-xl font-label-bold text-xs flex items-center gap-1 transition-colors touch-spring cursor-pointer compare-toggle-btn ${isComparing ? 'bg-primary-container text-on-primary border-primary-container shadow-sm' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container'}" data-code="${fund.code}">
+            <button class="compare-toggle-btn ${isComparing ? 'is-comparing' : ''} touch-spring cursor-pointer" data-code="${fund.code}" title="${isComparing ? 'Remove from comparison' : 'Add to comparison'}">
               <span class="material-symbols-outlined text-xs">${isComparing ? 'check' : 'add'}</span>
               <span>${isComparing ? 'Added' : 'Compare'}</span>
             </button>
@@ -1704,12 +1711,10 @@ class BickerBapeApp {
       const code = parseInt(btn.getAttribute('data-code'));
       const isComparing = this.state.comparisonList.some(f => f.code === code);
       if (isComparing) {
-        btn.classList.add('bg-primary-container', 'text-on-primary', 'border-primary-container');
-        btn.classList.remove('border-outline-variant', 'text-on-surface-variant');
+        btn.classList.add('is-comparing');
         btn.innerHTML = `<span class="material-symbols-outlined text-xs">check</span><span>Added</span>`;
       } else {
-        btn.classList.remove('bg-primary-container', 'text-on-primary', 'border-primary-container');
-        btn.classList.add('border-outline-variant', 'text-on-surface-variant');
+        btn.classList.remove('is-comparing');
         btn.innerHTML = `<span class="material-symbols-outlined text-xs">add</span><span>Compare</span>`;
       }
     });
