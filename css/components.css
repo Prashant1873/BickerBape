@@ -1,0 +1,171 @@
+/* ==========================================================================
+   BickerBape UI Components - Fiscal Clarity & Interactive Widgets
+   ========================================================================== */
+
+/* Custom Range Slider with smooth thumb */
+.apple-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #e7e8ea;
+  border-radius: 9999px;
+  outline: none;
+  transition: background 150ms ease;
+}
+
+.apple-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0052cc;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 82, 204, 0.35);
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 150ms ease;
+}
+
+.apple-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: #003d9b;
+}
+
+.apple-slider::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+}
+
+.apple-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: #0052cc;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 82, 204, 0.35);
+}
+
+/* Strategy Preset Badges */
+.strategy-chip {
+  transition: all 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: 1px solid #e1e2e4;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.strategy-chip:hover {
+  border-color: #b2c5ff;
+  background: #f3f4f6;
+  transform: translateY(-1px);
+}
+
+.strategy-chip:active {
+  transform: scale(0.96);
+}
+
+.strategy-chip.active {
+  background: #0052cc;
+  color: #ffffff;
+  border-color: #0052cc;
+  box-shadow: 0 4px 12px rgba(0, 82, 204, 0.25);
+}
+
+.strategy-chip.active span {
+  color: #ffffff !important;
+}
+
+/* Category Filter Pills */
+.category-pill {
+  transition: all 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.category-pill:active {
+  transform: scale(0.95);
+}
+
+.category-pill.active {
+  background-color: #0052cc !important;
+  color: #ffffff !important;
+  border-color: #0052cc !important;
+  box-shadow: 0 2px 8px rgba(0, 82, 204, 0.25);
+}
+
+/* View Switcher Toggle */
+.view-toggle-btn {
+  transition: all 160ms ease;
+}
+
+.view-toggle-btn.active {
+  background-color: #ffffff;
+  color: #003d9b;
+  box-shadow: 0 2px 6px rgba(9, 30, 66, 0.1);
+}
+
+/* 10-Step Checklist Card */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #edeef0;
+  transition: background 150ms ease;
+}
+
+.checklist-item:hover {
+  background: #f8f9fb;
+}
+
+.checklist-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.checklist-pass {
+  background: #E3FCEF;
+  color: #36B37E;
+}
+
+.checklist-warn {
+  background: #FFF4E5;
+  color: #FF9F0A;
+}
+
+.checklist-info {
+  background: #dae2ff;
+  color: #0052cc;
+}
+
+/* Modal and Comparison Overlays */
+.compare-tray {
+  transform: translateY(120%);
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.compare-tray.visible {
+  transform: translateY(0%);
+}
+
+/* Tooltip Customization */
+.chart-tooltip-dark {
+  background: #172B4D;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Sparkline canvas */
+.sparkline-svg {
+  filter: drop-shadow(0 2px 4px rgba(54, 179, 126, 0.25));
+}

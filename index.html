@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>BickerBape - Indian Equity Mutual Fund Screener & Suggester</title>
+  
+  <!-- Tailwind CSS CDN with Forms & Container Queries plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Google Fonts: Hanken Grotesk & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  
+  <!-- Chart.js CDN for financial visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Tailwind Configuration - Fiscal Clarity Design System -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary-container": "#c4d2ff",
+            "background": "#f8f9fb",
+            "secondary-fixed-dim": "#b1c6ff",
+            "surface-container": "#edeef0",
+            "error": "#ba1a1a",
+            "tertiary-container": "#595b5b",
+            "tertiary-fixed-dim": "#c6c6c7",
+            "inverse-on-surface": "#f0f1f3",
+            "secondary-container": "#709bfe",
+            "surface-dim": "#d9dadc",
+            "on-surface-variant": "#434654",
+            "primary-fixed": "#dae2ff",
+            "on-secondary-fixed": "#001946",
+            "error-container": "#ffdad6",
+            "surface-container-low": "#f3f4f6",
+            "on-secondary-fixed-variant": "#00419d",
+            "on-primary-fixed-variant": "#0040a2",
+            "surface-bright": "#f8f9fb",
+            "outline-variant": "#c3c6d6",
+            "inverse-primary": "#b2c5ff",
+            "primary-container": "#0052cc",
+            "on-tertiary-fixed": "#1a1c1c",
+            "surface-tint": "#0c56d0",
+            "surface": "#f8f9fb",
+            "on-primary": "#ffffff",
+            "secondary": "#285ab9",
+            "secondary-fixed": "#d9e2ff",
+            "on-tertiary": "#ffffff",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "inverse-surface": "#2e3132",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#b2c5ff",
+            "surface-container-highest": "#e1e2e4",
+            "surface-container-high": "#e7e8ea",
+            "on-surface": "#191c1e",
+            "tertiary-fixed": "#e2e2e2",
+            "primary": "#003d9b",
+            "on-secondary-container": "#003179",
+            "on-tertiary-fixed-variant": "#454747",
+            "on-secondary": "#ffffff",
+            "on-background": "#191c1e",
+            "surface-variant": "#e1e2e4",
+            "on-tertiary-container": "#d2d3d3",
+            "on-primary-fixed": "#001848",
+            "outline": "#737685",
+            "tertiary": "#424444",
+            "gain": "#36B37E",
+            "loss": "#FF5630",
+            "warning": "#FF9F0A"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "md": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "2xl": "1.5rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "xs": "4px",
+            "sm": "8px",
+            "md": "16px",
+            "lg": "24px",
+            "xl": "32px",
+            "gutter": "16px",
+            "container-margin": "20px"
+          },
+          fontFamily: {
+            "display-financial": ["Hanken Grotesk", "system-ui", "sans-serif"],
+            "headline-lg": ["Hanken Grotesk", "system-ui", "sans-serif"],
+            "headline-md": ["Hanken Grotesk", "system-ui", "sans-serif"],
+            "body-lg": ["Hanken Grotesk", "system-ui", "sans-serif"],
+            "body-md": ["Hanken Grotesk", "system-ui", "sans-serif"],
+            "label-bold": ["Hanken Grotesk", "system-ui", "sans-serif"],
+            "label-sm": ["Hanken Grotesk", "system-ui", "sans-serif"]
+          },
+          fontSize: {
+            "display-financial": [
+              "34px",
+              { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }
+            ],
+            "headline-lg": [
+              "26px",
+              { "lineHeight": "32px", "fontWeight": "700" }
+            ],
+            "headline-md": [
+              "19px",
+              { "lineHeight": "26px", "fontWeight": "700" }
+            ],
+            "body-lg": [
+              "17px",
+              { "lineHeight": "24px", "fontWeight": "500" }
+            ],
+            "body-md": [
+              "15px",
+              { "lineHeight": "22px", "fontWeight": "400" }
+            ],
+            "label-bold": [
+              "13px",
+              { "lineHeight": "18px", "fontWeight": "700" }
+            ],
+            "label-sm": [
+              "12px",
+              { "lineHeight": "16px", "fontWeight": "500" }
+            ]
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom Stylesheets -->
+  <link href="css/styles.css" rel="stylesheet"/>
+  <link href="css/components.css" rel="stylesheet"/>
+</head>
+
+<body class="bg-background text-on-background font-body-md antialiased overflow-hidden select-none">
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div id="sidebar-mobile-backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden md:hidden"></div>
+
+  <!-- App Shell (Fits 100% inside viewport with ZERO horizontal scroll) -->
+  <div id="app-shell" class="app-shell">
+
+    <!-- ====================================================================
+         COLLAPSIBLE FILTERS SIDEBAR (The Screener Command Center)
+         ==================================================================== -->
+    <aside id="sidebar" class="app-sidebar shadow-sm">
+      
+      <!-- Sidebar Header & Collapse Button -->
+      <div class="p-md border-b border-surface-container flex items-center justify-between bg-surface">
+        <div class="flex items-center gap-sm">
+          <div class="w-9 h-9 rounded-xl bg-primary-container text-on-primary flex items-center justify-center font-headline-md text-sm shadow-sm">
+            BB
+          </div>
+          <div>
+            <h1 class="font-headline-md text-base text-primary tracking-tight leading-tight">BickerBape</h1>
+            <p class="font-label-sm text-[11px] text-on-surface-variant">Best Fund Suggester</p>
+          </div>
+        </div>
+
+        <!-- Sidebar Collapse Toggle Button -->
+        <button id="sidebar-collapse-btn" class="p-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors touch-spring" title="Collapse sidebar">
+          <span class="material-symbols-outlined text-lg">menu_open</span>
+        </button>
+      </div>
+
+      <!-- Scrollable Filters Container -->
+      <div class="flex-grow overflow-y-auto p-md space-y-lg hide-scrollbar">
+        
+        <!-- Filter Header & Reset -->
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-1.5 text-primary font-label-bold text-xs">
+            <span class="material-symbols-outlined text-base">tune</span> Screener Filters
+          </div>
+          <button id="reset-filters-btn" class="text-xs text-primary hover:underline font-label-bold cursor-pointer touch-spring">
+            Reset All
+          </button>
+        </div>
+
+        <!-- 1. Strategy Presets (Prashant's 10-Step Formula) -->
+        <div>
+          <label class="block font-label-bold text-xs text-on-surface-variant uppercase tracking-wider mb-2">
+            1-Click Strategies
+          </label>
+          <div class="space-y-1.5">
+            <button class="strategy-chip w-full text-left px-3 py-2 rounded-xl font-label-bold text-xs flex items-center gap-2 touch-spring" data-preset="prashant">
+              <span>🏆</span>
+              <div class="flex-grow">
+                <div>Prashant's 10-Step Formula</div>
+                <div class="text-[10px] font-normal text-on-surface-variant">Rolling 3Y > Avg, Low Vol, Sharpe > 0.7</div>
+              </div>
+            </button>
+            
+            <button class="strategy-chip w-full text-left px-3 py-2 rounded-xl font-label-bold text-xs flex items-center gap-2 touch-spring" data-preset="compounders">
+              <span>🚀</span>
+              <div class="flex-grow">
+                <div>Consistent Compounders</div>
+                <div class="text-[10px] font-normal text-on-surface-variant">Top 3Y rolling returns across cycles</div>
+              </div>
+            </button>
+
+            <button class="strategy-chip w-full text-left px-3 py-2 rounded-xl font-label-bold text-xs flex items-center gap-2 touch-spring" data-preset="low_vol">
+              <span>🛡️</span>
+              <div class="flex-grow">
+                <div>Low Volatility Titans</div>
+                <div class="text-[10px] font-normal text-on-surface-variant">Lower risk than category average</div>
+              </div>
+            </button>
+
+            <button class="strategy-chip w-full text-left px-3 py-2 rounded-xl font-label-bold text-xs flex items-center gap-2 touch-spring" data-preset="alpha">
+              <span>⚡</span>
+              <div class="flex-grow">
+                <div>High Alpha Champions</div>
+                <div class="text-[10px] font-normal text-on-surface-variant">High Sharpe + Category Outperformance</div>
+              </div>
+            </button>
+
+            <button class="strategy-chip w-full text-left px-3 py-2 rounded-xl font-label-bold text-xs flex items-center gap-2 touch-spring" data-preset="elss">
+              <span>💰</span>
+              <div class="flex-grow">
+                <div>ELSS Wealth Savers</div>
+                <div class="text-[10px] font-normal text-on-surface-variant">Tax-saving 80C top performers</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Categories List -->
+        <div>
+          <label class="block font-label-bold text-xs text-on-surface-variant uppercase tracking-wider mb-2">
+            Equity Categories
+          </label>
+          <div id="sidebar-categories-list" class="space-y-1">
+            <button class="category-pill active w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="All Funds">
+              <span>All Equity Funds</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">620</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Flexi Cap">
+              <span>Flexi Cap</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">45</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Large Cap">
+              <span>Large Cap</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">34</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Mid Cap">
+              <span>Mid Cap</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">34</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Small Cap">
+              <span>Small Cap</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">36</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Large & Mid Cap">
+              <span>Large & Mid Cap</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">34</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="ELSS Tax Saver">
+              <span>ELSS Tax Saver</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">38</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Multi Cap">
+              <span>Multi Cap</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">32</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Focused Fund">
+              <span>Focused Fund</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">28</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Value / Contra">
+              <span>Value / Contra</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">23</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Sectoral / Thematic">
+              <span>Sectoral / Thematic</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">246</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Index Funds">
+              <span>Index Funds</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">59</span>
+            </button>
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Dividend Yield">
+              <span>Dividend Yield</span>
+              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">11</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Range Sliders -->
+        <div class="space-y-md pt-xs border-t border-surface-container">
+          <!-- Slider 1: 3Y Rolling Return -->
+          <div>
+            <div class="flex justify-between text-xs font-label-bold mb-1">
+              <span class="text-on-surface-variant">Min 3Y Rolling Return:</span>
+              <span id="val-rolling" class="text-primary tabular-nums font-bold">0%</span>
+            </div>
+            <input id="slider-rolling" class="apple-slider" type="range" min="0" max="25" step="1" value="0"/>
+          </div>
+
+          <!-- Slider 2: Sharpe Ratio -->
+          <div>
+            <div class="flex justify-between text-xs font-label-bold mb-1">
+              <span class="text-on-surface-variant">Min Sharpe (Rf=6.8%):</span>
+              <span id="val-sharpe" class="text-primary tabular-nums font-bold">0</span>
+            </div>
+            <input id="slider-sharpe" class="apple-slider" type="range" min="0" max="1.5" step="0.1" value="0"/>
+          </div>
+
+          <!-- Slider 3: Max Volatility -->
+          <div>
+            <div class="flex justify-between text-xs font-label-bold mb-1">
+              <span class="text-on-surface-variant">Max Volatility (Std Dev):</span>
+              <span id="val-vol" class="text-primary tabular-nums font-bold">25%</span>
+            </div>
+            <input id="slider-vol" class="apple-slider" type="range" min="8" max="25" step="1" value="25"/>
+          </div>
+        </div>
+
+        <!-- Prashant's Strategy Tip Card -->
+        <div class="p-sm rounded-xl bg-surface-container-low text-xs text-on-surface-variant border border-surface-container">
+          <div class="flex items-center gap-1 text-primary font-label-bold mb-1">
+            <span class="material-symbols-outlined text-sm">psychology</span> Prashant's Insight
+          </div>
+          <p class="leading-snug text-[11px]">
+            "Chasing rank-1 funds every year triggers taxes and exit loads. Focus on 3-year rolling consistency and stable tenure."
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="p-md border-t border-surface-container bg-surface flex items-center justify-between text-xs text-on-surface-variant">
+        <span class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-gain"></span> AMFI Live
+        </span>
+        <span class="font-label-bold text-primary">620 Schemes</span>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         MAIN VIEWPORT CONTENT (100% Window Fitting with ZERO horizontal scroll)
+         ==================================================================== -->
+    <main id="main-content" class="app-main">
+      
+      <!-- Top Sticky Navigation Bar -->
+      <header class="sticky top-0 z-20 bg-surface/90 backdrop-blur-md border-b border-surface-container px-4 md:px-6 py-3 flex items-center justify-between gap-md">
+        
+        <!-- Left: Sidebar Toggle + Title -->
+        <div class="flex items-center gap-sm md:gap-md">
+          <!-- Sidebar Expand Toggle (visible when desktop sidebar collapsed or on mobile) -->
+          <button id="sidebar-expand-btn" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-surface-container-lowest card-shadow font-label-bold text-xs text-primary touch-spring" title="Toggle Filters Sidebar">
+            <span class="material-symbols-outlined text-base">tune</span>
+            <span class="hidden sm:inline">Filters</span>
+          </button>
+
+          <div>
+            <h2 class="font-headline-md text-base md:text-lg text-on-surface leading-tight">Indian Equity Screener</h2>
+            <p id="funds-count" class="font-label-sm text-[11px] text-on-surface-variant">Loading 620 funds...</p>
+          </div>
+        </div>
+
+        <!-- Center: Search Bar -->
+        <div class="relative flex-grow max-w-md hidden sm:block">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
+          <input id="search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-1.5 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC, or category..." type="text"/>
+        </div>
+
+        <!-- Right: View Switcher (Cards vs Table) -->
+        <div class="flex items-center gap-2">
+          <div class="flex items-center p-0.5 bg-surface-container rounded-xl card-shadow">
+            <button id="view-cards-btn" class="view-toggle-btn active flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-label-bold touch-spring" title="Card View">
+              <span class="material-symbols-outlined text-sm">grid_view</span>
+              <span class="hidden sm:inline">Cards</span>
+            </button>
+            <button id="view-table-btn" class="view-toggle-btn flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-label-bold touch-spring" title="Table View">
+              <span class="material-symbols-outlined text-sm">table_rows</span>
+              <span class="hidden sm:inline">Table</span>
+            </button>
+          </div>
+        </div>
+
+      </header>
+
+      <!-- Scrollable Main Container -->
+      <div class="flex-grow p-4 md:p-6 w-full max-w-7xl mx-auto space-y-6">
+        
+        <!-- Mobile Search Input (Visible on small screens) -->
+        <div class="relative w-full sm:hidden">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
+          <input id="mobile-search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-2 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC..." type="text"/>
+        </div>
+
+        <!-- View 1: Featured Funds Grid -->
+        <section id="featured-funds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md md:gap-lg">
+          <!-- Dynamically rendered by app.js -->
+        </section>
+
+        <!-- View 2: Comprehensive Screener Table (Tickertape Copy) -->
+        <section id="screener-table-container" class="hidden bg-surface-container-lowest rounded-2xl card-shadow overflow-hidden border border-surface-container">
+          <div class="overflow-x-auto w-full">
+            <table class="screener-table text-left w-full min-w-[850px]">
+              <thead>
+                <tr class="font-label-bold text-xs text-on-surface-variant uppercase tracking-wider">
+                  <th class="py-md px-md cursor-pointer select-none" data-sort="name">
+                    <div class="flex items-center gap-1">Scheme & Category <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                  </th>
+                  <th class="py-md px-md text-center cursor-pointer select-none" data-sort="suggester_score">
+                    <div class="flex items-center justify-center gap-1">Score <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                  </th>
+                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_3y">
+                    <div class="flex items-center justify-end gap-1">3Y Ret & vs Cat <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                  </th>
+                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_5y">
+                    <div class="flex items-center justify-end gap-1">5Y Ret & vs Cat <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                  </th>
+                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_10y">
+                    <div class="flex items-center justify-end gap-1">10Y CAGR <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                  </th>
+                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="rolling_3y_avg">
+                    <div class="flex items-center justify-end gap-1">3Y Rolling Avg <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                  </th>
+                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="sharpe_ratio">
+                    <div class="flex items-center justify-end gap-1">Sharpe <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                  </th>
+                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="volatility">
+                    <div class="flex items-center justify-end gap-1">Volatility (σ) <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                  </th>
+                  <th class="py-md px-md text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="screener-table-body" class="divide-y divide-surface-container font-body-md text-sm">
+                <!-- Dynamically populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Pagination / Load More Bar -->
+        <div id="pagination-bar" class="mt-lg flex flex-col sm:flex-row items-center justify-between gap-md p-md rounded-2xl bg-surface-container-lowest card-shadow border border-surface-container">
+          <span id="pagination-info" class="text-xs font-label-bold text-on-surface-variant">Showing 36 of 620 funds</span>
+          <div class="flex items-center gap-sm">
+            <button id="load-more-btn" class="px-lg py-sm rounded-lg bg-primary-container text-on-primary font-label-bold text-xs touch-spring hover:bg-primary transition-colors cursor-pointer">
+              Load More Funds (+36)
+            </button>
+            <button id="load-all-btn" class="px-md py-sm rounded-lg border border-outline-variant text-on-surface font-label-bold text-xs hover:bg-surface-container touch-spring cursor-pointer">
+              Show All (620)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ====================================================================
+       BOTTOM FLOATING COMPARISON TRAY (WORKABLE & HIGH-CONTRAST)
+       ==================================================================== -->
+  <div id="compare-tray" class="compare-tray fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 bg-surface-container-lowest glass-chrome border-2 border-primary/20 rounded-2xl shadow-2xl px-md md:px-lg py-3 flex items-center justify-between gap-md max-w-2xl w-[94%]">
+    <div class="flex items-center gap-sm flex-shrink-0">
+      <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center">
+        <span class="material-symbols-outlined text-sm">compare_arrows</span>
+      </div>
+      <div>
+        <span class="font-label-bold text-xs text-on-surface block">Compare Funds</span>
+        <span id="compare-count" class="text-[11px] text-primary font-bold">0/3 Selected</span>
+      </div>
+    </div>
+
+    <!-- Chips of selected funds -->
+    <div id="compare-chips" class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar flex-grow px-2">
+      <!-- Added chips with remove (x) -->
+    </div>
+
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <button id="open-compare-btn" class="px-3.5 py-2 rounded-xl bg-primary-container text-on-primary font-label-bold text-xs touch-spring hover:bg-primary transition-colors shadow-sm flex items-center gap-1 cursor-pointer">
+        <span>Compare</span>
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      </button>
+      <button id="clear-compare-btn" class="p-1.5 text-on-surface-variant hover:text-error rounded-lg hover:bg-surface-container transition-colors touch-spring" title="Clear All Selected">
+        <span class="material-symbols-outlined text-base">delete_sweep</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       SLIDE-OVER DEEP-DIVE DRAWER (APPLE FLUID MOTION)
+       ==================================================================== -->
+  <div id="drawer-backdrop" class="drawer-backdrop fixed inset-0 bg-black/40 backdrop-blur-sm z-50"></div>
+
+  <aside id="fund-drawer" class="drawer-panel fixed top-0 right-0 h-full w-full md:w-[680px] lg:w-[720px] bg-surface-container-lowest shadow-2xl z-50 flex flex-col overflow-hidden">
+    
+    <!-- Grab Handle for Drag-to-Dismiss Gesture -->
+    <div class="grab-handle" id="drawer-grab-handle" title="Drag to dismiss"></div>
+
+    <!-- Drawer Header -->
+    <div class="drawer-header px-md md:px-lg py-md border-b border-surface-container flex items-start justify-between bg-surface-container-lowest">
+      <div>
+        <div class="flex items-center gap-sm mb-1">
+          <span id="drawer-fund-cat" class="bg-secondary-fixed-dim text-on-secondary-fixed px-2.5 py-0.5 rounded text-xs font-label-bold">Flexi Cap</span>
+          <span id="drawer-suggester-score" class="star-rating-pill">★ 88 Suggester Score</span>
+        </div>
+        <h3 id="drawer-fund-name" class="font-headline-lg text-lg md:text-xl text-on-surface leading-snug">Fund Name</h3>
+        <p class="text-xs text-on-surface-variant mt-0.5">Fund Manager: <strong id="drawer-manager" class="text-on-surface">Rajeev Thakkar</strong></p>
+      </div>
+
+      <button id="drawer-close-btn" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors touch-spring cursor-pointer">
+        <span class="material-symbols-outlined text-sm">close</span>
+      </button>
+    </div>
+
+    <!-- Drawer Scrollable Content -->
+    <div class="flex-grow overflow-y-auto px-md md:px-lg py-md space-y-lg hide-scrollbar">
+      
+      <!-- Key Metric Cards Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-sm">
+        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <p class="text-xs text-on-surface-variant font-label-sm">Latest NAV</p>
+          <p id="drawer-nav-price" class="font-display-financial text-xl text-primary mt-0.5">₹90.78</p>
+          <p id="drawer-nav-date" class="text-[10px] text-on-surface-variant mt-0.5">31-Aug-2026</p>
+        </div>
+
+        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <p class="text-xs text-on-surface-variant font-label-sm">3Y Return (CAGR)</p>
+          <p id="drawer-3y-return" class="font-display-financial text-xl text-[#36B37E] mt-0.5">+18.4%</p>
+          <p class="text-[10px] text-on-surface-variant mt-0.5">Point-to-point</p>
+        </div>
+
+        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <p class="text-xs text-on-surface-variant font-label-sm">3Y Rolling Avg</p>
+          <p id="drawer-3y-rolling" class="font-display-financial text-xl text-primary mt-0.5">21.2%</p>
+          <p class="text-[10px] text-[#36B37E] font-bold mt-0.5">Consistent Compounding</p>
+        </div>
+
+        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <p class="text-xs text-on-surface-variant font-label-sm">Sharpe / Volatility</p>
+          <p class="font-display-financial text-xl text-on-surface mt-0.5"><span id="drawer-sharpe">1.24</span> <span class="text-xs font-normal text-on-surface-variant">/ <span id="drawer-volatility">13.2%</span></span></p>
+          <p class="text-[10px] text-on-surface-variant mt-0.5">Rf = 6.8% (T-Bill)</p>
+        </div>
+      </div>
+
+      <!-- Qualitative Info: AUM, Expense Ratio, P/E -->
+      <div class="flex flex-wrap gap-md py-sm px-md rounded-xl bg-surface-container-low text-xs text-on-surface-variant justify-between items-center">
+        <span>AUM: <strong id="drawer-aum" class="text-on-surface font-label-bold">₹72,450 Cr</strong></span>
+        <span>Expense Ratio: <strong id="drawer-expense-ratio" class="text-on-surface font-label-bold">0.63%</strong></span>
+        <span>Portfolio P/E: <strong id="drawer-pe" class="text-on-surface font-label-bold">24.1</strong></span>
+      </div>
+
+      <!-- VISUALIZATION 1: Interactive Historical NAV Chart -->
+      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+        <div class="flex items-center justify-between mb-sm">
+          <h4 class="font-label-bold text-sm text-on-surface">Historical NAV Growth</h4>
+          <div class="flex items-center gap-1 bg-surface-container p-0.5 rounded-lg text-xs font-label-bold">
+            <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="1Y">1Y</button>
+            <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="3Y">3Y</button>
+            <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="5Y">5Y</button>
+            <button class="horizon-tab active px-2 py-0.5 rounded text-[11px] bg-primary-container text-on-primary touch-spring cursor-pointer" data-horizon="ALL">All</button>
+          </div>
+        </div>
+        <div class="h-56 w-full">
+          <canvas id="chart-nav-history"></canvas>
+        </div>
+      </div>
+
+      <!-- VISUALIZATION 2: 3-Year Rolling Return Curve vs Category Benchmark -->
+      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+        <div class="flex items-center justify-between mb-1">
+          <div>
+            <h4 class="font-label-bold text-sm text-on-surface">3-Year Rolling Returns Timeline</h4>
+            <p class="text-xs text-on-surface-variant">Measures true consistency across full bull and bear market cycles</p>
+          </div>
+        </div>
+        <div class="h-60 w-full mt-sm">
+          <canvas id="chart-rolling-returns"></canvas>
+        </div>
+        <div class="mt-sm p-sm rounded-lg bg-surface-container-low text-xs text-on-surface-variant flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#36B37E] text-sm">check_circle</span>
+          <span><strong>Prashant's Rule:</strong> Evaluate 3-year rolling returns instead of CAGR to ensure steady, reliable compounding without hit-or-miss entry timing.</span>
+        </div>
+      </div>
+
+      <!-- VISUALIZATION 3: Returns vs Sub-Category & Nifty 50 Bar Chart -->
+      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+        <h4 class="font-label-bold text-sm text-on-surface mb-1">Returns vs. Sub-Category & Nifty 50</h4>
+        <p class="text-xs text-on-surface-variant mb-sm">CAGR benchmarked against category peers & benchmark index</p>
+        <div class="h-60 w-full">
+          <canvas id="chart-category-comparison"></canvas>
+        </div>
+      </div>
+
+      <!-- VISUALIZATION 4: Risk-Reward Scatter Quadrant -->
+      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+        <h4 class="font-label-bold text-sm text-on-surface mb-1">Risk-Reward Quadrant (Sharpe vs Volatility)</h4>
+        <p class="text-xs text-on-surface-variant mb-sm">Top-left quadrant indicates higher risk-adjusted return with lower volatility</p>
+        <div class="h-64 w-full">
+          <canvas id="chart-risk-reward"></canvas>
+        </div>
+      </div>
+
+      <!-- Top Holdings Chips -->
+      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+        <h4 class="font-label-bold text-sm text-on-surface mb-xs">Top Portfolio Holdings</h4>
+        <div id="drawer-holdings" class="flex flex-wrap gap-xs mt-sm">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- 10-STEP QUALITY CHECKLIST (Prashant's Framework) -->
+      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+        <div class="flex items-center gap-2 mb-sm">
+          <span class="material-symbols-outlined text-primary">fact_check</span>
+          <div>
+            <h4 class="font-label-bold text-sm text-on-surface">10-Step Video Checklist</h4>
+            <p class="text-xs text-on-surface-variant">Screening verdict based on Prashant's strategy</p>
+          </div>
+        </div>
+
+        <div id="drawer-checklist" class="space-y-xs">
+          <!-- Dynamically populated checklist items -->
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- ====================================================================
+       MULTI-FUND SIDE-BY-SIDE COMPARISON MODAL
+       ==================================================================== -->
+  <div id="comparison-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/60 backdrop-blur-sm">
+    <div class="bg-surface-container-lowest rounded-2xl card-shadow max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-surface-container shadow-2xl">
+      
+      <div class="p-md md:p-lg border-b border-surface-container flex items-center justify-between bg-surface-container-lowest">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary font-bold">compare_arrows</span>
+          <h3 class="font-headline-md text-base md:text-lg text-on-surface">Multi-Fund Side-by-Side Comparison</h3>
+        </div>
+        <button id="compare-close-btn" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high touch-spring cursor-pointer">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <div class="p-md md:p-lg overflow-y-auto space-y-md md:space-y-lg hide-scrollbar">
+        <!-- Visual Comparison Chart -->
+        <div class="h-60 w-full">
+          <canvas id="chart-comparison-canvas"></canvas>
+        </div>
+
+        <!-- Metric Comparison Matrix Table -->
+        <div id="comparison-matrix" class="overflow-x-auto rounded-xl border border-surface-container bg-surface-container-lowest">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Main ES6 Application Script -->
+  <script type="module" src="js/app.js"></script>
+
+</body>
+</html>
