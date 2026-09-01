@@ -38,8 +38,8 @@ export class SimSimEngine {
       const lookup = {};
       const history = f.nav_history || [];
       history.forEach(pt => {
-        if (pt.date >= startDate && (!endDate || pt.date <= endDate)) {
-          lookup[pt.date] = pt.nav;
+        if (pt.date >= startDate && (!endDate || pt.date <= endDate) && pt.nav && pt.nav > 0) {
+          lookup[pt.date] = Number(pt.nav);
           allDatesSet.add(pt.date);
         }
       });
@@ -65,14 +65,15 @@ export class SimSimEngine {
       }
 
       if (lastNav === null && (f.nav_history || []).length > 0) {
-        lastNav = f.nav_history[0].nav;
+        const validHist = f.nav_history.filter(h => h.nav && h.nav > 0);
+        if (validHist.length > 0) lastNav = validHist[0].nav;
       }
 
       sortedDates.forEach(d => {
         if (lookup[d] !== undefined) {
           lastNav = lookup[d];
         }
-        aligned.push(lastNav || 10.0);
+        aligned.push(lastNav || f.latest_nav || 10.0);
       });
 
       alignedNavMap[f.code] = aligned;
@@ -103,9 +104,22 @@ export class SimSimEngine {
     const initialUnits = {};
     const constituents = [];
 
+    // Normalize weights across funds
+    let sumWeights = 0;
+    funds.forEach(f => {
+      const w = weights && weights[f.code] !== undefined ? Number(weights[f.code]) : (1.0 / funds.length);
+      sumWeights += w;
+    });
+
+    const normWeights = {};
+    funds.forEach(f => {
+      const w = weights && weights[f.code] !== undefined ? Number(weights[f.code]) : (1.0 / funds.length);
+      normWeights[f.code] = sumWeights > 0 ? (w / sumWeights) : (1.0 / funds.length);
+    });
+
     // Calculate initial units purchased for each fund on startDate
     funds.forEach(f => {
-      const w = weights[f.code] !== undefined ? weights[f.code] : (1.0 / funds.length);
+      const w = normWeights[f.code];
       const allocatedCap = totalCapital * w;
       const startNav = fundNavMap[f.code][0] || f.latest_nav || 10.0;
       const units = allocatedCap / startNav;
@@ -178,7 +192,7 @@ export class SimSimEngine {
 
     // Constituent Scheme Breakdown
     funds.forEach(f => {
-      const w = weights[f.code] !== undefined ? weights[f.code] : (1.0 / funds.length);
+      const w = normWeights[f.code];
       const allocatedCap = totalCapital * w;
       const startNav = fundNavMap[f.code][0];
       const endNav = fundNavMap[f.code][nPoints - 1];
@@ -247,6 +261,19 @@ export class SimSimEngine {
     const unitsHeld = {};
     funds.forEach(f => unitsHeld[f.code] = 0);
 
+    // Normalize weights across funds
+    let sumWeights = 0;
+    funds.forEach(f => {
+      const w = weights && weights[f.code] !== undefined ? Number(weights[f.code]) : (1.0 / funds.length);
+      sumWeights += w;
+    });
+
+    const normWeights = {};
+    funds.forEach(f => {
+      const w = weights && weights[f.code] !== undefined ? Number(weights[f.code]) : (1.0 / funds.length);
+      normWeights[f.code] = sumWeights > 0 ? (w / sumWeights) : (1.0 / funds.length);
+    });
+
     const cashflows = [];
     const portfolioValues = [];
     const benchmarkValues = [];
@@ -277,9 +304,9 @@ export class SimSimEngine {
         lastSipMonth = currentMonth;
         totalInvested += monthlySip;
 
-        // Buy units across funds according to weights
+        // Buy units across funds according to normalized weights
         funds.forEach(f => {
-          const w = weights[f.code] !== undefined ? weights[f.code] : (1.0 / funds.length);
+          const w = normWeights[f.code];
           const fundInst = monthlySip * w;
           const currentNav = fundNavMap[f.code][i] || 10.0;
           unitsHeld[f.code] += (fundInst / currentNav);
@@ -343,7 +370,7 @@ export class SimSimEngine {
     // Constituent Scheme Breakdown
     const constituents = [];
     funds.forEach(f => {
-      const w = weights[f.code] !== undefined ? weights[f.code] : (1.0 / funds.length);
+      const w = normWeights[f.code];
       const fundInvested = totalInvested * w;
       const endNav = fundNavMap[f.code][nPoints - 1];
       const fundEndVal = unitsHeld[f.code] * endNav;
@@ -433,18 +460,27 @@ export class SimSimEngine {
     // Bisection fallback
     let low = -0.5;
     let high = 2.0;
+    let bestMid = 0.15;
+    let bestAbsNpv = Infinity;
+
     for (let i = 0; i < 40; i++) {
       const mid = (low + high) / 2;
       let midNpv = 0;
       for (let k = 0; k < amounts.length; k++) {
         midNpv += amounts[k] / Math.pow(1 + mid, datesYears[k]);
       }
-      if (Math.abs(midNpv) < tolerance) return mid * 100;
+      const absNpv = Math.abs(midNpv);
+      if (absNpv < bestAbsNpv) {
+        bestAbsNpv = absNpv;
+        bestMid = mid;
+      }
+      if (absNpv < tolerance) return mid * 100;
       if (midNpv > 0) low = mid;
       else high = mid;
     }
 
-    return rate * 100;
+    const finalRate = (isNaN(rate) || !isFinite(rate)) ? bestMid : rate;
+    return finalRate * 100;
   }
 
   /**

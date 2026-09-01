@@ -47,6 +47,20 @@ export class SimSimUI {
     const code = Number(schemeCode);
     if (!this.bucket.includes(code)) {
       this.bucket.push(code);
+      const n = this.bucket.length;
+      if (n === 1) {
+        this.weights[code] = 1.0;
+      } else {
+        const newShare = 1.0 / n;
+        const scale = 1.0 - newShare;
+        this.bucket.forEach(c => {
+          if (c === code) {
+            this.weights[c] = newShare;
+          } else {
+            this.weights[c] = (this.weights[c] || (1.0 / (n - 1))) * scale;
+          }
+        });
+      }
       this.saveBucketToStorage();
       this.updateTray();
       this.updateScreenerButtons();
@@ -61,6 +75,25 @@ export class SimSimUI {
     const code = Number(schemeCode);
     this.bucket = this.bucket.filter(c => c !== code);
     delete this.weights[code];
+
+    const remainingCodes = this.bucket;
+    if (remainingCodes.length > 0) {
+      let currentSum = 0;
+      remainingCodes.forEach(c => {
+        currentSum += (this.weights[c] || 0);
+      });
+      if (currentSum > 0) {
+        remainingCodes.forEach(c => {
+          this.weights[c] = (this.weights[c] || 0) / currentSum;
+        });
+      } else {
+        const eq = 1.0 / remainingCodes.length;
+        remainingCodes.forEach(c => {
+          this.weights[c] = eq;
+        });
+      }
+    }
+
     this.saveBucketToStorage();
     this.updateTray();
     this.updateScreenerButtons();
@@ -254,14 +287,21 @@ export class SimSimUI {
   }
 
   /**
-   * Balances all bucket funds equally to 100% / N
+   * Balances all bucket funds equally to 100% / N with integer remainder distribution
    */
   equalizeWeights() {
-    if (this.bucket.length === 0) return;
-    const eq = 1.0 / this.bucket.length;
-    this.bucket.forEach(code => {
-      this.weights[code] = parseFloat(eq.toFixed(4));
+    const funds = this.getBucketFunds();
+    if (funds.length === 0) return;
+    const n = funds.length;
+    const basePct = Math.floor(100 / n);
+    const remainder = 100 % n;
+
+    funds.forEach((f, idx) => {
+      const pct = basePct + (idx < remainder ? 1 : 0);
+      this.weights[f.code] = pct / 100.0;
     });
+
+    this.saveBucketToStorage();
     this.renderSimSimStage();
     this.runSimulation();
   }
@@ -500,7 +540,7 @@ export class SimSimUI {
 
                       <div class="flex items-center justify-between text-[11px] text-[#94A3B8] pt-0.5">
                         <span>Allocated Share:</span>
-                        <span class="font-mono text-white font-bold">₹${rupeeShare.toLocaleString('en-IN')}</span>
+                        <span class="font-mono text-white font-bold" data-share-for="${f.code}">₹${rupeeShare.toLocaleString('en-IN')}</span>
                       </div>
                     </div>
                   `;
@@ -574,6 +614,11 @@ export class SimSimUI {
         this.capital = val;
         const pill = document.getElementById('capital-display-pill');
         if (pill) pill.textContent = `₹${val.toLocaleString('en-IN')}`;
+        document.querySelectorAll('[data-share-for]').forEach(el => {
+          const code = Number(el.getAttribute('data-share-for'));
+          const w = this.weights[code] !== undefined ? this.weights[code] : 0;
+          el.textContent = `₹${Math.round(val * w).toLocaleString('en-IN')}`;
+        });
       });
       capInput.addEventListener('change', () => this.runSimulation());
     }
@@ -615,6 +660,11 @@ export class SimSimUI {
         } else {
           badge.className = 'text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-[#FFB800]/10 text-[#FFB800] border border-[#FFB800]/30';
         }
+      }
+      const shareEl = document.querySelector(`[data-share-for="${code}"]`);
+      if (shareEl) {
+        const share = Math.round(this.capital * (val / 100));
+        shareEl.textContent = `₹${share.toLocaleString('en-IN')}`;
       }
     };
 

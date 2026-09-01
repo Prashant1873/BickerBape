@@ -67,13 +67,13 @@ export class AnalyticsEngine {
       }
 
       // 3. Slider Thresholds
-      if (fund.rolling_3y_avg !== null && fund.rolling_3y_avg < minRollingReturn) {
+      if (minRollingReturn > -100 && (fund.rolling_3y_avg === null || fund.rolling_3y_avg === undefined || fund.rolling_3y_avg < minRollingReturn)) {
         return false;
       }
-      if (fund.sharpe_ratio !== null && fund.sharpe_ratio < minSharpe) {
+      if (minSharpe > -10 && (fund.sharpe_ratio === null || fund.sharpe_ratio === undefined || fund.sharpe_ratio < minSharpe)) {
         return false;
       }
-      if (fund.volatility !== null && fund.volatility > maxVolatility) {
+      if (maxVolatility < 100 && (fund.volatility === null || fund.volatility === undefined || fund.volatility > maxVolatility)) {
         return false;
       }
       const fundScore = fund.smart_score ? fund.smart_score.overall : (fund.suggester_score / 10);
