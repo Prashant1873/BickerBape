@@ -43,7 +43,8 @@ export class AnalyticsEngine {
       minRollingReturn = -100,
       minSharpe = -10,
       maxVolatility = 100,
-      sortBy = 'suggester_score',
+      minSmartScore = 0,
+      sortBy = 'smart_score',
       sortDir = 'desc'
     } = options;
 
@@ -75,8 +76,16 @@ export class AnalyticsEngine {
       if (fund.volatility !== null && fund.volatility > maxVolatility) {
         return false;
       }
+      const fundScore = fund.smart_score ? fund.smart_score.overall : (fund.suggester_score / 10);
+      if (fundScore < minSmartScore) {
+        return false;
+      }
 
-      // 4. Strategy Presets (10-Step Video Framework)
+      // 4. Strategy Presets (10-Step Video Framework & SmartScore(TM))
+      if (preset === 'smartscore_elite') {
+        return fundScore >= 7.5;
+      }
+
       if (preset === 'prashant' || preset === 'mandeep') {
         // Prashant's 10-Step Formula:
         // Rolling 3Y >= Category Avg, Sharpe >= 0.7, Volatility <= Category Avg + 1, Tenure >= 3
@@ -111,8 +120,14 @@ export class AnalyticsEngine {
 
     // Sort Results
     result.sort((a, b) => {
-      let valA = a[sortBy];
-      let valB = b[sortBy];
+      let valA, valB;
+      if (sortBy === 'smart_score' || sortBy === 'suggester_score') {
+        valA = a.smart_score ? a.smart_score.overall : (a.suggester_score || 0);
+        valB = b.smart_score ? b.smart_score.overall : (b.suggester_score || 0);
+      } else {
+        valA = a[sortBy];
+        valB = b[sortBy];
+      }
 
       if (valA === null || valA === undefined) valA = -999999;
       if (valB === null || valB === undefined) valB = -999999;

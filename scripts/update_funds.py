@@ -405,6 +405,11 @@ def main():
     print("Saved data/categories_summary.json")
 
     print(f"\nCompleted! Total Indian Equity Funds Indexed: {len(funds_data)}")
+    
+    # Compute 5-Pillar SmartScore (TM)
+    print("\nComputing SmartScore (TM) 5-Pillar Scorecards...")
+    import subprocess
+    subprocess.run([sys.executable, "scripts/build_smart_score.py"], check=True)
 
 if __name__ == "__main__":
     main()

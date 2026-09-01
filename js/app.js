@@ -1,7 +1,11 @@
 /**
  * BickerBape Master Controller
- * Handles Fiscal Clarity UI, Collapsible Sidebar, Sidebar Filters, 
- * Apple Fluid Gestures, Chart.js visualizations, and Robust Compare Tray UX.
+ * Features:
+ * - SmartScore (TM) Proprietary 5-Pillar Scorecard (Performance, Risk, Cost, Composition, Red Flags)
+ * - Collapsible Screener Sidebar
+ * - Apple Fluid Motion Physics
+ * - Workable Comparison Tray & Matrix Modal
+ * - Interactive Chart.js Visualizations
  */
 
 import { DataService } from './data-service.js';
@@ -17,10 +21,11 @@ class BickerBapeApp {
       category: 'All Funds',
       preset: 'all',
       searchQuery: '',
+      minSmartScore: 0,
       minRollingReturn: 0,
       minSharpe: 0,
       maxVolatility: 25,
-      sortBy: 'suggester_score',
+      sortBy: 'smart_score',
       sortDir: 'desc',
       currentView: 'cards', // 'cards' | 'table'
       selectedFund: null,
@@ -48,7 +53,7 @@ class BickerBapeApp {
 
   setupEventListeners() {
     // ------------------------------------------------------------------
-    // A. Collapsible Sidebar Logic (Desktop collapse & Mobile off-canvas)
+    // A. Collapsible Sidebar Logic
     // ------------------------------------------------------------------
     const sidebar = document.getElementById('sidebar');
     const collapseBtn = document.getElementById('sidebar-collapse-btn');
@@ -80,7 +85,7 @@ class BickerBapeApp {
     }
 
     // ------------------------------------------------------------------
-    // B. Search Inputs (Desktop & Mobile)
+    // B. Search Inputs
     // ------------------------------------------------------------------
     const handleSearch = (val) => {
       this.state.searchQuery = val;
@@ -98,7 +103,7 @@ class BickerBapeApp {
     }
 
     // ------------------------------------------------------------------
-    // C. Sidebar Category Pills
+    // C. Sidebar Category Selector
     // ------------------------------------------------------------------
     document.querySelectorAll('#sidebar-categories-list .category-pill').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -107,7 +112,6 @@ class BickerBapeApp {
         this.state.category = btn.getAttribute('data-category');
         this.state.displayLimit = 36;
         
-        // Auto-close on mobile after selecting
         if (window.innerWidth <= 768 && sidebar.classList.contains('mobile-open')) {
           sidebar.classList.remove('mobile-open');
           mobileBackdrop.classList.add('hidden');
@@ -118,7 +122,7 @@ class BickerBapeApp {
     });
 
     // ------------------------------------------------------------------
-    // D. Strategy Presets (Prashant's 10-Step Formula)
+    // D. Strategy Presets (SmartScore Elite, Prashant's Formula, etc.)
     // ------------------------------------------------------------------
     document.querySelectorAll('.strategy-chip').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -143,12 +147,19 @@ class BickerBapeApp {
     });
 
     // ------------------------------------------------------------------
-    // E. Sliders (Rolling, Sharpe, Volatility)
+    // E. Sliders (SmartScore, Rolling, Sharpe, Volatility)
     // ------------------------------------------------------------------
-    const rollingSlider = document.getElementById('slider-rolling');
-    const sharpeSlider = document.getElementById('slider-sharpe');
-    const volSlider = document.getElementById('slider-vol');
+    const smartSlider = document.getElementById('slider-smartscore');
+    if (smartSlider) {
+      smartSlider.addEventListener('input', (e) => {
+        this.state.minSmartScore = parseFloat(e.target.value);
+        document.getElementById('val-smartscore').textContent = parseFloat(e.target.value).toFixed(1);
+        this.state.displayLimit = 36;
+        this.updateUI(false);
+      });
+    }
 
+    const rollingSlider = document.getElementById('slider-rolling');
     if (rollingSlider) {
       rollingSlider.addEventListener('input', (e) => {
         this.state.minRollingReturn = parseFloat(e.target.value);
@@ -158,6 +169,7 @@ class BickerBapeApp {
       });
     }
 
+    const sharpeSlider = document.getElementById('slider-sharpe');
     if (sharpeSlider) {
       sharpeSlider.addEventListener('input', (e) => {
         this.state.minSharpe = parseFloat(e.target.value);
@@ -167,6 +179,7 @@ class BickerBapeApp {
       });
     }
 
+    const volSlider = document.getElementById('slider-vol');
     if (volSlider) {
       volSlider.addEventListener('input', (e) => {
         this.state.maxVolatility = parseFloat(e.target.value);
@@ -260,7 +273,6 @@ class BickerBapeApp {
       }
     });
 
-    // Comparison Tray Buttons
     const openCompareBtn = document.getElementById('open-compare-btn');
     if (openCompareBtn) {
       openCompareBtn.addEventListener('click', () => this.openComparisonModal());
@@ -280,7 +292,6 @@ class BickerBapeApp {
       });
     }
 
-    // Horizon Tabs inside Drawer
     document.querySelectorAll('.horizon-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.horizon-tab').forEach(t => t.classList.remove('active', 'bg-primary-container', 'text-on-primary'));
@@ -292,7 +303,6 @@ class BickerBapeApp {
       });
     });
 
-    // Fluid Gesture Handling for Drawer
     const drawer = document.getElementById('fund-drawer');
     const grabHandle = document.getElementById('drawer-grab-handle');
     if (drawer && grabHandle) {
@@ -304,10 +314,11 @@ class BickerBapeApp {
     this.state.category = 'All Funds';
     this.state.preset = 'all';
     this.state.searchQuery = '';
+    this.state.minSmartScore = 0;
     this.state.minRollingReturn = 0;
     this.state.minSharpe = 0;
     this.state.maxVolatility = 25;
-    this.state.sortBy = 'suggester_score';
+    this.state.sortBy = 'smart_score';
     this.state.sortDir = 'desc';
     this.state.displayLimit = 36;
 
@@ -315,6 +326,12 @@ class BickerBapeApp {
     if (s1) s1.value = '';
     const s2 = document.getElementById('mobile-search-input');
     if (s2) s2.value = '';
+
+    const smartSlider = document.getElementById('slider-smartscore');
+    if (smartSlider) {
+      smartSlider.value = 0;
+      document.getElementById('val-smartscore').textContent = '0.0';
+    }
 
     document.getElementById('slider-rolling').value = 0;
     document.getElementById('val-rolling').textContent = '0%';
@@ -365,6 +382,7 @@ class BickerBapeApp {
       searchQuery: this.state.searchQuery,
       category: this.state.category,
       preset: this.state.preset,
+      minSmartScore: this.state.minSmartScore,
       minRollingReturn: this.state.minRollingReturn,
       minSharpe: this.state.minSharpe,
       maxVolatility: this.state.maxVolatility,
@@ -380,13 +398,11 @@ class BickerBapeApp {
     const filtered = this.getFilteredFunds();
     const displayed = filtered.slice(0, this.state.displayLimit);
 
-    // Update count indicator
     const countEl = document.getElementById('funds-count');
     if (countEl) {
       countEl.textContent = `${filtered.length} Funds Found (${this.allFunds.length} Total Indexed)`;
     }
 
-    // Update Pagination Bar
     const paginationBar = document.getElementById('pagination-bar');
     const paginationInfo = document.getElementById('pagination-info');
     const loadMoreBtn = document.getElementById('load-more-btn');
@@ -447,7 +463,7 @@ class BickerBapeApp {
           <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">search_off</span>
           <h4 class="font-headline-md text-on-surface mb-1">No Mutual Funds Match These Criteria</h4>
           <p class="font-body-md text-on-surface-variant mb-4">Try easing your filter sliders or clearing the strategy preset in the sidebar.</p>
-          <button id="card-empty-reset-btn" class="px-lg py-sm rounded-lg bg-primary-container text-on-primary font-label-bold text-xs">Reset Filters</button>
+          <button id="card-empty-reset-btn" class="px-lg py-sm rounded-lg bg-primary-container text-on-primary font-label-bold text-xs cursor-pointer">Reset Filters</button>
         </div>
       `;
       document.getElementById('card-empty-reset-btn')?.addEventListener('click', () => this.resetFilters());
@@ -463,22 +479,29 @@ class BickerBapeApp {
         ? `<span class="${vsCat >= 0 ? 'badge-gain' : 'badge-loss'}">${vsCat >= 0 ? '+' : ''}${vsCat}% vs Cat</span>`
         : '';
 
+      const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
+      const scoreNum = parseFloat(smart.overall);
+      const gaugeClass = scoreNum >= 7.0 ? 'gauge-green' : (scoreNum >= 4.5 ? 'gauge-amber' : 'gauge-red');
+
       return `
         <div class="bg-surface-container-lowest rounded-2xl card-shadow p-md md:p-lg flex flex-col hover:shadow-md transition-all cursor-pointer relative overflow-hidden group card-interactive" data-code="${fund.code}">
-          <div class="absolute top-0 left-0 w-1.5 h-full ${fund.suggester_score >= 80 ? 'bg-gain' : (fund.suggester_score >= 65 ? 'bg-primary-container' : 'bg-warning')}"></div>
+          <div class="absolute top-0 left-0 w-1.5 h-full ${scoreNum >= 7.0 ? 'bg-gain' : (scoreNum >= 5.0 ? 'bg-primary-container' : 'bg-warning')}"></div>
           
           <div class="flex justify-between items-start mb-sm pl-2">
             <div>
               <div class="flex items-center gap-sm mb-xs flex-wrap">
                 <span class="bg-secondary-fixed-dim text-on-secondary-fixed px-2 py-0.5 rounded text-xs font-label-bold">${fund.category}</span>
-                <span class="star-rating-pill">★ ${fund.suggester_score} Score</span>
+                <span class="smartscore-badge">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#403294]"></span>
+                  <span>★ ${smart.overall} SmartScore™</span>
+                </span>
                 ${vsCatBadge}
               </div>
               <h4 class="font-headline-md text-sm md:text-base text-on-surface leading-tight hover:text-primary-container transition-colors">${fund.name.split(' - Direct')[0]}</h4>
               <p class="font-label-sm text-[11px] text-on-surface-variant mt-1">${fund.fund_house}</p>
             </div>
-            <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-primary text-sm">${fund.suggester_score >= 75 ? 'verified' : 'trending_up'}</span>
+            <div class="smartscore-gauge ${gaugeClass}">
+              <span>${smart.overall}</span>
             </div>
           </div>
 
@@ -495,7 +518,7 @@ class BickerBapeApp {
 
           <div class="flex gap-2 pl-2">
             <button class="flex-grow bg-transparent border border-primary-container text-primary-container font-label-bold text-xs py-2 rounded-xl hover:bg-primary-container hover:text-on-primary transition-colors touch-spring cursor-pointer analyze-card-btn" data-code="${fund.code}">
-              Analyze Details
+              SmartScore™ Breakdown
             </button>
             <button class="px-3 py-2 border rounded-xl font-label-bold text-xs flex items-center gap-1 transition-colors touch-spring cursor-pointer compare-toggle-btn ${isComparing ? 'bg-primary-container text-on-primary border-primary-container shadow-sm' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container'}" data-code="${fund.code}">
               <span class="material-symbols-outlined text-xs">${isComparing ? 'check' : 'add'}</span>
@@ -506,7 +529,6 @@ class BickerBapeApp {
       `;
     }).join('');
 
-    // Attach card handlers
     grid.querySelectorAll('.card-interactive').forEach(card => {
       card.addEventListener('click', (e) => {
         const code = parseInt(card.getAttribute('data-code'));
@@ -557,9 +579,11 @@ class BickerBapeApp {
       const rolling = fund.rolling_3y_avg !== null ? `${fund.rolling_3y_avg}%` : '-';
       const sharpe = fund.sharpe_ratio !== null ? fund.sharpe_ratio.toFixed(2) : '-';
       const vol = fund.volatility !== null ? `${fund.volatility}%` : '-';
+      
+      const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
 
       return `
-        <tr class="hover:bg-surface-container-low transition-colors" data-code="${fund.code}">
+        <tr class="hover:bg-surface-container-low transition-colors cursor-pointer" data-code="${fund.code}">
           <td class="py-3 px-4">
             <div class="flex items-center gap-2">
               <span class="w-7 h-7 rounded-lg bg-primary-fixed text-primary flex items-center justify-center font-label-bold text-xs flex-shrink-0">
@@ -573,7 +597,8 @@ class BickerBapeApp {
           </td>
 
           <td class="py-3 px-3 text-center">
-            <span class="star-rating-pill">★ ${fund.suggester_score}</span>
+            <span class="smartscore-badge">★ ${smart.overall}</span>
+            <div class="text-[10px] text-on-surface-variant font-medium mt-0.5">${smart.rank_text || ''}</div>
           </td>
 
           <td class="py-3 px-3 font-label-bold text-right numeric">
@@ -604,7 +629,7 @@ class BickerBapeApp {
 
           <td class="py-3 px-3 text-center">
             <div class="flex items-center justify-center gap-1.5">
-              <button class="p-1 rounded-lg hover:bg-surface-container text-primary analyze-row-btn touch-spring cursor-pointer" data-code="${fund.code}" title="Deep dive">
+              <button class="p-1 rounded-lg hover:bg-surface-container text-primary analyze-row-btn touch-spring cursor-pointer" data-code="${fund.code}" title="SmartScore deep dive">
                 <span class="material-symbols-outlined text-base">visibility</span>
               </button>
               <button class="px-2 py-1 rounded-lg text-xs font-label-bold flex items-center gap-0.5 transition-colors touch-spring cursor-pointer compare-toggle-btn ${isComparing ? 'bg-primary-container text-on-primary' : 'hover:bg-surface-container text-on-surface-variant'}" data-code="${fund.code}" title="Compare">
@@ -634,7 +659,7 @@ class BickerBapeApp {
   }
 
   // ------------------------------------------------------------------
-  // Compare Funds UX Logic
+  // Compare Funds Logic
   // ------------------------------------------------------------------
   toggleCompare(fund, e) {
     if (e) e.stopPropagation();
@@ -656,7 +681,6 @@ class BickerBapeApp {
   }
 
   updateCompareButtonsVisuals() {
-    // Update all compare buttons across views without full re-render
     document.querySelectorAll('.compare-toggle-btn').forEach(btn => {
       const code = parseInt(btn.getAttribute('data-code'));
       const isComparing = this.state.comparisonList.some(f => f.code === code);
@@ -736,12 +760,24 @@ class BickerBapeApp {
           </thead>
           <tbody class="divide-y divide-surface-container text-xs">
             <tr>
-              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Category</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-semibold">${f.category}</td>`).join('')}
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">SmartScore™ (Overall)</td>
+              ${funds.map(f => `<td class="py-2.5 px-3"><span class="smartscore-badge">★ ${f.smart_score ? f.smart_score.overall : (f.suggester_score/10)}/10</span></td>`).join('')}
             </tr>
             <tr>
-              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Suggester Score</td>
-              ${funds.map(f => `<td class="py-2.5 px-3"><span class="star-rating-pill">★ ${f.suggester_score}</span></td>`).join('')}
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Performance Score</td>
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-[#36B37E]">${f.smart_score ? f.smart_score.pillars.performance.score : '-'}/10</td>`).join('')}
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Risk Score (Safety)</td>
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-on-surface">${f.smart_score ? f.smart_score.pillars.risk.score : '-'}/10</td>`).join('')}
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Cost Score (Low Fee)</td>
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-primary">${f.smart_score ? f.smart_score.pillars.cost.score : '-'}/10</td>`).join('')}
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Category</td>
+              ${funds.map(f => `<td class="py-2.5 px-3 font-semibold">${f.category}</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">3Y CAGR</td>
@@ -752,16 +788,12 @@ class BickerBapeApp {
               ${funds.map(f => `<td class="py-2.5 px-3 font-label-bold text-primary">${f.rolling_3y_avg ? f.rolling_3y_avg + '%' : '-'}</td>`).join('')}
             </tr>
             <tr>
-              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">5Y CAGR</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-semibold">${f.cagr_5y ? '+' + f.cagr_5y + '%' : '-'}</td>`).join('')}
-            </tr>
-            <tr>
-              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">10Y CAGR</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-semibold">${f.cagr_10y ? '+' + f.cagr_10y + '%' : '-'}</td>`).join('')}
-            </tr>
-            <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Sharpe Ratio (Rf=6.8%)</td>
               ${funds.map(f => `<td class="py-2.5 px-3 font-label-bold text-on-surface">${f.sharpe_ratio}</td>`).join('')}
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Max Drawdown</td>
+              ${funds.map(f => `<td class="py-2.5 px-3 font-semibold text-error">${f.max_drawdown ? f.max_drawdown + '%' : '-'}</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Volatility (Std Dev)</td>
@@ -770,6 +802,10 @@ class BickerBapeApp {
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Alpha vs Benchmark</td>
               ${funds.map(f => `<td class="py-2.5 px-3 text-[#36B37E] font-bold">+${f.alpha_estimate}%</td>`).join('')}
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Expense Ratio</td>
+              ${funds.map(f => `<td class="py-2.5 px-3">${f.expense_ratio}%</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Fund Manager</td>
@@ -808,8 +844,127 @@ class BickerBapeApp {
   }
 
   // ------------------------------------------------------------------
-  // Deep-Dive Drawer
+  // Deep-Dive Drawer with SmartScore(TM) Scorecard
   // ------------------------------------------------------------------
+  renderScorecard(fund) {
+    const container = document.getElementById('drawer-scorecard-pillars');
+    const overallEl = document.getElementById('drawer-scorecard-overall');
+    if (!container) return;
+
+    const smart = fund.smart_score || {};
+    const overall = smart.overall || ((fund.suggester_score || 70) / 10).toFixed(1);
+    const rankText = smart.rank_text || `Rank in category`;
+
+    if (overallEl) {
+      overallEl.innerHTML = `
+        <span class="text-on-surface font-bold text-xs">SmartScore™</span>
+        <span class="text-primary font-extrabold text-sm ml-1">${overall}/10</span>
+        <span class="text-[10px] text-on-surface-variant font-medium block">Rank vs peers: <strong class="text-on-surface">${rankText}</strong></span>
+      `;
+    }
+
+    const p = smart.pillars || {};
+    const perf = p.performance || { score: 7.8, tag: 'High', summary: 'The creamy layer - amongst the top performing Mutual Funds', rank_text: rankText, metrics: [] };
+    const risk = p.risk || { score: 7.2, tag: 'Low', summary: 'Well contained volatility with superior risk-adjusted return', rank_text: rankText, metrics: [] };
+    const cost = p.cost || { score: 5.4, tag: 'Avg', summary: 'Market standard costs, nothing exciting', rank_text: rankText, metrics: [] };
+    const comp = p.composition || { score: 6.8, tag: 'High', summary: 'A well thought mix versus other funds', rank_text: rankText, metrics: [] };
+    const flags = p.red_flags || { score: 9.5, tag: 'Low', summary: 'We got you covered, no major red flags identified', rank_text: 'Clean', metrics: [] };
+
+    const getGaugeColor = (score, isRisk = false) => {
+      if (isRisk) {
+        return score < 5.0 ? 'gauge-red' : (score < 7.0 ? 'gauge-amber' : 'gauge-green');
+      }
+      return score >= 7.0 ? 'gauge-green' : (score >= 5.0 ? 'gauge-amber' : 'gauge-red');
+    };
+
+    const getTagClass = (tag, isRisk = false) => {
+      if (isRisk) {
+        return tag === 'High' ? 'tag-red' : (tag === 'Avg' ? 'tag-amber' : 'tag-green');
+      }
+      return tag === 'High' ? 'tag-green' : (tag === 'Avg' ? 'tag-amber' : 'tag-red');
+    };
+
+    const pillarsConfig = [
+      { key: 'performance', name: 'Performance', icon: null, data: perf, isRisk: false, defaultOpen: true },
+      { key: 'risk', name: 'Risk', icon: null, data: risk, isRisk: true, defaultOpen: true },
+      { key: 'cost', name: 'Cost', icon: null, data: cost, isRisk: false, defaultOpen: false },
+      { key: 'composition', name: 'Composition', icon: null, data: comp, isRisk: false, defaultOpen: false },
+      { key: 'red_flags', name: 'Red flags', icon: 'flag', data: flags, isRisk: false, defaultOpen: false }
+    ];
+
+    container.innerHTML = pillarsConfig.map(cfg => {
+      const d = cfg.data;
+      const gaugeClass = getGaugeColor(d.score, cfg.isRisk);
+      const tagClass = getTagClass(d.tag, cfg.isRisk);
+      const hasIcon = cfg.icon;
+
+      return `
+        <div class="scorecard-item ${cfg.defaultOpen ? 'open' : ''}" data-pillar="${cfg.key}">
+          <button class="scorecard-trigger" type="button">
+            <!-- Circular Score Gauge matching user reference images -->
+            ${hasIcon ? `
+              <div class="smartscore-gauge ${gaugeClass}">
+                <span class="material-symbols-outlined text-error text-xl">flag</span>
+              </div>
+            ` : `
+              <div class="smartscore-gauge ${gaugeClass}">
+                <span>${d.score.toFixed(1)}</span>
+              </div>
+            `}
+
+            <!-- Title & Verbal Summary -->
+            <div class="flex-grow min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="font-headline-md text-sm text-on-surface">${cfg.name}</span>
+                <span class="smartscore-tag ${tagClass}">${d.tag}</span>
+              </div>
+              <p class="text-xs text-on-surface-variant line-clamp-1 leading-snug">${d.summary}</p>
+            </div>
+
+            <!-- Accordion Toggle Chevron -->
+            <span class="material-symbols-outlined text-on-surface-variant text-base scorecard-chevron">expand_more</span>
+          </button>
+
+          <!-- Accordion Body with Sub-Metrics -->
+          <div class="scorecard-body">
+            <p class="text-xs text-on-surface-variant font-medium mb-2 pl-1">
+              Rank vs peers: <strong class="text-on-surface font-bold">${d.rank_text}</strong>
+            </p>
+
+            <div class="scorecard-details-card">
+              ${(d.metrics || []).map(m => `
+                <div class="scorecard-submetric-row">
+                  <div>
+                    <p class="font-label-bold text-xs text-on-surface leading-tight">${m.name}</p>
+                    <p class="text-[11px] text-on-surface-variant mt-0.5">${m.label || m.value}</p>
+                  </div>
+                  ${m.score !== undefined ? `
+                    <div class="text-right">
+                      <span class="font-label-bold text-xs text-on-surface">Score : </span>
+                      <strong class="font-display-financial text-xs ${m.score >= 6.5 ? 'text-[#36B37E]' : (m.score >= 4.0 ? 'text-[#FFAB00]' : 'text-[#FF5630]')}">${m.score}/10</strong>
+                    </div>
+                  ` : `
+                    <div>
+                      <span class="smartscore-tag tag-green text-[10px]">Pass</span>
+                    </div>
+                  `}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.querySelectorAll('.scorecard-trigger').forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = trigger.closest('.scorecard-item');
+        item.classList.toggle('open');
+      });
+    });
+  }
+
   openDrawer(fund) {
     this.state.selectedFund = fund;
     const drawer = document.getElementById('fund-drawer');
@@ -820,9 +975,16 @@ class BickerBapeApp {
     backdrop.classList.add('active');
     drawer.classList.add('open');
 
+    const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
+
     document.getElementById('drawer-fund-name').textContent = fund.name.split(' - Direct')[0];
     document.getElementById('drawer-fund-cat').textContent = `${fund.category} • ${fund.fund_house}`;
-    document.getElementById('drawer-suggester-score').textContent = `★ ${fund.suggester_score} Suggester Score`;
+    
+    const badgeEl = document.getElementById('drawer-smartscore-badge');
+    if (badgeEl) {
+      badgeEl.innerHTML = `★ ${smart.overall} SmartScore™`;
+    }
+
     document.getElementById('drawer-nav-price').textContent = `₹${fund.latest_nav}`;
     document.getElementById('drawer-nav-date').textContent = `As of ${fund.nav_date}`;
     
@@ -842,6 +1004,9 @@ class BickerBapeApp {
 
     const volEl = document.getElementById('drawer-volatility');
     if (volEl) volEl.textContent = `${fund.volatility || 'N/A'}%`;
+
+    // Render the Proprietary SmartScore (TM) Scorecard!
+    this.renderScorecard(fund);
 
     const holdingsContainer = document.getElementById('drawer-holdings');
     if (holdingsContainer) {

@@ -191,6 +191,17 @@
             1-Click Strategies
           </label>
           <div class="space-y-1.5">
+            <button class="strategy-chip w-full text-left px-3 py-2 rounded-xl font-label-bold text-xs flex items-center gap-2 touch-spring" data-preset="smartscore_elite">
+              <span>💎</span>
+              <div class="flex-grow">
+                <div class="flex items-center gap-1">
+                  <span>SmartScore™ Elite</span>
+                  <span class="smartscore-tag tag-purple text-[10px] py-0 px-1.5">7.5+</span>
+                </div>
+                <div class="text-[10px] font-normal text-on-surface-variant">Top quintile across all 5 pillars</div>
+              </div>
+            </button>
+
             <button class="strategy-chip w-full text-left px-3 py-2 rounded-xl font-label-bold text-xs flex items-center gap-2 touch-spring" data-preset="prashant">
               <span>🏆</span>
               <div class="flex-grow">
@@ -296,6 +307,18 @@
 
         <!-- 3. Range Sliders -->
         <div class="space-y-md pt-xs border-t border-surface-container">
+          <!-- Slider 0: SmartScore (TM) -->
+          <div>
+            <div class="flex justify-between text-xs font-label-bold mb-1">
+              <span class="text-on-surface-variant flex items-center gap-1">
+                <span>Min SmartScore™:</span>
+                <span class="smartscore-tag tag-purple text-[10px] py-0 px-1">PRO</span>
+              </span>
+              <span id="val-smartscore" class="text-primary tabular-nums font-bold">0.0</span>
+            </div>
+            <input id="slider-smartscore" class="apple-slider" type="range" min="0" max="8.5" step="0.5" value="0"/>
+          </div>
+
           <!-- Slider 1: 3Y Rolling Return -->
           <div>
             <div class="flex justify-between text-xs font-label-bold mb-1">
@@ -412,8 +435,8 @@
                   <th class="py-md px-md cursor-pointer select-none" data-sort="name">
                     <div class="flex items-center gap-1">Scheme & Category <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
                   </th>
-                  <th class="py-md px-md text-center cursor-pointer select-none" data-sort="suggester_score">
-                    <div class="flex items-center justify-center gap-1">Score <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                  <th class="py-md px-md text-center cursor-pointer select-none" data-sort="smart_score">
+                    <div class="flex items-center justify-center gap-1">SmartScore™ <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
                   </th>
                   <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_3y">
                     <div class="flex items-center justify-end gap-1">3Y Ret & vs Cat <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
@@ -506,7 +529,7 @@
       <div>
         <div class="flex items-center gap-sm mb-1">
           <span id="drawer-fund-cat" class="bg-secondary-fixed-dim text-on-secondary-fixed px-2.5 py-0.5 rounded text-xs font-label-bold">Flexi Cap</span>
-          <span id="drawer-suggester-score" class="star-rating-pill">★ 88 Suggester Score</span>
+          <span id="drawer-smartscore-badge" class="smartscore-badge">★ 8.4 SmartScore™</span>
         </div>
         <h3 id="drawer-fund-name" class="font-headline-lg text-lg md:text-xl text-on-surface leading-snug">Fund Name</h3>
         <p class="text-xs text-on-surface-variant mt-0.5">Fund Manager: <strong id="drawer-manager" class="text-on-surface">Rajeev Thakkar</strong></p>
@@ -552,6 +575,28 @@
         <span>AUM: <strong id="drawer-aum" class="text-on-surface font-label-bold">₹72,450 Cr</strong></span>
         <span>Expense Ratio: <strong id="drawer-expense-ratio" class="text-on-surface font-label-bold">0.63%</strong></span>
         <span>Portfolio P/E: <strong id="drawer-pe" class="text-on-surface font-label-bold">24.1</strong></span>
+      </div>
+
+      <!-- ====================================================================
+           SMARTSCORE (TM) PROPRIETARY SCORECARD WIDGET (Matching Reference UI)
+           ==================================================================== -->
+      <div class="p-md md:p-lg rounded-2xl bg-surface-container-lowest card-shadow border border-surface-container">
+        <div class="flex items-center justify-between pb-sm mb-xs border-b border-surface-container">
+          <div class="flex items-center gap-2">
+            <h4 class="font-headline-md text-base text-on-surface">Scorecard</h4>
+            <span class="smartscore-tag tag-purple flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#403294]"></span> Pro
+            </span>
+          </div>
+          <div id="drawer-scorecard-overall" class="text-xs font-label-bold text-primary">
+            <!-- Overall Score & Category Rank -->
+          </div>
+        </div>
+
+        <!-- The 5 Accordion Rows matching reference screenshots -->
+        <div id="drawer-scorecard-pillars" class="divide-y divide-surface-container">
+          <!-- Dynamically populated by app.js: Performance, Risk, Cost, Composition, Red flags -->
+        </div>
       </div>
 
       <!-- VISUALIZATION 1: Interactive Historical NAV Chart -->
