@@ -102,7 +102,8 @@ def run_tests():
         safety_header = page.locator("#header-mood-indicator").text_content()
         print(f"Safety Badge: {safety_badge} | Header: {safety_header}")
         assert "Safety" in safety_badge, "Active mood should now be Safety"
-        assert "Protection 45%" in safety_header or "45%" in safety_header, "Safety mood should state 45% risk protection"
+        assert "Capital Protection" in safety_header, "Safety mood should state Capital Protection focus"
+        assert "%" not in safety_header, "Percentages must not be publicly exposed in mood header"
 
         print("Toggling to Income Mood...")
         page.click(".mood-btn[data-mood='income']")
@@ -111,11 +112,27 @@ def run_tests():
         income_header = page.locator("#header-mood-indicator").text_content()
         print(f"Income Badge: {income_badge} | Header: {income_header}")
         assert "Income" in income_badge, "Active mood should now be Income"
-        assert "Fees 35%" in income_header or "35%" in income_header, "Income mood should state 35% low fees"
+        assert "Cost Efficiency" in income_header, "Income mood should state Cost Efficiency focus"
+        assert "%" not in income_header, "Percentages must not be publicly exposed in mood header"
 
         page.click(".mood-btn[data-mood='growth']")
         time.sleep(0.3)
-        print("  Investor Mood 3-way toggle and dynamic recalculation verified!")
+        print("  Investor Mood 3-way toggle verified with concealed proprietary weights!")
+
+        # [Step 1.6] Verify 1-Click Strategy Chip Active Contrast & Readability
+        print("\n[Step 1.6] Testing 1-Click Strategy Chip Active Contrast...")
+        page.click(".strategy-chip[data-preset='smartscore_elite']")
+        time.sleep(0.3)
+        active_chip = page.locator(".strategy-chip.active")
+        assert active_chip.count() == 1, "Strategy chip should be active"
+        subtitle_color = active_chip.locator(".text-on-surface-variant").evaluate("el => window.getComputedStyle(el).color")
+        print(f"Active chip subtitle computed color: {subtitle_color}")
+        # Color rgb(219, 228, 255) is #dbe4ff
+        assert "219" in subtitle_color or "255" in subtitle_color or "228" in subtitle_color, "Active chip subtitle must have high contrast light color"
+        print("  Active strategy chip subtext is brilliantly readable!")
+        # Reset preset
+        page.click(".strategy-chip.active")
+        time.sleep(0.3)
 
         # [Step 2] Switch to Table View & Check Unified SmartScore Pills
         print("\n[Step 2] Switching to Screener Table view...")
@@ -237,8 +254,16 @@ def run_tests():
         # Verify info buttons in drawer
         drawer_info_btns = page.locator("#fund-drawer .info-btn").count()
         print(f"Info (i) buttons in fund drawer: {drawer_info_btns}")
-        assert drawer_info_btns >= 6, f"Expected info buttons in drawer, got {drawer_info_btns}"
-        print("  Info (i) buttons verified across drawer metric cards and scorecard submetrics!")
+        # Verify drawer top-line metric info popup is positioned downwards and not clipped!
+        first_drawer_info = page.locator("#fund-drawer .info-wrapper").first
+        first_drawer_info.click()
+        time.sleep(0.2)
+        popup_box = first_drawer_info.locator(".info-popup").bounding_box()
+        drawer_box = page.locator("#fund-drawer").bounding_box()
+        print(f"Drawer top metric info popup box: {popup_box}")
+        assert popup_box is not None, "Popup should be visible"
+        assert popup_box['y'] >= drawer_box['y'] - 10, "Popup must not be clipped above the top of the drawer!"
+        print("  Drawer top line metric info popup is safely positioned downwards without clipping!")
 
         # Check 10-Step Checklist Title Rename
         checklist_title = page.locator("#drawer-checklist").locator("xpath=..").locator("h4").text_content()

@@ -195,10 +195,10 @@
                 <button type="button" class="info-btn" title="About Investor Mood">i</button>
                 <span class="info-popup">
                   <strong class="block font-bold text-white mb-0.5">Investor Mood Engine</strong>
-                  <span>Dynamically recalibrates SmartScore™ weights to match your target strategy: 
-                  <br>• <strong>Growth</strong>: Boosts Alpha & Return Ratios (45% weight)
-                  <br>• <strong>Safety</strong>: Boosts Downside Resilience & Low Volatility (45% weight)
-                  <br>• <strong>Income</strong>: Boosts Direct Expense Efficiency & Stability (35% weight)</span>
+                  <span>Dynamically recalibrates SmartScore™ to prioritize your investment philosophy: 
+                  <br>• <strong>Growth</strong>: Prioritizes benchmark outperformance and category return ratios.
+                  <br>• <strong>Safety</strong>: Prioritizes downside protection, low drawdowns, and reduced volatility.
+                  <br>• <strong>Income</strong>: Prioritizes fee efficiency, low expense ratios, and capital stability.</span>
                 </span>
               </span>
             </div>
@@ -225,7 +225,7 @@
           </div>
 
           <p id="mood-target-desc" class="text-[10px] text-on-surface-variant text-center pt-0.5 font-medium">
-            Wealth Long Term: Outperformance Ratios receive a 45% multiplier
+            Wealth Long Term: Prioritizes high alpha & category outperformance
           </p>
         </div>
 
@@ -481,31 +481,31 @@
         <!-- View 2: Comprehensive Screener Table (Tickertape Copy) -->
         <section id="screener-table-container" class="hidden bg-surface-container-lowest rounded-2xl card-shadow overflow-hidden border border-surface-container">
           <div class="overflow-x-auto w-full">
-            <table class="screener-table text-left w-full min-w-[900px]">
+            <table class="screener-table text-left w-full">
               <thead>
                 <tr class="font-label-bold text-xs text-on-surface-variant uppercase tracking-wider">
-                  <th class="py-md px-md cursor-pointer select-none" data-sort="name">
+                  <th class="py-2.5 px-3 cursor-pointer select-none" data-sort="name">
                     <div class="flex items-center gap-1">Scheme & Category <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
                   </th>
-                  <th class="py-md px-md text-center cursor-pointer select-none" data-sort="smart_score">
+                  <th class="py-2.5 px-2.5 text-center cursor-pointer select-none" data-sort="smart_score">
                     <div class="flex items-center justify-center gap-1">
                       <span>SmartScore™</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
                         <button type="button" class="info-btn" title="About SmartScore™">i</button>
-                        <span class="info-popup">
+                        <span class="info-popup pop-down">
                           <strong class="block font-bold text-white mb-0.5">SmartScore™ (1 to 10)</strong>
-                          <span>Institutional rating combining category outperformance ratio (30%), downside protection & volatility (30%), multi-cycle track record (25%), and low direct fees (15%).</span>
+                          <span>Institutional rating evaluating category outperformance ratios, downside protection & low volatility, multi-cycle track record, and direct fee efficiency.</span>
                         </span>
                       </span>
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_3y">
+                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="cagr_3y">
                     <div class="flex items-center justify-end gap-1">
                       <span>3Y Ret & Ratio</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
                         <button type="button" class="info-btn" title="About 3Y Return & Ratio">i</button>
-                        <span class="info-popup">
+                        <span class="info-popup pop-down">
                           <strong class="block font-bold text-white mb-0.5">3Y Return Ratio vs Category</strong>
                           <span>Shows how much better or worse this fund is compared to its peers. For example, 1.45x means it delivered 45% more return than the category average over 3 years.</span>
                         </span>
@@ -513,12 +513,12 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_5y">
+                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="cagr_5y">
                     <div class="flex items-center justify-end gap-1">
                       <span>5Y Ret & Ratio</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
                         <button type="button" class="info-btn" title="About 5Y Return & Ratio">i</button>
-                        <span class="info-popup">
+                        <span class="info-popup pop-down">
                           <strong class="block font-bold text-white mb-0.5">5Y Return Ratio vs Category</strong>
                           <span>Measures 5-year outperformance against peers. A ratio above 1.15x indicates durable fund manager alpha across market cycles.</span>
                         </span>
@@ -526,12 +526,12 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_10y">
+                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="cagr_10y">
                     <div class="flex items-center justify-end gap-1">
                       <span>10Y CAGR</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
                         <button type="button" class="info-btn" title="About 10Y CAGR">i</button>
-                        <span class="info-popup">
+                        <span class="info-popup pop-down">
                           <strong class="block font-bold text-white mb-0.5">10-Year Compound Annual Return</strong>
                           <span>Decade-long wealth creation rate. Confirms whether a fund creates long-term generational wealth across both bull and bear markets.</span>
                         </span>
@@ -539,12 +539,12 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="rolling_3y_avg">
+                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="rolling_3y_avg">
                     <div class="flex items-center justify-end gap-1">
                       <span>3Y Rolling Avg</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
                         <button type="button" class="info-btn" title="About 3Y Rolling Average">i</button>
-                        <span class="info-popup">
+                        <span class="info-popup pop-down">
                           <strong class="block font-bold text-white mb-0.5">3-Year Rolling Average</strong>
                           <span>Average return if you invested on ANY random day in history and held for 3 years. It completely removes market timing luck.</span>
                         </span>
@@ -552,12 +552,12 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="sharpe_ratio">
+                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="sharpe_ratio">
                     <div class="flex items-center justify-end gap-1">
                       <span>Sharpe</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
                         <button type="button" class="info-btn" title="About Sharpe Ratio">i</button>
-                        <span class="info-popup">
+                        <span class="info-popup pop-down align-right">
                           <strong class="block font-bold text-white mb-0.5">Sharpe Ratio (Risk-Adjusted Return)</strong>
                           <span>Measures excess return earned per unit of risk above safe government bonds (6.8%). Above 1.0 means high returns without reckless gambles.</span>
                         </span>
@@ -565,12 +565,12 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-md px-md text-right cursor-pointer select-none" data-sort="volatility">
+                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="volatility">
                     <div class="flex items-center justify-end gap-1">
                       <span>Volatility (σ)</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
                         <button type="button" class="info-btn" title="About Volatility">i</button>
-                        <span class="info-popup">
+                        <span class="info-popup pop-down align-right">
                           <strong class="block font-bold text-white mb-0.5">Annualized Volatility (Price Fluctuations)</strong>
                           <span>How sharply the fund's price swings up and down. A lower volatility (under 14%) means a smoother, less stressful journey.</span>
                         </span>
@@ -578,7 +578,7 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-md px-md text-center">Actions</th>
+                  <th class="py-2.5 px-3 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody id="screener-table-body" class="divide-y divide-surface-container font-body-md text-sm">

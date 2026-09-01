@@ -64,14 +64,26 @@
 }
 
 .strategy-chip.active {
-  background: #0052cc;
-  color: #ffffff;
-  border-color: #0052cc;
+  background: #0052cc !important;
+  color: #ffffff !important;
+  border-color: #0052cc !important;
   box-shadow: 0 4px 12px rgba(0, 82, 204, 0.25);
 }
 
-.strategy-chip.active span {
+.strategy-chip.active span,
+.strategy-chip.active div {
   color: #ffffff !important;
+}
+
+.strategy-chip.active .text-on-surface-variant,
+.strategy-chip.active [class*="text-on-surface-variant"] {
+  color: #dbe4ff !important; /* High-contrast legible soft ice-blue */
+}
+
+.strategy-chip.active .smartscore-tag {
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
 }
 
 /* Category Filter Pills */
@@ -546,4 +558,129 @@
   visibility: visible;
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+/* Pop downward (for top-line metrics in drawer or headers near top of screen) */
+.info-popup.pop-down {
+  bottom: auto;
+  top: calc(100% + 8px);
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.info-popup.pop-down::after {
+  top: auto;
+  bottom: 100%;
+  border-color: transparent transparent #191c1e transparent;
+}
+
+.info-wrapper:hover .info-popup.pop-down,
+.info-wrapper:focus-within .info-popup.pop-down,
+.info-wrapper.active .info-popup.pop-down {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Align right (for cards near right edge of screen/drawer) */
+.info-popup.align-right {
+  left: auto;
+  right: -8px;
+  transform: translateY(4px);
+}
+
+.info-popup.align-right::after {
+  left: auto;
+  right: 14px;
+  transform: none;
+}
+
+.info-wrapper:hover .info-popup.align-right,
+.info-wrapper:focus-within .info-popup.align-right,
+.info-wrapper.active .info-popup.align-right {
+  transform: translateY(0);
+}
+
+/* Pop downward AND align right (e.g. top-right drawer cards or rightmost table headers) */
+.info-popup.pop-down.align-right {
+  bottom: auto;
+  top: calc(100% + 8px);
+  left: auto;
+  right: -8px;
+  transform: translateY(-4px);
+}
+
+.info-popup.pop-down.align-right::after {
+  top: auto;
+  bottom: 100%;
+  left: auto;
+  right: 14px;
+  border-color: transparent transparent #191c1e transparent;
+  transform: none;
+}
+
+.info-wrapper:hover .info-popup.pop-down.align-right,
+.info-wrapper:focus-within .info-popup.pop-down.align-right,
+.info-wrapper.active .info-popup.pop-down.align-right {
+  transform: translateY(0);
+}
+
+/* Align left (for cards or buttons near left edge) */
+.info-popup.align-left {
+  left: -8px;
+  right: auto;
+  transform: translateY(4px);
+}
+
+.info-popup.align-left::after {
+  left: 14px;
+  right: auto;
+  transform: none;
+}
+
+.info-wrapper:hover .info-popup.align-left,
+.info-wrapper:focus-within .info-popup.align-left,
+.info-wrapper.active .info-popup.align-left {
+  transform: translateY(0);
+}
+
+/* Explicit default safety for Drawer Top Metric Cards: ALWAYS pop downwards! */
+#fund-drawer .grid-cols-2 .info-popup,
+#fund-drawer .grid-cols-3 .info-popup {
+  bottom: auto;
+  top: calc(100% + 8px);
+  transform: translateX(-50%) translateY(-4px);
+}
+
+#fund-drawer .grid-cols-2 .info-popup::after,
+#fund-drawer .grid-cols-3 .info-popup::after {
+  top: auto;
+  bottom: 100%;
+  border-color: transparent transparent #191c1e transparent;
+}
+
+#fund-drawer .grid-cols-2 .info-wrapper:hover .info-popup,
+#fund-drawer .grid-cols-2 .info-wrapper.active .info-popup,
+#fund-drawer .grid-cols-3 .info-wrapper:hover .info-popup,
+#fund-drawer .grid-cols-3 .info-wrapper.active .info-popup {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Right-most cards in the drawer 3-col or 2-col grid */
+#fund-drawer .grid-cols-2 > div:nth-child(2n) .info-popup,
+#fund-drawer .grid-cols-3 > div:nth-child(3n) .info-popup {
+  left: auto;
+  right: -8px;
+  transform: translateY(-4px);
+}
+
+#fund-drawer .grid-cols-2 > div:nth-child(2n) .info-popup::after,
+#fund-drawer .grid-cols-3 > div:nth-child(3n) .info-popup::after {
+  left: auto;
+  right: 14px;
+  transform: none;
+}
+
+#fund-drawer .grid-cols-2 > div:nth-child(2n) .info-wrapper:hover .info-popup,
+#fund-drawer .grid-cols-2 > div:nth-child(2n) .info-wrapper.active .info-popup,
+#fund-drawer .grid-cols-3 > div:nth-child(3n) .info-wrapper:hover .info-popup,
+#fund-drawer .grid-cols-3 > div:nth-child(3n) .info-wrapper.active .info-popup {
+  transform: translateY(0);
 }

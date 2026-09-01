@@ -80,20 +80,20 @@ class BickerBapeApp {
       growth: {
         label: 'Growth',
         tagClass: 'mood-tag-growth',
-        headerText: 'Mood: Growth 🚀 (Alpha 45%)',
-        desc: 'Wealth Long Term: Outperformance Ratios receive a 45% multiplier'
+        headerText: 'Mood: Growth 🚀 (Focus: Alpha & Outperformance)',
+        desc: 'Wealth Long Term: Prioritizes high alpha & category outperformance'
       },
       safety: {
         label: 'Safety',
         tagClass: 'mood-tag-safety',
-        headerText: 'Mood: Safety 🛡️ (Protection 45%)',
-        desc: 'Low Risk: Downside Protection & Low Volatility receive a 45% multiplier'
+        headerText: 'Mood: Safety 🛡️ (Focus: Capital Protection)',
+        desc: 'Low Risk: Prioritizes downside resilience & low volatility'
       },
       income: {
         label: 'Income',
         tagClass: 'mood-tag-income',
-        headerText: 'Mood: Income 💰 (Low Fees 35%)',
-        desc: 'Cost Efficiency: Low Direct Fees (TER) receive a 35% multiplier'
+        headerText: 'Mood: Income 💰 (Focus: Cost Efficiency)',
+        desc: 'Cost Efficiency: Prioritizes low direct fees (TER) & capital stability'
       }
     };
 
@@ -486,6 +486,16 @@ class BickerBapeApp {
       FluidMotion.attachDrawerGestures(drawer, grabHandle, () => this.closeDrawer());
     }
 
+    // Dynamic boundary alignment for interactive info (i) buttons
+    const handleInfoPosition = (e) => {
+      const wrapper = e.target.closest('.info-wrapper');
+      if (wrapper) {
+        this.adjustInfoPopupPosition(wrapper);
+      }
+    };
+    document.addEventListener('mouseover', handleInfoPosition);
+    document.addEventListener('focusin', handleInfoPosition);
+
     // Global listener for interactive info (i) buttons (mobile tap toggle & outside click)
     document.addEventListener('click', (e) => {
       const infoBtn = e.target.closest('.info-btn');
@@ -496,12 +506,38 @@ class BickerBapeApp {
         const isActive = wrapper.classList.contains('active');
         document.querySelectorAll('.info-wrapper.active').forEach(w => w.classList.remove('active'));
         if (!isActive) {
+          this.adjustInfoPopupPosition(wrapper);
           wrapper.classList.add('active');
         }
         return;
       }
       document.querySelectorAll('.info-wrapper.active').forEach(w => w.classList.remove('active'));
     });
+  }
+
+  adjustInfoPopupPosition(wrapper) {
+    const popup = wrapper.querySelector('.info-popup');
+    if (!popup) return;
+    const rect = wrapper.getBoundingClientRect();
+
+    // 1. Vertical positioning: If inside drawer or within 190px of top of viewport, pop downwards
+    const insideDrawer = !!wrapper.closest('#fund-drawer');
+    if (rect.top < 190 || insideDrawer) {
+      popup.classList.add('pop-down');
+    } else {
+      popup.classList.remove('pop-down');
+    }
+
+    // 2. Horizontal positioning: If within 170px of right viewport edge, align right
+    if (window.innerWidth - rect.right < 170) {
+      popup.classList.add('align-right');
+      popup.classList.remove('align-left');
+    } else if (rect.left < 140) {
+      popup.classList.add('align-left');
+      popup.classList.remove('align-right');
+    } else {
+      popup.classList.remove('align-right', 'align-left');
+    }
   }
 
   resetFilters() {
@@ -699,7 +735,7 @@ class BickerBapeApp {
     const dict = {
       smartscore: {
         title: "SmartScore™ (1 to 10)",
-        desc: "Institutional rating combining category outperformance ratio (30%), downside risk (30%), audited track record (25%), and low direct fees (15%)."
+        desc: "Institutional rating evaluating category outperformance ratios, downside protection & low volatility, multi-cycle track record, and direct fee efficiency."
       },
       ratio_3y: {
         title: "3Y Return Ratio vs Category",
@@ -1264,10 +1300,10 @@ class BickerBapeApp {
 
     // On first open, keep ALL scorecard expands closed!
     const pillarsConfig = [
-      { key: 'performance', name: `Performance & Returns (${mw.perf})`, icon: 'trending_up', data: perf, isRisk: false, defaultOpen: false },
-      { key: 'risk', name: `Risk & Capital Protection (${mw.risk})`, icon: 'shield', data: risk, isRisk: true, defaultOpen: false },
-      { key: 'cost', name: `Cost & Direct Plan Fees (${mw.cost})`, icon: 'payments', data: cost, isRisk: false, defaultOpen: false },
-      { key: 'track_record', name: `Track Record & Stability (${mw.track})`, icon: 'history_edu', data: track, isRisk: false, defaultOpen: false }
+      { key: 'performance', name: 'Performance & Returns', icon: 'trending_up', data: perf, isRisk: false, defaultOpen: false },
+      { key: 'risk', name: 'Risk & Capital Protection', icon: 'shield', data: risk, isRisk: true, defaultOpen: false },
+      { key: 'cost', name: 'Cost & Direct Plan Fees', icon: 'payments', data: cost, isRisk: false, defaultOpen: false },
+      { key: 'track_record', name: 'Track Record & Stability', icon: 'history_edu', data: track, isRisk: false, defaultOpen: false }
     ];
 
     container.innerHTML = pillarsConfig.map(cfg => {

@@ -275,6 +275,19 @@ html, body {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
+  table-layout: auto;
+}
+
+.screener-table th,
+.screener-table td {
+  white-space: nowrap;
+}
+
+/* Allow scheme name column to expand and use available window space */
+.screener-table th:first-child,
+.screener-table td:first-child {
+  white-space: normal;
+  min-width: 220px;
 }
 
 .screener-table th {
