@@ -1543,17 +1543,17 @@ class BickerBapeApp {
             </div>
           </div>
 
-          <div class="flex gap-2 items-center">
-            <button class="flex-grow analyze-card-btn touch-spring cursor-pointer" data-code="${fund.code}">
-              <span class="material-symbols-outlined text-sm">visibility</span>
+          <div class="card-action-bar">
+            <button class="card-action-btn analyze-card-btn touch-spring cursor-pointer" data-code="${fund.code}">
+              <span class="material-symbols-outlined">visibility</span>
               <span>Details</span>
             </button>
-            <button class="compare-toggle-btn ${isComparing ? 'is-comparing' : ''} touch-spring cursor-pointer" data-code="${fund.code}" title="${isComparing ? 'Remove from comparison' : 'Add to comparison'}">
-              <span class="material-symbols-outlined text-xs">${isComparing ? 'check' : 'add'}</span>
+            <button class="card-action-btn compare-toggle-btn ${isComparing ? 'is-comparing' : ''} touch-spring cursor-pointer" data-code="${fund.code}" title="${isComparing ? 'Remove from comparison' : 'Add to comparison'}">
+              <span class="material-symbols-outlined">${isComparing ? 'check' : 'add'}</span>
               <span>${isComparing ? 'Added' : 'Compare'}</span>
             </button>
-            <button class="simsim-add-btn ${isInSimSim ? 'in-bucket' : ''} touch-spring cursor-pointer" data-code="${fund.code}" title="${isInSimSim ? 'Remove from SimSim' : 'Add to SimSim Portfolio Bucket'}">
-              <span class="material-symbols-outlined text-xs">${isInSimSim ? 'check' : 'hourglass_top'}</span>
+            <button class="card-action-btn simsim-add-btn ${isInSimSim ? 'in-bucket' : ''} touch-spring cursor-pointer" data-code="${fund.code}" title="${isInSimSim ? 'Remove from SimSim' : 'Add to SimSim Portfolio Bucket'}">
+              <span class="material-symbols-outlined">${isInSimSim ? 'check' : 'hourglass_top'}</span>
               <span>${isInSimSim ? 'In SimSim' : '+ SimSim'}</span>
             </button>
           </div>
