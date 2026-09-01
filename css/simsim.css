@@ -299,6 +299,40 @@ body.simsim-mode .simsim-add-btn.in-bucket {
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
+/* KPI Cards with ambient aura glow & depth instead of generic solid left lines */
+.simsim-kpi-card {
+  position: relative;
+  background: var(--simsim-surface-card);
+  border: 1px solid var(--simsim-border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.simsim-kpi-card:hover {
+  transform: translateY(-2px);
+}
+
+.simsim-kpi-emerald {
+  border-top: 1.5px solid rgba(0, 240, 144, 0.4);
+  box-shadow: 0 10px 30px -6px rgba(0, 240, 144, 0.12), inset 0 1px 0 rgba(0, 240, 144, 0.25);
+}
+
+.simsim-kpi-cyan {
+  border-top: 1.5px solid rgba(0, 210, 255, 0.4);
+  box-shadow: 0 10px 30px -6px rgba(0, 210, 255, 0.12), inset 0 1px 0 rgba(0, 210, 255, 0.25);
+}
+
+.simsim-kpi-crimson {
+  border-top: 1.5px solid rgba(255, 77, 77, 0.4);
+  box-shadow: 0 10px 30px -6px rgba(255, 77, 77, 0.12), inset 0 1px 0 rgba(255, 77, 77, 0.25);
+}
+
+.simsim-kpi-amber {
+  border-top: 1.5px solid rgba(255, 184, 0, 0.4);
+  box-shadow: 0 10px 30px -6px rgba(255, 184, 0, 0.12), inset 0 1px 0 rgba(255, 184, 0, 0.25);
+}
+
 .simsim-card:hover {
   border-color: rgba(255, 255, 255, 0.14);
 }

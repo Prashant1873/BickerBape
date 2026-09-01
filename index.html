@@ -704,10 +704,23 @@
         <p id="simsim-tray-count" class="text-[11px] text-[#00F090] font-mono">0 Funds</p>
       </div>
     </div>
-    <button id="simsim-tray-launch-btn" type="button" class="px-3.5 py-1.5 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5 shadow-md">
-      <span class="material-symbols-outlined text-sm">rocket_launch</span>
-      <span>Simulate ⚡</span>
-    </button>
+    
+    <div class="flex items-center gap-1.5">
+      <button id="simsim-tray-launch-btn" type="button" class="px-3.5 py-1.5 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5 shadow-md">
+        <span class="material-symbols-outlined text-sm">rocket_launch</span>
+        <span>Simulate ⚡</span>
+      </button>
+
+      <!-- Clear bucket button -->
+      <button id="simsim-tray-clear-btn" type="button" class="p-1.5 rounded-xl bg-white/5 hover:bg-[#FF4D4D]/20 text-[#94A3B8] hover:text-[#FF4D4D] transition-colors cursor-pointer touch-spring flex items-center justify-center" title="Clear SimSim Bucket">
+        <span class="material-symbols-outlined text-base">delete_sweep</span>
+      </button>
+
+      <!-- Dismiss/Remove floating bar button with small close icon -->
+      <button id="simsim-tray-dismiss-btn" type="button" class="p-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-[#94A3B8] hover:text-white transition-colors cursor-pointer touch-spring flex items-center justify-center" title="Dismiss floating bar">
+        <span class="material-symbols-outlined text-base">close</span>
+      </button>
+    </div>
   </div>
 
   <!-- ====================================================================

@@ -17,6 +17,7 @@ export class SimSimUI {
     this.capital = 100000;
     this.selectedHorizon = '3Y'; // '6M', '1Y', '2Y', '3Y', '5Y', 'ALL'
     this.chartInstance = null;
+    this.isTrayDismissed = false;
     this.initBucketFromStorage();
 
     // Global delegated listener for exiting SimSim mode
@@ -24,6 +25,18 @@ export class SimSimUI {
       const exitTrigger = e.target.closest('.simsim-exit-trigger') || e.target.closest('#simsim-exit-btn');
       if (exitTrigger) {
         this.disableSimSimMode();
+      }
+
+      // Floating tray clear & dismiss buttons
+      const trayClear = e.target.closest('#simsim-tray-clear-btn');
+      if (trayClear) {
+        this.clearBucket();
+      }
+
+      const trayDismiss = e.target.closest('#simsim-tray-dismiss-btn');
+      if (trayDismiss) {
+        this.isTrayDismissed = true;
+        this.hideTray();
       }
     });
   }
@@ -67,6 +80,7 @@ export class SimSimUI {
           }
         });
       }
+      this.isTrayDismissed = false;
       this.saveBucketToStorage();
       this.updateTray();
       this.updateScreenerButtons();
@@ -242,7 +256,7 @@ export class SimSimUI {
     const countEl = document.getElementById('simsim-tray-count');
     if (!tray) return;
 
-    if (this.isSimSimMode || this.bucket.length === 0) {
+    if (this.isTrayDismissed || this.isSimSimMode || this.bucket.length === 0) {
       tray.classList.remove('visible');
     } else {
       if (countEl) countEl.textContent = `${this.bucket.length} Fund${this.bucket.length > 1 ? 's' : ''}`;
@@ -607,8 +621,8 @@ export class SimSimUI {
         <div class="simsim-card p-5 space-y-4">
           <div class="flex items-center justify-between flex-wrap gap-2">
             <div>
-              <h3 class="text-xs font-bold uppercase tracking-wider text-white">Portfolio Holdings & Asset Weight Allocation</h3>
-              <p class="text-[11px] text-[#94A3B8]">Drag sliders to customize percentage allocations or use Equal Weight ⚖️</p>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-white">Portfolio Allocation (${funds.length} Schemes)</h3>
+              <p class="text-[11px] text-[#94A3B8]">Adjust weights to distribute your capital (Auto-balanced to max 100%)</p>
             </div>
             <button id="simsim-recalc-btn" type="button" class="px-3 py-1.5 rounded-lg bg-[#00F090] text-black font-bold text-xs hover:bg-[#00d880] transition-colors flex items-center gap-1 cursor-pointer touch-spring shadow-sm">
               <span class="material-symbols-outlined text-sm">rocket_launch</span>
@@ -815,24 +829,83 @@ export class SimSimUI {
     const recalcBtn = document.getElementById('simsim-recalc-btn');
     if (recalcBtn) recalcBtn.addEventListener('click', () => this.runSimulation());
 
-    // Weight sliders & number inputs
-    const syncWeights = (code, val) => {
-      this.weights[code] = Math.max(0, Math.min(100, val)) / 100;
-      let sum = 0;
-      Object.values(this.weights).forEach(w => sum += (w * 100));
+    // Weight sliders & number inputs with auto-adjust mechanism to ensure max 100%
+    const adjustWeights = (activeCode, newPct) => {
+      const funds = this.getBucketFunds();
+      const n = funds.length;
+      if (n === 0) return;
+      if (n === 1) {
+        this.weights[activeCode] = 1.0;
+        const s = document.querySelector(`.weight-slider[data-code="${activeCode}"]`);
+        if (s) s.value = 100;
+        const num = document.querySelector(`.weight-number[data-code="${activeCode}"]`);
+        if (num) num.value = 100;
+        const sh = document.querySelector(`[data-share-for="${activeCode}"]`);
+        if (sh) sh.textContent = `₹${this.capital.toLocaleString('en-IN')}`;
+        return;
+      }
+
+      // Clamp target to 0..100
+      const target = Math.max(0, Math.min(100, Math.round(newPct)));
+      const remainingBudget = 100 - target;
+
+      const otherFunds = funds.filter(f => f.code !== activeCode);
+      let otherSum = 0;
+      otherFunds.forEach(f => {
+        otherSum += Math.round((this.weights[f.code] || 0) * 100);
+      });
+
+      const newPcts = {};
+      newPcts[activeCode] = target;
+
+      if (otherSum > 0 && remainingBudget > 0) {
+        let allocatedOther = 0;
+        const items = otherFunds.map(f => {
+          const cur = Math.round((this.weights[f.code] || 0) * 100);
+          const exact = (cur / otherSum) * remainingBudget;
+          const floorVal = Math.floor(exact);
+          allocatedOther += floorVal;
+          return { code: f.code, floorVal, frac: exact - floorVal };
+        });
+
+        let rem = remainingBudget - allocatedOther;
+        items.sort((a, b) => b.frac - a.frac);
+        items.forEach((item, idx) => {
+          newPcts[item.code] = item.floorVal + (idx < rem ? 1 : 0);
+        });
+      } else if (remainingBudget > 0) {
+        const base = Math.floor(remainingBudget / otherFunds.length);
+        const rem = remainingBudget % otherFunds.length;
+        otherFunds.forEach((f, idx) => {
+          newPcts[f.code] = base + (idx < rem ? 1 : 0);
+        });
+      } else {
+        otherFunds.forEach(f => {
+          newPcts[f.code] = 0;
+        });
+      }
+
+      // Update this.weights and sync DOM inputs & rupee shares
+      funds.forEach(f => {
+        const p = newPcts[f.code] !== undefined ? newPcts[f.code] : 0;
+        this.weights[f.code] = p / 100.0;
+
+        const s = document.querySelector(`.weight-slider[data-code="${f.code}"]`);
+        if (s && document.activeElement !== s) s.value = p;
+        const num = document.querySelector(`.weight-number[data-code="${f.code}"]`);
+        if (num && document.activeElement !== num) num.value = p;
+
+        const sh = document.querySelector(`[data-share-for="${f.code}"]`);
+        if (sh) {
+          const share = Math.round(this.capital * (p / 100.0));
+          sh.textContent = `₹${share.toLocaleString('en-IN')}`;
+        }
+      });
+
       const badge = document.getElementById('simsim-weight-sum-badge');
       if (badge) {
-        badge.textContent = `Total: ${Math.round(sum)}%`;
-        if (Math.round(sum) === 100) {
-          badge.className = 'text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-[#00F090]/10 text-[#00F090] border border-[#00F090]/30';
-        } else {
-          badge.className = 'text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-[#FFB800]/10 text-[#FFB800] border border-[#FFB800]/30';
-        }
-      }
-      const shareEl = document.querySelector(`[data-share-for="${code}"]`);
-      if (shareEl) {
-        const share = Math.round(this.capital * (val / 100));
-        shareEl.textContent = `₹${share.toLocaleString('en-IN')}`;
+        badge.textContent = `Total: 100%`;
+        badge.className = 'text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-[#00F090]/10 text-[#00F090] border border-[#00F090]/30';
       }
     };
 
@@ -840,9 +913,7 @@ export class SimSimUI {
       slider.addEventListener('input', (e) => {
         const code = Number(slider.getAttribute('data-code'));
         const val = parseFloat(e.target.value) || 0;
-        const numInput = document.querySelector(`.weight-number[data-code="${code}"]`);
-        if (numInput) numInput.value = val;
-        syncWeights(code, val);
+        adjustWeights(code, val);
       });
       slider.addEventListener('change', () => this.runSimulation());
     });
@@ -851,9 +922,7 @@ export class SimSimUI {
       input.addEventListener('input', (e) => {
         const code = Number(input.getAttribute('data-code'));
         const val = parseFloat(e.target.value) || 0;
-        const slider = document.querySelector(`.weight-slider[data-code="${code}"]`);
-        if (slider) slider.value = val;
-        syncWeights(code, val);
+        adjustWeights(code, val);
       });
       input.addEventListener('change', () => this.runSimulation());
     });
@@ -878,11 +947,11 @@ export class SimSimUI {
     resultsContainer.innerHTML = `
       <div class="space-y-6">
         
-        <!-- 4 Key KPI Metrics Cards (Full Width Grid) -->
+        <!-- 4 Key KPI Metrics Cards (Full Width Grid with Depth & Soft Glow) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
           <!-- Card 1: Present Value -->
-          <div class="simsim-card p-4 border-l-4 border-l-[#00F090]">
+          <div class="simsim-card simsim-kpi-card simsim-kpi-emerald p-4">
             <div class="flex items-center justify-between text-[#94A3B8] mb-1">
               <span class="text-[10px] font-bold uppercase tracking-wider">Simulated Present Value</span>
               <span class="material-symbols-outlined text-base text-[#00F090]">account_balance_wallet</span>
@@ -897,7 +966,7 @@ export class SimSimUI {
           </div>
 
           <!-- Card 2: Annualized CAGR / XIRR -->
-          <div class="simsim-card p-4 border-l-4 border-l-[#00D2FF]">
+          <div class="simsim-card simsim-kpi-card simsim-kpi-cyan p-4">
             <div class="flex items-center justify-between text-[#94A3B8] mb-1">
               <span class="text-[10px] font-bold uppercase tracking-wider">${res.type === 'lumpsum' ? 'Annualized CAGR' : 'Annualized XIRR'}</span>
               <span class="material-symbols-outlined text-base text-[#00D2FF]">trending_up</span>
@@ -911,7 +980,7 @@ export class SimSimUI {
           </div>
 
           <!-- Card 3: Max Drawdown -->
-          <div class="simsim-card p-4 border-l-4 border-l-[#FF4D4D]">
+          <div class="simsim-card simsim-kpi-card simsim-kpi-crimson p-4">
             <div class="flex items-center justify-between text-[#94A3B8] mb-1">
               <span class="text-[10px] font-bold uppercase tracking-wider">Max Drawdown</span>
               <span class="material-symbols-outlined text-base text-[#FF4D4D]">shield</span>
@@ -923,7 +992,7 @@ export class SimSimUI {
           </div>
 
           <!-- Card 4: Total Invested Capital -->
-          <div class="simsim-card p-4 border-l-4 border-l-[#FFB800]">
+          <div class="simsim-card simsim-kpi-card simsim-kpi-amber p-4">
             <div class="flex items-center justify-between text-[#94A3B8] mb-1">
               <span class="text-[10px] font-bold uppercase tracking-wider">Total Invested</span>
               <span class="material-symbols-outlined text-base text-[#FFB800]">savings</span>

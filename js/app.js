@@ -1499,9 +1499,7 @@ class BickerBapeApp {
 
       return `
         <div class="bg-surface-container-lowest rounded-2xl card-shadow p-md md:p-lg flex flex-col hover:shadow-md transition-all cursor-pointer relative overflow-hidden group card-interactive" data-code="${fund.code}">
-          <div class="absolute top-0 left-0 w-1.5 h-full ${scoreNum >= 7.0 ? 'bg-gain' : (scoreNum >= 5.0 ? 'bg-primary-container' : 'bg-warning')}"></div>
-          
-          <div class="flex justify-between items-start mb-sm pl-2">
+          <div class="flex justify-between items-start mb-sm">
             <div class="min-w-0 pr-2">
               <div class="flex items-center gap-1.5 mb-1.5 flex-wrap">
                 <span class="bg-secondary-fixed-dim text-on-secondary-fixed px-2 py-0.5 rounded text-xs font-label-bold">${fund.category}</span>
@@ -1519,7 +1517,7 @@ class BickerBapeApp {
             </div>
           </div>
 
-          <div class="flex items-end justify-between mt-auto mb-md pl-2">
+          <div class="flex items-end justify-between mt-auto mb-md">
             <div>
               <div class="flex items-center gap-1 mb-xs">
                 <p class="font-label-sm text-xs text-on-surface-variant">3Y Ret & Ratio</p>
