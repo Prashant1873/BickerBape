@@ -138,8 +138,11 @@
 
   <!-- Custom Stylesheets -->
   <link rel="icon" type="image/png" href="assets/favicon.png"/>
+  <!-- Custom Stylesheets -->
+  <link rel="icon" type="image/png" href="assets/favicon.png"/>
   <link href="css/styles.css" rel="stylesheet"/>
   <link href="css/components.css" rel="stylesheet"/>
+  <link href="css/simsim.css" rel="stylesheet"/>
 </head>
 
 <body class="bg-background text-on-background font-body-md antialiased overflow-hidden">
@@ -157,12 +160,19 @@
       
       <!-- Sidebar Header & Collapse Button -->
       <div class="p-md border-b border-surface-container flex items-center justify-between bg-surface">
-        <div class="flex items-center gap-sm">
-          <img src="assets/logo.png" alt="BickerBape Logo" class="w-9 h-9 rounded-xl object-contain shadow-sm border border-surface-container"/>
-          <div>
-            <h1 class="font-headline-md text-base text-primary tracking-tight leading-tight">BickerBape</h1>
-            <p class="font-label-sm text-[11px] text-on-surface-variant">Best Fund Suggester</p>
+        <div id="sidebar-logo-switch" class="logo-mode-switch flex items-center gap-sm cursor-pointer touch-spring" title="Click to toggle SimSim™ Time Machine 🔮">
+          <div class="logo-aura"></div>
+          <div class="logo-content flex items-center gap-sm">
+            <img src="assets/logo.png" alt="BickerBape Logo" class="w-9 h-9 rounded-xl object-contain shadow-sm border border-surface-container"/>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h1 class="font-headline-md text-base text-primary tracking-tight leading-tight">BickerBape</h1>
+                <span id="platform-mode-badge" class="mode-switch-badge screener-badge"><span class="material-symbols-outlined text-[12px]">analytics</span> Screener</span>
+              </div>
+              <p class="font-label-sm text-[11px] text-on-surface-variant">Click to launch SimSim™ 🔮</p>
+            </div>
           </div>
+        </div>
         </div>
 
         <!-- Sidebar Collapse Toggle Button -->
@@ -420,7 +430,7 @@
       <!-- Top Sticky Navigation Bar -->
       <header class="sticky top-0 z-20 bg-surface/90 backdrop-blur-md border-b border-surface-container px-4 md:px-6 py-3 flex items-center justify-between gap-md">
         
-        <!-- Left: Sidebar Toggle + Title -->
+        <!-- Left: Sidebar Toggle + Title / Brand Mode Switcher -->
         <div class="flex items-center gap-sm md:gap-md">
           <!-- Sidebar Expand Toggle (visible when desktop sidebar collapsed or on mobile) -->
           <button id="sidebar-expand-btn" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-surface-container-lowest card-shadow font-label-bold text-xs text-primary touch-spring" title="Toggle Filters Sidebar">
@@ -428,37 +438,43 @@
             <span class="hidden sm:inline">Filters</span>
           </button>
 
-          <div>
-            <div class="flex items-center gap-2">
-              <h2 class="font-headline-md text-base md:text-lg text-on-surface leading-tight">Indian Equity Screener</h2>
-              <span id="header-mood-indicator" class="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full mood-tag-growth">Mood: Growth 🚀</span>
+          <div id="header-logo-switch" class="logo-mode-switch cursor-pointer touch-spring flex items-center gap-2" title="Click to toggle SimSim™ Time Machine 🔮">
+            <div class="logo-aura"></div>
+            <div class="logo-content">
+              <div class="flex items-center gap-2">
+                <h2 id="header-platform-title" class="font-headline-md text-base md:text-lg text-on-surface leading-tight font-bold">Indian Equity Screener</h2>
+                <span id="header-mood-indicator" class="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full mood-tag-growth">Mood: Growth 🚀</span>
+              </div>
+              <p id="funds-count" class="font-label-sm text-[11px] text-on-surface-variant">Loading 620 funds...</p>
             </div>
-            <p id="funds-count" class="font-label-sm text-[11px] text-on-surface-variant">Loading 620 funds...</p>
           </div>
         </div>
 
-        <!-- Center: Search Bar -->
-        <div class="relative flex-grow max-w-md hidden sm:block">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
-          <input id="search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-1.5 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC, or category..." type="text"/>
-        </div>
+        <!-- Right: Screener Header Controls (Search, Compare, View Switcher) -->
+        <div id="screener-header-controls" class="flex items-center gap-2 flex-grow justify-end max-w-2xl">
+          <!-- Search Bar -->
+          <div class="relative flex-grow max-w-md hidden sm:block">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
+            <input id="search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-1.5 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC, or category..." type="text"/>
+          </div>
 
-        <!-- Right: Compare Tray Toggle & View Switcher (Cards vs Table) -->
-        <div class="flex items-center gap-2">
-          <button id="compare-tray-toggle-btn" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl border border-surface-container bg-surface-container-lowest font-label-bold text-xs text-on-surface hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Toggle Comparison Bar">
-            <span class="material-symbols-outlined text-sm text-primary">compare_arrows</span>
-            <span>Compare (<span id="tray-toggle-count">0</span>)</span>
-          </button>
+          <!-- Compare Tray Toggle & View Switcher (Cards vs Table) -->
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button id="compare-tray-toggle-btn" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl border border-surface-container bg-surface-container-lowest font-label-bold text-xs text-on-surface hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Toggle Comparison Bar">
+              <span class="material-symbols-outlined text-sm text-primary">compare_arrows</span>
+              <span>Compare (<span id="tray-toggle-count">0</span>)</span>
+            </button>
 
-          <div class="flex items-center p-0.5 bg-surface-container rounded-xl card-shadow">
-            <button id="view-cards-btn" class="view-toggle-btn active flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-label-bold touch-spring" title="Card View">
-              <span class="material-symbols-outlined text-sm">grid_view</span>
-              <span class="hidden sm:inline">Cards</span>
-            </button>
-            <button id="view-table-btn" class="view-toggle-btn flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-label-bold touch-spring" title="Table View">
-              <span class="material-symbols-outlined text-sm">table_rows</span>
-              <span class="hidden sm:inline">Table</span>
-            </button>
+            <div class="flex items-center p-0.5 bg-surface-container rounded-xl card-shadow">
+              <button id="view-cards-btn" class="view-toggle-btn active flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-label-bold touch-spring" title="Card View">
+                <span class="material-symbols-outlined text-sm">grid_view</span>
+                <span class="hidden sm:inline">Cards</span>
+              </button>
+              <button id="view-table-btn" class="view-toggle-btn flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-label-bold touch-spring" title="Table View">
+                <span class="material-symbols-outlined text-sm">table_rows</span>
+                <span class="hidden sm:inline">Table</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -467,11 +483,14 @@
       <!-- Scrollable Main Container (100% Full Space between Sidebar and Window) -->
       <div class="flex-grow p-4 md:p-6 w-full space-y-6">
         
-        <!-- Mobile Search Input (Visible on small screens) -->
-        <div class="relative w-full sm:hidden">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
-          <input id="mobile-search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-2 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC..." type="text"/>
-        </div>
+        <!-- Screener Views Wrapper (Cards & Table) -->
+        <div id="screener-views-wrapper" class="space-y-6">
+
+          <!-- Mobile Search Input (Visible on small screens) -->
+          <div class="relative w-full sm:hidden">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
+            <input id="mobile-search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-2 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC..." type="text"/>
+          </div>
 
         <!-- View 1: Featured Funds Grid -->
         <section id="featured-funds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md md:gap-lg">
@@ -618,6 +637,13 @@
           </div>
         </div>
 
+        </div> <!-- /#screener-views-wrapper -->
+
+        <!-- SimSim Product Stage (Hidden by default, activated in SimSim Mode) -->
+        <div id="simsim-container" class="hidden w-full">
+          <!-- Dynamically populated by SimSimUI -->
+        </div>
+
       </div>
     </main>
 
@@ -654,6 +680,25 @@
         <span class="material-symbols-outlined text-base">delete_sweep</span>
       </button>
     </div>
+  </div>
+
+  <!-- ====================================================================
+       FLOATING SIMSIM PORTFOLIO BUCKET TRAY
+       ==================================================================== -->
+  <div id="simsim-floating-tray" class="simsim-tray" role="region" aria-label="SimSim Portfolio Bucket">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-xl bg-[#00F090]/15 border border-[#00F090]/30 flex items-center justify-center text-[#00F090]">
+        <span class="material-symbols-outlined text-lg simsim-pulse-icon">hourglass_top</span>
+      </div>
+      <div>
+        <p class="text-xs font-bold text-white leading-tight">SimSim™ Bucket</p>
+        <p id="simsim-tray-count" class="text-[11px] text-[#00F090] font-mono">0 Funds</p>
+      </div>
+    </div>
+    <button id="simsim-tray-launch-btn" type="button" class="px-3.5 py-1.5 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5 shadow-md">
+      <span class="material-symbols-outlined text-sm">rocket_launch</span>
+      <span>Simulate ⚡</span>
+    </button>
   </div>
 
   <!-- ====================================================================

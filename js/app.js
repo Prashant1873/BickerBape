@@ -15,12 +15,14 @@ import { DataService } from './data-service.js';
 import { AnalyticsEngine } from './analytics.js';
 import { ChartEngine } from './charts.js';
 import { FluidMotion } from './motion.js';
+import { SimSimUI } from './simsim-ui.js';
 
 class BickerBapeApp {
   constructor() {
     this.allFunds = [];
     this.categoriesSummary = {};
     this.activeEditingSlot = 0;
+    this.simsim = new SimSimUI(this);
     
     let initialCols = ['smart_score', 'cagr_3y', 'cagr_5y', 'cagr_10y', 'rolling_3y_avg', 'sharpe_ratio', 'volatility'];
     try {
@@ -73,6 +75,12 @@ class BickerBapeApp {
 
     // 3. Initial Render
     this.updateUI();
+
+    // 4. Initialize SimSim tray and buttons
+    if (this.simsim) {
+      this.simsim.updateTray();
+      this.simsim.updateScreenerButtons();
+    }
   }
 
   initKpiCatalog() {
@@ -955,6 +963,47 @@ class BickerBapeApp {
     }
 
     // ------------------------------------------------------------------
+    // J. SimSim™ Mode Switch & Bucket Actions
+    // ------------------------------------------------------------------
+    const sidebarLogoSwitch = document.getElementById('sidebar-logo-switch');
+    if (sidebarLogoSwitch) {
+      sidebarLogoSwitch.addEventListener('click', () => {
+        if (this.simsim) this.simsim.toggleMode();
+      });
+    }
+
+    const headerLogoSwitch = document.getElementById('header-logo-switch');
+    if (headerLogoSwitch) {
+      headerLogoSwitch.addEventListener('click', () => {
+        if (this.simsim) this.simsim.toggleMode();
+      });
+    }
+
+    const simsimTrayLaunch = document.getElementById('simsim-tray-launch-btn');
+    if (simsimTrayLaunch) {
+      simsimTrayLaunch.addEventListener('click', () => {
+        if (this.simsim) this.simsim.enableSimSimMode();
+      });
+    }
+
+    // Global delegation for .simsim-add-btn
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.simsim-add-btn');
+      if (btn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const code = Number(btn.getAttribute('data-code'));
+        if (this.simsim) {
+          if (this.simsim.isInBucket(code)) {
+            this.simsim.removeFromBucket(code);
+          } else {
+            this.simsim.addToBucket(code);
+          }
+        }
+      }
+    });
+
+    // ------------------------------------------------------------------
     // J. Detail Drawer & Comparison Modal Events
     // ------------------------------------------------------------------
     const drawerBackdrop = document.getElementById('drawer-backdrop');
@@ -1213,6 +1262,9 @@ class BickerBapeApp {
     this.renderCardsGrid(displayed);
     this.renderTable(displayed);
     this.updateComparisonTray();
+    if (this.simsim) {
+      this.simsim.updateScreenerButtons();
+    }
   }
 
   generateSparklineSvg(points) {
@@ -1248,20 +1300,29 @@ class BickerBapeApp {
   getSmartScorePill(score) {
     const s = Math.max(1.0, Math.min(9.9, parseFloat(score) || 7.0));
     const pct = Math.round((s / 10.0) * 100);
-    const t = Math.max(0, Math.min(1, (s - 5.0) / 3.6));
 
-    // Interpolation: Red (220, 38, 38) at t=0 -> Royal Blue (0, 82, 204) at t=1
-    const r = Math.round(220 * (1 - t) + 0 * t);
-    const g = Math.round(38 * (1 - t) + 82 * t);
-    const b = Math.round(38 * (1 - t) + 204 * t);
-    const mainColor = `rgb(${r}, ${g}, ${b})`;
-    const bgBar = `rgba(${r}, ${g}, ${b}, 0.20)`;
-    const bgBase = `rgba(${r}, ${g}, ${b}, 0.08)`;
-    const border = `rgba(${r}, ${g}, ${b}, 0.35)`;
+    let fromColor = '#0052CC';
+    let toColor = '#2684FF';
+    let textColor = '#FFFFFF';
+
+    if (s >= 8.0) {
+      fromColor = '#0052CC';
+      toColor = '#1D7AFC';
+    } else if (s >= 6.5) {
+      fromColor = '#2563EB';
+      toColor = '#4F46E5';
+    } else if (s >= 5.0) {
+      fromColor = '#7C3AED';
+      toColor = '#D97706';
+    } else {
+      fromColor = '#D97706';
+      toColor = '#DC2626';
+    }
 
     return `
-      <span class="smartscore-pill" style="color: ${mainColor}; background: linear-gradient(90deg, ${bgBar} ${pct}%, ${bgBase} ${pct}%); border: 1px solid ${border};" title="SmartScore™: ${s.toFixed(1)}/10 (${pct}% factor rank)">
-        ★ ${s.toFixed(1)} SmartScore™
+      <span class="smartscore-pill smartscore-pill-gradient" style="background: linear-gradient(135deg, ${fromColor} 0%, ${toColor} 100%); color: ${textColor};" title="SmartScore(TM): ${s}/10 (${pct}% Quality Rating)">
+        <span class="smartscore-pill-val">${s.toFixed(1)}</span>
+        <span class="smartscore-pill-unit">/10</span>
       </span>
     `;
   }
@@ -1270,29 +1331,31 @@ class BickerBapeApp {
    * Generates a ratio-ed circular score gauge with dynamic conic-gradient
    * where e.g. 9.9 covers 99% of the circumference.
    */
-  getRatioedGaugeHtml(score, isRisk = false) {
-    const s = Math.max(0.1, Math.min(9.9, score !== undefined ? score : 7.0));
+  getRatioedGaugeHtml(score, isLarge = false) {
+    const s = Math.max(1.0, Math.min(10.0, parseFloat(score) || 7.0));
     const pct = Math.round((s / 10.0) * 100);
-    
-    let ringColor;
-    if (isRisk) {
-      ringColor = s < 5.0 ? '#FF5630' : (s < 7.0 ? '#FFAB00' : '#36B37E');
-    } else {
-      ringColor = s >= 7.0 ? '#36B37E' : (s >= 5.0 ? '#FFAB00' : '#FF5630');
-    }
+
+    let ringColor = '#36B37E';
+    if (s < 5.0) ringColor = '#FF5630';
+    else if (s < 7.0) ringColor = '#FFAB00';
+
+    const sizeClass = isLarge ? 'gauge-large' : 'gauge-standard';
 
     return `
-      <div class="smartscore-gauge" style="--score-pct: ${pct}; --ring-color: ${ringColor};" title="Score: ${s.toFixed(1)}/10 (${pct}% of circumference)">
-        <span>${s.toFixed(1)}</span>
+      <div class="ratio-gauge smartscore-gauge ${sizeClass}" style="--score-pct: ${pct}; --ring-color: ${ringColor};" title="SmartScore™: ${s}/10">
+        <div class="gauge-inner">
+          <span class="gauge-value font-display-financial font-extrabold text-on-surface">${s.toFixed(1)}</span>
+          <span class="gauge-sub font-label-sm font-bold text-on-surface-variant">/10</span>
+        </div>
       </div>
     `;
   }
 
   getInfoBtnHtml(termKey) {
     const dict = {
-      smartscore: {
+      smart_score: {
         title: "SmartScore™ (1 to 10)",
-        desc: "Institutional rating evaluating category outperformance ratios, downside protection & low volatility, multi-cycle track record, and direct fee efficiency."
+        desc: "Unified institutional rating evaluating category outperformance ratios, downside resilience, low volatility, multi-cycle history, and direct fee efficiency."
       },
       ratio_3y: {
         title: "3Y Return Ratio vs Category",
@@ -1308,7 +1371,7 @@ class BickerBapeApp {
       },
       sharpe: {
         title: "Sharpe Ratio (Risk-Adjusted Return)",
-        desc: "Measures excess return earned per unit of risk above safe government bonds (6.8%). Above 1.0 means high returns without reckless gambles."
+        desc: "Measures excess return earned per unit of total volatility above safe government bonds (6.8%). Higher (>1.0) means high returns without reckless gambles."
       },
       sortino: {
         title: "Sortino Ratio (Downside Protection)",
@@ -1316,11 +1379,11 @@ class BickerBapeApp {
       },
       volatility: {
         title: "Annualized Volatility (Fluctuation)",
-        desc: "Measures how sharply the fund's price swings up and down. A lower volatility (under 14%) means a smoother, less stressful journey."
+        desc: "Measures how sharply the fund's price swings up and down. Lower volatility (under 14%) means a smoother, less stressful journey."
       },
       max_drawdown: {
-        title: "Max Drawdown (Worst Crash)",
-        desc: "The largest drop from peak to trough in the fund's history. For example, -20% means the maximum temporary loss an investor ever experienced was 20%."
+        title: "Max Historical Drawdown",
+        desc: "The largest peak-to-trough drop this fund experienced in market crashes. Smaller drops mean faster recovery."
       },
       sector_risk: {
         title: "Sector Concentration Risk",
@@ -1335,8 +1398,8 @@ class BickerBapeApp {
         desc: "Decade-long wealth creation rate. Confirms whether a fund creates long-term generational wealth across both bull and bear market cycles."
       },
       cagr_1y: {
-        title: "1-Year Return (Recent Momentum)",
-        desc: "Absolute return over the past 12 months. Shows short-term momentum and responsiveness to current market conditions."
+        title: "Trailing 1-Year Absolute Return",
+        desc: "Performance over the immediate past 12 months. Useful for monitoring short-term momentum, though multi-year rolling returns matter more."
       },
       growth_3m: {
         title: "Past 3-Month Growth",
@@ -1411,6 +1474,7 @@ class BickerBapeApp {
 
     grid.innerHTML = funds.map(fund => {
       const isComparing = this.state.comparisonList.some(f => f.code === fund.code);
+      const isInSimSim = this.simsim && this.simsim.isInBucket(fund.code);
       const ret3y = (fund.cagr_3y !== null && fund.cagr_3y !== undefined) ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y}%` : 'N/A';
       const rolling3y = (fund.rolling_3y_avg !== null && fund.rolling_3y_avg !== undefined) ? `${fund.rolling_3y_avg}%` : 'N/A';
       
@@ -1479,13 +1543,17 @@ class BickerBapeApp {
             </div>
           </div>
 
-          <div class="flex gap-2 pl-2">
+          <div class="flex gap-1.5 pl-2">
             <button class="flex-grow bg-transparent border border-primary-container text-primary-container font-label-bold text-xs py-2 rounded-xl hover:bg-primary-container hover:text-on-primary transition-colors touch-spring cursor-pointer analyze-card-btn" data-code="${fund.code}">
-              SmartScore™ Breakdown
+              SmartScore™
             </button>
-            <button class="px-3 py-2 border rounded-xl font-label-bold text-xs flex items-center gap-1 transition-colors touch-spring cursor-pointer compare-toggle-btn ${isComparing ? 'bg-primary-container text-on-primary border-primary-container shadow-sm' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container'}" data-code="${fund.code}">
+            <button class="px-2.5 py-2 border rounded-xl font-label-bold text-xs flex items-center gap-1 transition-colors touch-spring cursor-pointer compare-toggle-btn ${isComparing ? 'bg-primary-container text-on-primary border-primary-container shadow-sm' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container'}" data-code="${fund.code}">
               <span class="material-symbols-outlined text-xs">${isComparing ? 'check' : 'add'}</span>
               <span>${isComparing ? 'Added' : 'Compare'}</span>
+            </button>
+            <button class="simsim-add-btn ${isInSimSim ? 'in-bucket' : ''} touch-spring cursor-pointer" data-code="${fund.code}" title="${isInSimSim ? 'Remove from SimSim' : 'Add to SimSim Portfolio Bucket'}">
+              <span class="material-symbols-outlined text-xs">${isInSimSim ? 'check' : 'hourglass_top'}</span>
+              <span>${isInSimSim ? 'In SimSim' : '+ SimSim'}</span>
             </button>
           </div>
         </div>
@@ -1500,6 +1568,18 @@ class BickerBapeApp {
         if (e.target.closest('.compare-toggle-btn')) {
           e.stopPropagation();
           this.toggleCompare(fund, e);
+          return;
+        }
+
+        if (e.target.closest('.simsim-add-btn')) {
+          e.stopPropagation();
+          if (this.simsim) {
+            if (this.simsim.isInBucket(code)) {
+              this.simsim.removeFromBucket(code);
+            } else {
+              this.simsim.addToBucket(code);
+            }
+          }
           return;
         }
 
@@ -1525,6 +1605,7 @@ class BickerBapeApp {
 
     tbody.innerHTML = funds.map(fund => {
       const isComparing = this.state.comparisonList.some(f => f.code === fund.code);
+      const isInSimSim = this.simsim && this.simsim.isInBucket(fund.code);
 
       const dynamicColsHtml = this.state.tableColumns.map(colKey => {
         const kpi = this.KPI_CATALOG[colKey] || this.KPI_CATALOG.cagr_3y;
@@ -1564,6 +1645,10 @@ class BickerBapeApp {
                 <span class="material-symbols-outlined text-xs">${isComparing ? 'check' : 'add'}</span>
                 <span>${isComparing ? 'Added' : 'Compare'}</span>
               </button>
+              <button class="simsim-add-btn ${isInSimSim ? 'in-bucket' : ''} touch-spring cursor-pointer" data-code="${fund.code}" title="${isInSimSim ? 'Remove from SimSim' : 'Add to SimSim Portfolio Bucket'}">
+                <span class="material-symbols-outlined text-xs">${isInSimSim ? 'check' : 'hourglass_top'}</span>
+                <span>${isInSimSim ? 'SimSim' : '+ SimSim'}</span>
+              </button>
             </div>
           </td>
         </tr>
@@ -1578,6 +1663,18 @@ class BickerBapeApp {
         if (e.target.closest('.compare-toggle-btn')) {
           e.stopPropagation();
           this.toggleCompare(fund, e);
+          return;
+        }
+
+        if (e.target.closest('.simsim-add-btn')) {
+          e.stopPropagation();
+          if (this.simsim) {
+            if (this.simsim.isInBucket(code)) {
+              this.simsim.removeFromBucket(code);
+            } else {
+              this.simsim.addToBucket(code);
+            }
+          }
           return;
         }
 

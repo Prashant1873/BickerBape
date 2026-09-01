@@ -1,0 +1,360 @@
+/* ==========================================================================
+   SimSim™ Dark Mode & Portfolio Simulation Engine Styling
+   Theme: Deep Obsidian (#07090E), Neon Emerald (#00F090), Electric Cyan (#00D2FF)
+   ========================================================================== */
+
+:root {
+  --simsim-bg: #07090e;
+  --simsim-surface-deep: #0c1018;
+  --simsim-surface-card: #121824;
+  --simsim-surface-card-hover: #192132;
+  --simsim-surface-glass: rgba(18, 24, 36, 0.82);
+  --simsim-border: rgba(255, 255, 255, 0.08);
+  --simsim-border-highlight: rgba(0, 240, 144, 0.3);
+  --simsim-text-primary: #f1f5f9;
+  --simsim-text-secondary: #94a3b8;
+  --simsim-text-muted: #64748b;
+  --simsim-emerald: #00f090;
+  --simsim-emerald-glow: rgba(0, 240, 144, 0.25);
+  --simsim-cyan: #00d2ff;
+  --simsim-cyan-glow: rgba(0, 210, 255, 0.25);
+  --simsim-amber: #ffb800;
+  --simsim-crimson: #ff4d4d;
+  --simsim-purple: #8b5cf6;
+}
+
+/* --------------------------------------------------------------------------
+   Global Body Transitions when SimSim Dark Mode is active
+   -------------------------------------------------------------------------- */
+body.simsim-mode {
+  background-color: var(--simsim-bg) !important;
+  color: var(--simsim-text-primary) !important;
+  transition: background-color 280ms cubic-bezier(0.16, 1, 0.3, 1), color 280ms ease;
+}
+
+body.simsim-mode .app-main {
+  background-color: var(--simsim-bg) !important;
+}
+
+body.simsim-mode header.sticky {
+  background-color: rgba(7, 9, 14, 0.85) !important;
+  border-bottom-color: var(--simsim-border) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+body.simsim-mode #sidebar {
+  background-color: var(--simsim-surface-deep) !important;
+  border-right-color: var(--simsim-border) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Brand Logo Interactive Mode Switcher
+   -------------------------------------------------------------------------- */
+.logo-mode-switch {
+  cursor: pointer;
+  position: relative;
+  border-radius: 14px;
+  padding: 4px 6px;
+  margin: -4px -6px;
+  transition: all 220ms ease;
+  user-select: none;
+}
+
+.logo-mode-switch:hover {
+  background: rgba(0, 82, 204, 0.08);
+}
+
+body.simsim-mode .logo-mode-switch:hover {
+  background: rgba(0, 240, 144, 0.08);
+}
+
+.logo-mode-switch .logo-aura {
+  position: absolute;
+  inset: -2px;
+  border-radius: 16px;
+  background: radial-gradient(circle, rgba(0, 240, 144, 0.4) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: all 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.logo-mode-switch:hover .logo-aura,
+body.simsim-mode .logo-mode-switch .logo-aura {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.logo-mode-switch .logo-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mode pill badge next to logo */
+.mode-switch-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 180ms ease;
+  border: 1px solid transparent;
+}
+
+.mode-switch-badge.screener-badge {
+  background: #ebf2ff;
+  color: #0052cc;
+  border-color: rgba(0, 82, 204, 0.2);
+}
+
+body.simsim-mode .mode-switch-badge.simsim-badge {
+  background: rgba(0, 240, 144, 0.12);
+  color: var(--simsim-emerald);
+  border-color: rgba(0, 240, 144, 0.3);
+  box-shadow: 0 0 12px rgba(0, 240, 144, 0.2);
+}
+
+/* Pulsing crystal icon */
+@keyframes simsim-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px rgba(0, 240, 144, 0.4));
+  }
+  50% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px rgba(0, 240, 144, 0.8));
+  }
+}
+
+.simsim-pulse-icon {
+  animation: simsim-pulse 2.4s infinite ease-in-out;
+}
+
+/* --------------------------------------------------------------------------
+   SimSim Floating Bucket Tray
+   -------------------------------------------------------------------------- */
+.simsim-tray {
+  position: fixed;
+  bottom: 24px;
+  right: 28px;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(12, 16, 24, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 144, 0.35);
+  border-radius: 18px;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 144, 0.15);
+  transform: translateY(120px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.simsim-tray.visible {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+/* SimSim Add button on Screener cards and table */
+.simsim-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid #e1e2e4;
+  background: transparent;
+  color: #5c5e63;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.simsim-add-btn:hover {
+  background: #f0fdf4;
+  border-color: #22c55e;
+  color: #15803d;
+  transform: translateY(-1px);
+}
+
+.simsim-add-btn.in-bucket {
+  background: #15803d;
+  border-color: #15803d;
+  color: #ffffff;
+}
+
+body.simsim-mode .simsim-add-btn {
+  border-color: var(--simsim-border);
+  color: var(--simsim-text-secondary);
+}
+
+body.simsim-mode .simsim-add-btn:hover {
+  background: rgba(0, 240, 144, 0.12);
+  border-color: var(--simsim-emerald);
+  color: var(--simsim-emerald);
+}
+
+body.simsim-mode .simsim-add-btn.in-bucket {
+  background: var(--simsim-emerald);
+  border-color: var(--simsim-emerald);
+  color: #000000;
+}
+
+/* --------------------------------------------------------------------------
+   SimSim Main Stage Container & Cards
+   -------------------------------------------------------------------------- */
+#simsim-container {
+  width: 100%;
+}
+
+.simsim-card {
+  background: var(--simsim-surface-card);
+  border: 1px solid var(--simsim-border);
+  border-radius: 20px;
+  box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.5);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.simsim-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.simsim-card-glow {
+  border-color: var(--simsim-border-highlight);
+  box-shadow: 0 12px 32px -8px rgba(0, 240, 144, 0.12), inset 0 1px 0 rgba(0, 240, 144, 0.1);
+}
+
+/* Allocation slider styling */
+.simsim-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: #1c2538;
+  outline: none;
+  transition: background 150ms ease;
+}
+
+.simsim-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--simsim-emerald);
+  box-shadow: 0 0 10px rgba(0, 240, 144, 0.6);
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+.simsim-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+.simsim-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--simsim-emerald);
+  box-shadow: 0 0 10px rgba(0, 240, 144, 0.6);
+  cursor: pointer;
+  border: none;
+}
+
+/* Template chips */
+.simsim-template-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: #161e2e;
+  border: 1px solid var(--simsim-border);
+  color: var(--simsim-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.simsim-template-chip:hover {
+  background: #1f2a3f;
+  border-color: var(--simsim-emerald);
+  color: var(--simsim-emerald);
+  transform: translateY(-1px);
+}
+
+.simsim-template-chip.active {
+  background: rgba(0, 240, 144, 0.14);
+  border-color: var(--simsim-emerald);
+  color: var(--simsim-emerald);
+  box-shadow: 0 0 12px rgba(0, 240, 144, 0.2);
+}
+
+/* Big Value Headline in Neon Emerald */
+.simsim-neon-headline {
+  color: var(--simsim-emerald);
+  text-shadow: 0 0 24px rgba(0, 240, 144, 0.35);
+}
+
+/* Chart container glowing border */
+.simsim-chart-wrap {
+  position: relative;
+  background: linear-gradient(180deg, rgba(14, 19, 30, 0.95) 0%, rgba(9, 13, 20, 0.95) 100%);
+  border-radius: 18px;
+  border: 1px solid var(--simsim-border);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.simsim-chart-wrap::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--simsim-emerald), transparent);
+  opacity: 0.6;
+}
+
+/* Table styling inside SimSim */
+.simsim-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.simsim-table th {
+  padding: 10px 14px;
+  background: #0f1522;
+  color: var(--simsim-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--simsim-border);
+}
+
+.simsim-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12px;
+}
+
+.simsim-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
