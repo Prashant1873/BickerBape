@@ -32,7 +32,14 @@ export class ChartEngine {
     // Filter points based on selected horizon
     let points = [...navHistory];
     const latestDate = new Date(points[points.length - 1].date);
-    if (horizon === '1Y') {
+    if (horizon === '3M') {
+      const cutoff = new Date(latestDate);
+      cutoff.setMonth(cutoff.getMonth() - 3);
+      points = points.filter(p => new Date(p.date) >= cutoff);
+      if (points.length < 3) {
+        points = navHistory.slice(-15);
+      }
+    } else if (horizon === '1Y') {
       const cutoff = new Date(latestDate);
       cutoff.setFullYear(cutoff.getFullYear() - 1);
       points = points.filter(p => new Date(p.date) >= cutoff);
@@ -44,6 +51,16 @@ export class ChartEngine {
       const cutoff = new Date(latestDate);
       cutoff.setFullYear(cutoff.getFullYear() - 5);
       points = points.filter(p => new Date(p.date) >= cutoff);
+    }
+
+    // Update growth headline text
+    const growthHeadline = document.getElementById('drawer-growth-headline');
+    if (growthHeadline && points.length >= 2) {
+      const startNav = points[0].nav;
+      const endNav = points[points.length - 1].nav;
+      const changePct = (((endNav - startNav) / startNav) * 100).toFixed(2);
+      const isPositive = changePct >= 0;
+      growthHeadline.innerHTML = `Growth in ${horizon}: <strong class="${isPositive ? 'text-[#36B37E]' : 'text-[#FF5630]'}">${isPositive ? '+' : ''}${changePct}%</strong> (${points[0].date} to ${points[points.length - 1].date})`;
     }
 
     const labels = points.map(p => p.date);

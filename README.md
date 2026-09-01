@@ -1,85 +1,103 @@
 # BickerBape 📈
-### Intelligent Indian Equity Mutual Fund Screener & Suggester (Tickertape Alternative)
+<p align="center">
+  <img src="assets/logo.png" alt="BickerBape Logo" width="120" height="120" style="border-radius: 24px; box-shadow: 0 4px 20px rgba(0, 82, 204, 0.2);"/>
+</p>
 
-**BickerBape** is a high-performance web screener and fund suggester for Indian Equity Mutual Funds, built with **zero Node.js dependencies** (pure HTML5, Vanilla ES6 JavaScript, Tailwind CSS via CDN, and Chart.js).
+<h3 align="center">Intelligent Indian Equity Mutual Fund Screener & Suggester</h3>
 
-It indexes the **entire universe of 620 active Equity Direct-Growth Mutual Funds in India** sourced directly from the official **AMFI Daily NAV Master (`NAVAll.txt`)** and **MFAPI.in**.
-
----
-
-## 🌟 Key Features
-
-- **Complete Indian Equity Universe (620 Funds)**:
-  - 12 SEBI categories: *Flexi Cap, Large Cap, Mid Cap, Small Cap, Large & Mid Cap, ELSS Tax Saver, Multi Cap, Focused Fund, Value / Contra, Sectoral / Thematic, Index Funds, and Dividend Yield*.
-- **Prashant's 10-Step Fund Selection Formula**:
-  - Filter out non-equity funds.
-  - 5Y and 10Y CAGR vs. Category benchmark averages.
-  - **3-Year Rolling Returns** (measures true consistency across bull/bear cycles without point-to-point luck).
-  - Risk-adjusted return via **Sharpe Ratio** ($R_f = 6.8\%$ 10Y G-Sec rate) and Alpha outperformance.
-  - **Annualized Volatility** ($\sigma \times \sqrt{252}$) vs. category average.
-  - Fund Manager tenure and stability.
-- **Tickertape-Style Financial Screener Table**:
-  - Sortable by Score, 3Y CAGR, 5Y CAGR, 10Y CAGR, 3Y Rolling Avg, Sharpe Ratio, and Volatility.
-  - Sub-category delta pills (`+vs Cat` / `-vs Cat`).
-- **Collapsible Screener Command Sidebar**:
-  - 1-Click Strategies (*Prashant's 10-Step Formula*, *Consistent Compounders*, *Low Volatility Titans*, *High Alpha Champions*, *ELSS Wealth Savers*).
-  - Category selector with live scheme counts.
-  - Interactive metric cutoff sliders (Rolling return, Sharpe, Volatility).
-  - Smooth width collapse (`320px` to `0px`) without page displacement.
-- **Apple Fluid Motion Slide-Over Detail Drawer**:
-  - 1:1 gesture tracking and drag-to-dismiss.
-  - 4 Interactive Chart.js charts:
-    1. Historical NAV Growth (`1Y`, `3Y`, `5Y`, `All`).
-    2. 3-Year Rolling Return Timeline Curve vs. Category Benchmark.
-    3. Returns vs. Sub-Category & Nifty 50 TRI Bar Chart.
-    4. Risk-Reward Scatter Quadrant (Sharpe vs. Volatility).
-  - In-drawer 10-Step Quality Checklist.
-- **Workable Multi-Fund Comparison Tray & Modal**:
-  - Compare up to 3 funds side-by-side.
-  - Multi-bar Chart.js visual comparison.
-  - Side-by-side metric matrix table with one-click fund swap/removal.
-- **Zero Horizontal Scrollbar**:
-  - Layout fits 100% inside any window resolution with zero horizontal page overflow (`scrollWidth === innerWidth`).
+<p align="center">
+  <strong>Absolute Financial Hurdle Scoring</strong> • <strong>Zero Estimations Policy</strong> • <strong>SQLite Database Persistence</strong> • <strong>AMFI & MFAPI Verified Data</strong>
+</p>
 
 ---
 
-## 🛠️ Architecture & Technologies
+**BickerBape** is a high-performance, institutional-grade web screener and fund suggester for Indian Equity Mutual Funds, built with **zero Node.js dependencies** (pure HTML5, Vanilla ES6 JavaScript, Tailwind CSS, SQLite database backend, and Chart.js).
 
-- **Zero Node.js / Zero Build Step**: Run instantly in any browser or static hosting (GitHub Pages, Vercel, Netlify).
-- **Frontend**: HTML5, Vanilla ES6 JavaScript (Modules), Tailwind CSS (Fiscal Clarity Design System), Chart.js.
-- **Data Ingestion Engine**: Python 3 concurrent multithreaded worker (`ThreadPoolExecutor`) updating 620 schemes in ~30 seconds.
-- **Automated Testing**: Playwright end-to-end test suite testing UI flows, chart rendering, sidebar collapsing, and zero console errors.
+It indexes the **entire universe of 620 active Equity Direct-Growth Mutual Funds in India** verified directly from official regulatory sources:
+- **Official AMFI Daily NAV Master (`NAVAll.txt`)**
+- **Official AMFI Historical NAV Report Portal (`DownloadNAVHistoryReport_Po.aspx`)**
+- **MFAPI Open Mutual Fund API (`api.mfapi.in/mf/{code}`)**
+
+---
+
+## 🌟 Key Architecture & Analytics Principles
+
+### 1. Absolute Financial Hurdle Scoring & Quantitative Mathematical Rigor
+Unlike standard retail screeners that scale funds against arbitrary sample percentiles, BickerBape implements an **Institutional Quant Outperformance Model**:
+- **Performance & Compounding Evaluated via Outperformance Ratios (Not Raw CAGR)**:
+  Raw CAGR across different categories creates severe distortions during cyclical sector rallies (e.g. small cap or pharma bull runs outranking diversified all-weather flexi caps). BickerBape evaluates performance strictly on **Return Ratios vs Category Benchmarks**:
+  $$\text{Ratio}_{3Y} = \frac{\text{Fund 3Y CAGR}}{\text{Category Benchmark Average 3Y CAGR}}, \quad \text{Ratio}_{5Y} = \frac{\text{Fund 5Y CAGR}}{\text{Category Benchmark Average 5Y CAGR}}$$
+  - A ratio $\ge 1.35\times$ indicates top-tier alpha generation (outperforming peers by $\ge 35\%$).
+  - Evaluates whether the fund manager generates genuine alpha over their specific investment mandate.
+- **Track Record Seasoning & Fiduciary Penalty for Unproven Funds**:
+  - Young schemes ($< 3$ years) lack full market cycle validation and cannot receive top scores.
+  - Funds $< 1$ year: Track record score 2.5/10; overall score **strictly capped at 5.8/10** (`New Scheme (<1Y)`).
+  - Funds $1 - 3$ years: Track record score 4.5–5.5/10; overall score **strictly capped at 7.0/10** (`Emerging (<3Y)`).
+  - Only funds with $\ge 3-5$ years of audited multi-cycle survival can achieve institutional recommendations ($\ge 8.0-9.5$).
+- **Sectoral / Thematic Concentration Risk Penalty**:
+  - Single-sector thematic funds carry 100% idiosyncratic concentration risk and receive a **-1.5 point deduction** in the Risk pillar, flagged with `⚠️ Sector Risk` warning badges.
+  - Diversified funds (Flexi Cap, Large & Mid Cap, Multi Cap, Mid Cap) receive diversification credits for cross-sector downside resilience.
+- **Annualized Volatility ($\sigma$)**:
+  $$\sigma = \sqrt{\frac{1}{N-1}\sum_{t=1}^N (r_t - \bar{r})^2} \times \sqrt{252} \times 100\%$$
+- **Sharpe Ratio (RBI 10Y Sovereign G-Sec Benchmark $R_f = 6.80\%$)**:
+  $$\text{Sharpe} = \frac{\text{CAGR}_{3Y} - 6.80\%}{\sigma}$$
+- **Sortino Ratio (Downside Semi-Deviation below Daily MAR)**:
+  $$\text{Sortino} = \frac{\text{CAGR}_{3Y} - 6.80\%}{D}, \quad D = \sqrt{\frac{1}{N}\sum_{r_t < \text{MAR}} (r_t - \text{MAR})^2} \times \sqrt{252} \times 100\%$$
+- **All-Time Peak-to-Trough Max Drawdown (MDD)**:
+  $$\text{Drawdown}_t = \frac{\max_{s \le t} \text{NAV}_s - \text{NAV}_t}{\max_{s \le t} \text{NAV}_s} \times 100\%, \quad \text{MDD} = \max_t (\text{Drawdown}_t)$$
+- **Dynamic Gradient Visuals**:
+  - **Royal Blue (`#0052cc`)**: Elite funds ($\ge 8.0$) with soft blue fill.
+  - **Interpolated Smooth Gradient**: Transitioning through purple and amber based on score tier.
+  - **Warning Red (`#dc2626`)**: Lagging funds ($< 5.0$) with subtle warning tint.
+
+### 2. Zero Estimations Policy
+- **No Fabricated Data**: This platform never estimates or invents missing financial metrics.
+- If a fund was launched 1.5 years ago, its 3Y, 5Y, and 10Y CAGRs are strictly displayed as **`N/A`** (or `-`), not fabricated.
+- The absolute scoring engine evaluates the fund based solely on its **actual verified history** (1Y return, 3M growth, volatility, Sharpe, and expense ratio), normalizing weights across available metrics.
+
+### 3. Relational SQLite Database (`data/bickerbape.db`)
+- Complete persistence layer tracking:
+  - `schemes`: SEBI scheme metadata, ISINs, fund houses, launch dates, AUM, and managers.
+  - `nav_history`: Over **1,050,000+ audited daily NAV records**.
+  - `fund_metrics`: Verified CAGR horizons, Sharpe, Volatility, Max Drawdown, and 3M Growth.
+  - `smart_scores`: Complete 4-pillar absolute score breakdown.
+  - `category_benchmarks`: Live category averages.
+
+### 4. Minimalist Detail View (Scorecard Accordions Closed on First Open)
+- On opening a fund's detailed drawer, all scorecard pillar accordions remain **closed** by default to maintain a clean, distraction-free interface. Users click any pillar to inspect its sub-metrics.
+
+### 5. Return vs Category Ratios
+- Displays exact outperformance ratios:
+  $$\text{Return Ratio} = \frac{\text{Fund 3Y CAGR}}{\text{Category Benchmark Average 3Y CAGR}}$$
+  (e.g., `1.46x 3Y Ratio`). Only shown when audited 3-year data exists.
+
+### 6. Distraction-Free Comparison Bar with Toggle & Minimize Dock
+- Hidden when empty; centered horizontally at all times; can be summoned or minimized at will.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: HTML5, Vanilla ES6 JavaScript (Modules), Tailwind CSS, Chart.js.
+- **Data & Persistence**: Python 3, SQLite (`data/bickerbape.db`), AMFI & MFAPI sync pipelines.
+- **Testing**: Playwright automated end-to-end verification suite.
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Run Locally
-Clone the repository and start the lightweight Python server:
-
+### 1. Run Web Application
 ```bash
-git clone https://github.com/Prashant1873/BickerBape.git
-cd BickerBape
 python serve.py
 ```
+Open **[http://localhost:8080](http://localhost:8080)** in your browser.
 
-Visit **http://localhost:8080** in your browser.
-
-### 2. Updating Mutual Fund Data
-To fetch the latest daily NAVs and re-calculate all rolling returns and Sharpe ratios for all 620 funds:
-
+### 2. Sync Database & Recompute Absolute Scores
 ```bash
-python scripts/update_funds.py
-```
-
-### 3. Run Automated Tests
-```bash
-pip install playwright
-python -m playwright install chromium
-python scripts/e2e_test.py
+python scripts/db_manager.py
 ```
 
 ---
 
 ## 📄 License
-MIT License
+MIT License © 2026 Prashant / BickerBape.

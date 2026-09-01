@@ -137,11 +137,12 @@
   </script>
 
   <!-- Custom Stylesheets -->
+  <link rel="icon" type="image/png" href="assets/favicon.png"/>
   <link href="css/styles.css" rel="stylesheet"/>
   <link href="css/components.css" rel="stylesheet"/>
 </head>
 
-<body class="bg-background text-on-background font-body-md antialiased overflow-hidden select-none">
+<body class="bg-background text-on-background font-body-md antialiased overflow-hidden">
 
   <!-- Mobile Sidebar Backdrop Overlay -->
   <div id="sidebar-mobile-backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden md:hidden"></div>
@@ -157,9 +158,7 @@
       <!-- Sidebar Header & Collapse Button -->
       <div class="p-md border-b border-surface-container flex items-center justify-between bg-surface">
         <div class="flex items-center gap-sm">
-          <div class="w-9 h-9 rounded-xl bg-primary-container text-on-primary flex items-center justify-center font-headline-md text-sm shadow-sm">
-            BB
-          </div>
+          <img src="assets/logo.png" alt="BickerBape Logo" class="w-9 h-9 rounded-xl object-contain shadow-sm border border-surface-container"/>
           <div>
             <h1 class="font-headline-md text-base text-primary tracking-tight leading-tight">BickerBape</h1>
             <p class="font-label-sm text-[11px] text-on-surface-variant">Best Fund Suggester</p>
@@ -396,8 +395,13 @@
           <input id="search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-1.5 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC, or category..." type="text"/>
         </div>
 
-        <!-- Right: View Switcher (Cards vs Table) -->
+        <!-- Right: Compare Tray Toggle & View Switcher (Cards vs Table) -->
         <div class="flex items-center gap-2">
+          <button id="compare-tray-toggle-btn" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl border border-surface-container bg-surface-container-lowest font-label-bold text-xs text-on-surface hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Toggle Comparison Bar">
+            <span class="material-symbols-outlined text-sm text-primary">compare_arrows</span>
+            <span>Compare (<span id="tray-toggle-count">0</span>)</span>
+          </button>
+
           <div class="flex items-center p-0.5 bg-surface-container rounded-xl card-shadow">
             <button id="view-cards-btn" class="view-toggle-btn active flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-label-bold touch-spring" title="Card View">
               <span class="material-symbols-outlined text-sm">grid_view</span>
@@ -429,32 +433,102 @@
         <!-- View 2: Comprehensive Screener Table (Tickertape Copy) -->
         <section id="screener-table-container" class="hidden bg-surface-container-lowest rounded-2xl card-shadow overflow-hidden border border-surface-container">
           <div class="overflow-x-auto w-full">
-            <table class="screener-table text-left w-full min-w-[850px]">
+            <table class="screener-table text-left w-full min-w-[900px]">
               <thead>
                 <tr class="font-label-bold text-xs text-on-surface-variant uppercase tracking-wider">
                   <th class="py-md px-md cursor-pointer select-none" data-sort="name">
                     <div class="flex items-center gap-1">Scheme & Category <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
                   </th>
                   <th class="py-md px-md text-center cursor-pointer select-none" data-sort="smart_score">
-                    <div class="flex items-center justify-center gap-1">SmartScore™ <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                    <div class="flex items-center justify-center gap-1">
+                      <span>SmartScore™</span>
+                      <span class="info-wrapper" onclick="event.stopPropagation()">
+                        <button type="button" class="info-btn" title="About SmartScore™">i</button>
+                        <span class="info-popup">
+                          <strong class="block font-bold text-white mb-0.5">SmartScore™ (1 to 10)</strong>
+                          <span>Institutional rating combining category outperformance ratio (30%), downside protection & volatility (30%), multi-cycle track record (25%), and low direct fees (15%).</span>
+                        </span>
+                      </span>
+                      <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
+                    </div>
                   </th>
                   <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_3y">
-                    <div class="flex items-center justify-end gap-1">3Y Ret & vs Cat <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                    <div class="flex items-center justify-end gap-1">
+                      <span>3Y Ret & Ratio</span>
+                      <span class="info-wrapper" onclick="event.stopPropagation()">
+                        <button type="button" class="info-btn" title="About 3Y Return & Ratio">i</button>
+                        <span class="info-popup">
+                          <strong class="block font-bold text-white mb-0.5">3Y Return Ratio vs Category</strong>
+                          <span>Shows how much better or worse this fund is compared to its peers. For example, 1.45x means it delivered 45% more return than the category average over 3 years.</span>
+                        </span>
+                      </span>
+                      <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
+                    </div>
                   </th>
                   <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_5y">
-                    <div class="flex items-center justify-end gap-1">5Y Ret & vs Cat <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                    <div class="flex items-center justify-end gap-1">
+                      <span>5Y Ret & Ratio</span>
+                      <span class="info-wrapper" onclick="event.stopPropagation()">
+                        <button type="button" class="info-btn" title="About 5Y Return & Ratio">i</button>
+                        <span class="info-popup">
+                          <strong class="block font-bold text-white mb-0.5">5Y Return Ratio vs Category</strong>
+                          <span>Measures 5-year outperformance against peers. A ratio above 1.15x indicates durable fund manager alpha across market cycles.</span>
+                        </span>
+                      </span>
+                      <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
+                    </div>
                   </th>
                   <th class="py-md px-md text-right cursor-pointer select-none" data-sort="cagr_10y">
-                    <div class="flex items-center justify-end gap-1">10Y CAGR <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                    <div class="flex items-center justify-end gap-1">
+                      <span>10Y CAGR</span>
+                      <span class="info-wrapper" onclick="event.stopPropagation()">
+                        <button type="button" class="info-btn" title="About 10Y CAGR">i</button>
+                        <span class="info-popup">
+                          <strong class="block font-bold text-white mb-0.5">10-Year Compound Annual Return</strong>
+                          <span>Decade-long wealth creation rate. Confirms whether a fund creates long-term generational wealth across both bull and bear markets.</span>
+                        </span>
+                      </span>
+                      <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
+                    </div>
                   </th>
                   <th class="py-md px-md text-right cursor-pointer select-none" data-sort="rolling_3y_avg">
-                    <div class="flex items-center justify-end gap-1">3Y Rolling Avg <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                    <div class="flex items-center justify-end gap-1">
+                      <span>3Y Rolling Avg</span>
+                      <span class="info-wrapper" onclick="event.stopPropagation()">
+                        <button type="button" class="info-btn" title="About 3Y Rolling Average">i</button>
+                        <span class="info-popup">
+                          <strong class="block font-bold text-white mb-0.5">3-Year Rolling Average</strong>
+                          <span>Average return if you invested on ANY random day in history and held for 3 years. It completely removes market timing luck.</span>
+                        </span>
+                      </span>
+                      <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
+                    </div>
                   </th>
                   <th class="py-md px-md text-right cursor-pointer select-none" data-sort="sharpe_ratio">
-                    <div class="flex items-center justify-end gap-1">Sharpe <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                    <div class="flex items-center justify-end gap-1">
+                      <span>Sharpe</span>
+                      <span class="info-wrapper" onclick="event.stopPropagation()">
+                        <button type="button" class="info-btn" title="About Sharpe Ratio">i</button>
+                        <span class="info-popup">
+                          <strong class="block font-bold text-white mb-0.5">Sharpe Ratio (Risk-Adjusted Return)</strong>
+                          <span>Measures excess return earned per unit of risk above safe government bonds (6.8%). Above 1.0 means high returns without reckless gambles.</span>
+                        </span>
+                      </span>
+                      <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
+                    </div>
                   </th>
                   <th class="py-md px-md text-right cursor-pointer select-none" data-sort="volatility">
-                    <div class="flex items-center justify-end gap-1">Volatility (σ) <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
+                    <div class="flex items-center justify-end gap-1">
+                      <span>Volatility (σ)</span>
+                      <span class="info-wrapper" onclick="event.stopPropagation()">
+                        <button type="button" class="info-btn" title="About Volatility">i</button>
+                        <span class="info-popup">
+                          <strong class="block font-bold text-white mb-0.5">Annualized Volatility (Price Fluctuations)</strong>
+                          <span>How sharply the fund's price swings up and down. A lower volatility (under 14%) means a smoother, less stressful journey.</span>
+                        </span>
+                      </span>
+                      <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
+                    </div>
                   </th>
                   <th class="py-md px-md text-center">Actions</th>
                 </tr>
@@ -503,12 +577,15 @@
       <!-- Added chips with remove (x) -->
     </div>
 
-    <div class="flex items-center gap-2 flex-shrink-0">
+    <div class="flex items-center gap-1.5 flex-shrink-0">
       <button id="open-compare-btn" class="px-3.5 py-2 rounded-xl bg-primary-container text-on-primary font-label-bold text-xs touch-spring hover:bg-primary transition-colors shadow-sm flex items-center gap-1 cursor-pointer">
         <span>Compare</span>
         <span class="material-symbols-outlined text-sm">arrow_forward</span>
       </button>
-      <button id="clear-compare-btn" class="p-1.5 text-on-surface-variant hover:text-error rounded-lg hover:bg-surface-container transition-colors touch-spring" title="Clear All Selected">
+      <button id="minimize-compare-btn" class="p-1.5 text-on-surface-variant hover:text-primary rounded-lg hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Minimize Tray">
+        <span class="material-symbols-outlined text-base">expand_more</span>
+      </button>
+      <button id="clear-compare-btn" class="p-1.5 text-on-surface-variant hover:text-error rounded-lg hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Clear All Selected">
         <span class="material-symbols-outlined text-base">delete_sweep</span>
       </button>
     </div>
@@ -527,9 +604,9 @@
     <!-- Drawer Header -->
     <div class="drawer-header px-md md:px-lg py-md border-b border-surface-container flex items-start justify-between bg-surface-container-lowest">
       <div>
-        <div class="flex items-center gap-sm mb-1">
+        <div class="flex items-center gap-sm mb-1 flex-wrap">
           <span id="drawer-fund-cat" class="bg-secondary-fixed-dim text-on-secondary-fixed px-2.5 py-0.5 rounded text-xs font-label-bold">Flexi Cap</span>
-          <span id="drawer-smartscore-badge" class="smartscore-badge">★ 8.4 SmartScore™</span>
+          <span id="drawer-smartscore-badge">★ 8.4 SmartScore™</span>
         </div>
         <h3 id="drawer-fund-name" class="font-headline-lg text-lg md:text-xl text-on-surface leading-snug">Fund Name</h3>
         <p class="text-xs text-on-surface-variant mt-0.5">Fund Manager: <strong id="drawer-manager" class="text-on-surface">Rajeev Thakkar</strong></p>
@@ -543,38 +620,129 @@
     <!-- Drawer Scrollable Content -->
     <div class="flex-grow overflow-y-auto px-md md:px-lg py-md space-y-lg hide-scrollbar">
       
-      <!-- Key Metric Cards Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-sm">
+      <!-- Key Metric Cards Grid (Expanded to 6 Core Pillars) -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-sm">
         <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
           <p class="text-xs text-on-surface-variant font-label-sm">Latest NAV</p>
           <p id="drawer-nav-price" class="font-display-financial text-xl text-primary mt-0.5">₹90.78</p>
-          <p id="drawer-nav-date" class="text-[10px] text-on-surface-variant mt-0.5">31-Aug-2026</p>
+          <p id="drawer-3m-growth" class="text-[10px] text-[#36B37E] font-bold mt-0.5">+4.8% past 3M</p>
         </div>
 
         <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <p class="text-xs text-on-surface-variant font-label-sm">3Y Return (CAGR)</p>
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-on-surface-variant font-label-sm">3Y Ret & Ratio</p>
+            <span class="info-wrapper">
+              <button type="button" class="info-btn" title="About 3Y Return & Ratio">i</button>
+              <span class="info-popup">
+                <strong class="block font-bold text-white mb-0.5">3Y Return & Ratio vs Category</strong>
+                <span>Shows how much better or worse this fund performed compared to other funds in the same category. For example, 1.45x means it made 45% more return than the category average.</span>
+              </span>
+            </span>
+          </div>
           <p id="drawer-3y-return" class="font-display-financial text-xl text-[#36B37E] mt-0.5">+18.4%</p>
-          <p class="text-[10px] text-on-surface-variant mt-0.5">Point-to-point</p>
+          <p id="drawer-3y-ratio" class="text-[10px] font-bold text-primary mt-0.5">1.48x vs Cat Avg</p>
         </div>
 
         <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <p class="text-xs text-on-surface-variant font-label-sm">3Y Rolling Avg</p>
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-on-surface-variant font-label-sm">5Y & 10Y Ratios</p>
+            <span class="info-wrapper">
+              <button type="button" class="info-btn" title="About 5Y & 10Y Ratios">i</button>
+              <span class="info-popup">
+                <strong class="block font-bold text-white mb-0.5">Multi-Cycle Outperformance Ratios</strong>
+                <span>Compares 5-year and 10-year growth against category peers. A ratio above 1.15x indicates durable fund manager skill across market cycles.</span>
+              </span>
+            </span>
+          </div>
+          <p id="drawer-5y-ratio" class="font-display-financial text-base text-on-surface mt-0.5">1.22x (5Y)</p>
+          <p id="drawer-10y-ratio" class="text-[10px] text-on-surface-variant font-medium mt-0.5">1.18x (10Y CAGR)</p>
+        </div>
+
+        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-on-surface-variant font-label-sm">3Y Rolling Avg</p>
+            <span class="info-wrapper">
+              <button type="button" class="info-btn" title="About 3Y Rolling Average">i</button>
+              <span class="info-popup">
+                <strong class="block font-bold text-white mb-0.5">3-Year Rolling Average</strong>
+                <span>The average return you would have earned if you invested on ANY random day in the past and held for 3 years. It removes entry timing luck.</span>
+              </span>
+            </span>
+          </div>
           <p id="drawer-3y-rolling" class="font-display-financial text-xl text-primary mt-0.5">21.2%</p>
           <p class="text-[10px] text-[#36B37E] font-bold mt-0.5">Consistent Compounding</p>
         </div>
 
         <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <p class="text-xs text-on-surface-variant font-label-sm">Sharpe / Volatility</p>
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-on-surface-variant font-label-sm">Sharpe / Volatility</p>
+            <span class="info-wrapper">
+              <button type="button" class="info-btn" title="About Sharpe & Volatility">i</button>
+              <span class="info-popup">
+                <strong class="block font-bold text-white mb-0.5">Sharpe Ratio & Volatility</strong>
+                <span>Sharpe measures return per unit of risk above safe government bonds (6.8%). Volatility measures price swings. High Sharpe (> 1.0) and low volatility (< 14%) indicate calm, high-quality growth.</span>
+              </span>
+            </span>
+          </div>
           <p class="font-display-financial text-xl text-on-surface mt-0.5"><span id="drawer-sharpe">1.24</span> <span class="text-xs font-normal text-on-surface-variant">/ <span id="drawer-volatility">13.2%</span></span></p>
           <p class="text-[10px] text-on-surface-variant mt-0.5">Rf = 6.8% (T-Bill)</p>
         </div>
+
+        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-on-surface-variant font-label-sm">Sortino / Beta</p>
+            <span class="info-wrapper">
+              <button type="button" class="info-btn" title="About Sortino & Beta">i</button>
+              <span class="info-popup">
+                <strong class="block font-bold text-white mb-0.5">Sortino Ratio & Beta</strong>
+                <span>Sortino only penalizes bad drops (downside risk), ignoring good upward jumps (above 1.2 is great). Beta measures market sensitivity (1.0 = moves with market; < 1.0 = defensive).</span>
+              </span>
+            </span>
+          </div>
+          <p class="font-display-financial text-xl text-on-surface mt-0.5"><span id="drawer-sortino">1.64</span> <span class="text-xs font-normal text-on-surface-variant">/ β <span id="drawer-beta">0.94</span></span></p>
+          <p id="drawer-mdd-stat" class="text-[10px] text-error font-medium mt-0.5">Max DD: -18.5%</p>
+        </div>
       </div>
 
-      <!-- Qualitative Info: AUM, Expense Ratio, P/E -->
+      <!-- Qualitative Info: AUM, Expense Ratio, P/E, Turnover -->
       <div class="flex flex-wrap gap-md py-sm px-md rounded-xl bg-surface-container-low text-xs text-on-surface-variant justify-between items-center">
         <span>AUM: <strong id="drawer-aum" class="text-on-surface font-label-bold">₹72,450 Cr</strong></span>
-        <span>Expense Ratio: <strong id="drawer-expense-ratio" class="text-on-surface font-label-bold">0.63%</strong></span>
-        <span>Portfolio P/E: <strong id="drawer-pe" class="text-on-surface font-label-bold">24.1</strong></span>
+        <span class="flex items-center">
+          <span>Expense Ratio</span>
+          <span class="info-wrapper">
+            <button type="button" class="info-btn" title="About Expense Ratio">i</button>
+            <span class="info-popup">
+              <strong class="block font-bold text-white mb-0.5">Direct Expense Ratio (TER)</strong>
+              <span>The annual fee deducted by the fund house to manage the fund. Direct plans charge up to 1% less than regular plans, saving you lakhs over 15+ years.</span>
+            </span>
+          </span>
+          <span class="mx-1">:</span>
+          <strong id="drawer-expense-ratio" class="text-on-surface font-label-bold">0.63%</strong>
+        </span>
+        <span class="flex items-center">
+          <span>Portfolio P/E</span>
+          <span class="info-wrapper">
+            <button type="button" class="info-btn" title="About P/E Ratio">i</button>
+            <span class="info-popup">
+              <strong class="block font-bold text-white mb-0.5">Portfolio P/E Ratio</strong>
+              <span>Price-to-Earnings ratio of the underlying stocks. Lower P/E indicates value bargains; higher P/E indicates high-growth premium companies.</span>
+            </span>
+          </span>
+          <span class="mx-1">:</span>
+          <strong id="drawer-pe" class="text-on-surface font-label-bold">24.1</strong>
+        </span>
+        <span class="flex items-center">
+          <span>Turnover</span>
+          <span class="info-wrapper">
+            <button type="button" class="info-btn" title="About Turnover Ratio">i</button>
+            <span class="info-popup">
+              <strong class="block font-bold text-white mb-0.5">Portfolio Turnover Ratio</strong>
+              <span>How frequently the manager buys and sells stocks. 20% means patient buy-and-hold; 100%+ means frequent short-term trading.</span>
+            </span>
+          </span>
+          <span class="mx-1">:</span>
+          <strong id="drawer-turnover" class="text-on-surface font-label-bold">32%</strong>
+        </span>
       </div>
 
       <!-- ====================================================================
@@ -599,11 +767,15 @@
         </div>
       </div>
 
-      <!-- VISUALIZATION 1: Interactive Historical NAV Chart -->
+      <!-- VISUALIZATION 1: Interactive Historical NAV Growth Chart (with 3M tab) -->
       <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
-        <div class="flex items-center justify-between mb-sm">
-          <h4 class="font-label-bold text-sm text-on-surface">Historical NAV Growth</h4>
+        <div class="flex items-center justify-between mb-sm flex-wrap gap-2">
+          <div>
+            <h4 class="font-label-bold text-sm text-on-surface">Historical NAV Growth</h4>
+            <p id="drawer-growth-headline" class="text-xs text-on-surface-variant">Interactive performance timeline</p>
+          </div>
           <div class="flex items-center gap-1 bg-surface-container p-0.5 rounded-lg text-xs font-label-bold">
+            <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="3M">3M</button>
             <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="1Y">1Y</button>
             <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="3Y">3Y</button>
             <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="5Y">5Y</button>
@@ -663,7 +835,7 @@
         <div class="flex items-center gap-2 mb-sm">
           <span class="material-symbols-outlined text-primary">fact_check</span>
           <div>
-            <h4 class="font-label-bold text-sm text-on-surface">10-Step Video Checklist</h4>
+            <h4 class="font-label-bold text-sm text-on-surface">10-Step Checklist</h4>
             <p class="text-xs text-on-surface-variant">Screening verdict based on Prashant's strategy</p>
           </div>
         </div>

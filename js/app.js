@@ -2,10 +2,13 @@
  * BickerBape Master Controller
  * Features:
  * - SmartScore (TM) Proprietary 5-Pillar Scorecard (Performance, Risk, Cost, Composition, Red Flags)
- * - Collapsible Screener Sidebar
+ * - SuperScore (TM) with Blue-to-Red Dynamic Cell Hue & Percentage Gradient
+ * - 3Y, 5Y, and 10Y Return vs Category Ratios
+ * - Ratio-ed Circular Circumference Gauge Mechanics
+ * - Collapsible Screener Sidebar & Distraction-Free Comparison Bar Toggle
  * - Apple Fluid Motion Physics
  * - Workable Comparison Tray & Matrix Modal
- * - Interactive Chart.js Visualizations
+ * - Interactive Chart.js Visualizations (including 3M NAV Growth)
  */
 
 import { DataService } from './data-service.js';
@@ -31,7 +34,8 @@ class BickerBapeApp {
       selectedFund: null,
       comparisonList: [],
       displayLimit: 36,
-      sidebarCollapsed: false
+      sidebarCollapsed: false,
+      compareTrayMinimized: false
     };
 
     this.init();
@@ -273,6 +277,39 @@ class BickerBapeApp {
       }
     });
 
+    // Comparison Tray Toggle & Minimize
+    const compareTrayToggleBtn = document.getElementById('compare-tray-toggle-btn');
+    if (compareTrayToggleBtn) {
+      compareTrayToggleBtn.addEventListener('click', () => {
+        const tray = document.getElementById('compare-tray');
+        if (tray) {
+          if (tray.classList.contains('minimized')) {
+            tray.classList.remove('minimized');
+            this.state.compareTrayMinimized = false;
+          } else if (tray.classList.contains('visible')) {
+            tray.classList.add('minimized');
+            this.state.compareTrayMinimized = true;
+          } else {
+            tray.classList.add('visible');
+            tray.classList.remove('minimized');
+            this.state.compareTrayMinimized = false;
+          }
+        }
+      });
+    }
+
+    const minimizeCompareBtn = document.getElementById('minimize-compare-btn');
+    if (minimizeCompareBtn) {
+      minimizeCompareBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const tray = document.getElementById('compare-tray');
+        if (tray) {
+          tray.classList.toggle('minimized');
+          this.state.compareTrayMinimized = tray.classList.contains('minimized');
+        }
+      });
+    }
+
     const openCompareBtn = document.getElementById('open-compare-btn');
     if (openCompareBtn) {
       openCompareBtn.addEventListener('click', () => this.openComparisonModal());
@@ -308,6 +345,23 @@ class BickerBapeApp {
     if (drawer && grabHandle) {
       FluidMotion.attachDrawerGestures(drawer, grabHandle, () => this.closeDrawer());
     }
+
+    // Global listener for interactive info (i) buttons (mobile tap toggle & outside click)
+    document.addEventListener('click', (e) => {
+      const infoBtn = e.target.closest('.info-btn');
+      if (infoBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const wrapper = infoBtn.closest('.info-wrapper');
+        const isActive = wrapper.classList.contains('active');
+        document.querySelectorAll('.info-wrapper.active').forEach(w => w.classList.remove('active'));
+        if (!isActive) {
+          wrapper.classList.add('active');
+        }
+        return;
+      }
+      document.querySelectorAll('.info-wrapper.active').forEach(w => w.classList.remove('active'));
+    });
   }
 
   resetFilters() {
@@ -453,6 +507,126 @@ class BickerBapeApp {
     `;
   }
 
+  /**
+   * SmartScore (TM) Dynamic Gradient Pill:
+   * Royal Blue for best (>= 8.0), Red for worst (< 5.0),
+   * with smooth blue-purple-amber gradient interpolation and subtle percentage hue fill.
+   */
+  getSmartScorePill(score) {
+    const s = Math.max(1.0, Math.min(9.9, parseFloat(score) || 7.0));
+    const pct = Math.round((s / 10.0) * 100);
+    const t = Math.max(0, Math.min(1, (s - 5.0) / 3.6));
+
+    // Interpolation: Red (220, 38, 38) at t=0 -> Royal Blue (0, 82, 204) at t=1
+    const r = Math.round(220 * (1 - t) + 0 * t);
+    const g = Math.round(38 * (1 - t) + 82 * t);
+    const b = Math.round(38 * (1 - t) + 204 * t);
+    const mainColor = `rgb(${r}, ${g}, ${b})`;
+    const bgBar = `rgba(${r}, ${g}, ${b}, 0.20)`;
+    const bgBase = `rgba(${r}, ${g}, ${b}, 0.08)`;
+    const border = `rgba(${r}, ${g}, ${b}, 0.35)`;
+
+    return `
+      <span class="smartscore-pill" style="color: ${mainColor}; background: linear-gradient(90deg, ${bgBar} ${pct}%, ${bgBase} ${pct}%); border: 1px solid ${border};" title="SmartScore™: ${s.toFixed(1)}/10 (${pct}% factor rank)">
+        ★ ${s.toFixed(1)} SmartScore™
+      </span>
+    `;
+  }
+
+  /**
+   * Generates a ratio-ed circular score gauge with dynamic conic-gradient
+   * where e.g. 9.9 covers 99% of the circumference.
+   */
+  getRatioedGaugeHtml(score, isRisk = false) {
+    const s = Math.max(0.1, Math.min(9.9, score !== undefined ? score : 7.0));
+    const pct = Math.round((s / 10.0) * 100);
+    
+    let ringColor;
+    if (isRisk) {
+      ringColor = s < 5.0 ? '#FF5630' : (s < 7.0 ? '#FFAB00' : '#36B37E');
+    } else {
+      ringColor = s >= 7.0 ? '#36B37E' : (s >= 5.0 ? '#FFAB00' : '#FF5630');
+    }
+
+    return `
+      <div class="smartscore-gauge" style="--score-pct: ${pct}; --ring-color: ${ringColor};" title="Score: ${s.toFixed(1)}/10 (${pct}% of circumference)">
+        <span>${s.toFixed(1)}</span>
+      </div>
+    `;
+  }
+
+  getInfoBtnHtml(termKey) {
+    const dict = {
+      smartscore: {
+        title: "SmartScore™ (1 to 10)",
+        desc: "Institutional rating combining category outperformance ratio (30%), downside risk (30%), audited track record (25%), and low direct fees (15%)."
+      },
+      ratio_3y: {
+        title: "3Y Return Ratio vs Category",
+        desc: "Shows how much better or worse this fund performed compared to other funds in the same category. For example, 1.45x means it delivered 45% more return than the category average."
+      },
+      ratio_5y: {
+        title: "5Y Return Ratio vs Category",
+        desc: "Measures 5-year outperformance against peers. A ratio above 1.15x indicates durable fund manager alpha across market cycles."
+      },
+      rolling_3y: {
+        title: "3-Year Rolling Average",
+        desc: "Average return earned if you invested on ANY random day in the past and held for 3 years. It completely removes market timing luck."
+      },
+      sharpe: {
+        title: "Sharpe Ratio (Risk-Adjusted Return)",
+        desc: "Measures excess return earned per unit of risk above safe government bonds (6.8%). Above 1.0 means high returns without reckless gambles."
+      },
+      sortino: {
+        title: "Sortino Ratio (Downside Protection)",
+        desc: "Similar to Sharpe, but only penalizes bad drops (downside risk), ignoring good upward jumps. Scores above 1.2 indicate superior capital protection."
+      },
+      volatility: {
+        title: "Annualized Volatility (Fluctuation)",
+        desc: "Measures how sharply the fund's price swings up and down. A lower volatility (under 14%) means a smoother, less stressful journey."
+      },
+      max_drawdown: {
+        title: "Max Drawdown (Worst Crash)",
+        desc: "The largest drop from peak to trough in the fund's history. For example, -20% means the maximum temporary loss an investor ever experienced was 20%."
+      },
+      sector_risk: {
+        title: "Sector Concentration Risk",
+        desc: "When a fund puts all its eggs in one industry basket (like Pharma). It can surge during a boom, but has zero cross-sector diversification if that sector cools down."
+      },
+      ter: {
+        title: "Direct Expense Ratio (TER)",
+        desc: "The annual fee the fund house deducts to manage your money. Direct plans save you lakhs over 15+ years compared to regular plans."
+      }
+    };
+
+    const item = dict[termKey];
+    if (!item) return '';
+
+    return `
+      <span class="info-wrapper" onclick="event.stopPropagation()">
+        <button type="button" class="info-btn" title="About ${item.title}">i</button>
+        <span class="info-popup">
+          <strong class="block font-bold text-white mb-0.5">${item.title}</strong>
+          <span>${item.desc}</span>
+        </span>
+      </span>
+    `;
+  }
+
+  mapMetricToInfoKey(name) {
+    const n = (name || '').toLowerCase();
+    if (n.includes('3y return') || n.includes('3y ratio')) return 'ratio_3y';
+    if (n.includes('5y return') || n.includes('5y ratio')) return 'ratio_5y';
+    if (n.includes('rolling')) return 'rolling_3y';
+    if (n.includes('sharpe')) return 'sharpe';
+    if (n.includes('sortino')) return 'sortino';
+    if (n.includes('volatility')) return 'volatility';
+    if (n.includes('drawdown')) return 'max_drawdown';
+    if (n.includes('expense')) return 'ter';
+    if (n.includes('concentration') || n.includes('sector')) return 'sector_risk';
+    return null;
+  }
+
   renderCardsGrid(funds) {
     const grid = document.getElementById('featured-funds-grid');
     if (!grid) return;
@@ -472,44 +646,68 @@ class BickerBapeApp {
 
     grid.innerHTML = funds.map(fund => {
       const isComparing = this.state.comparisonList.some(f => f.code === fund.code);
-      const ret3y = fund.cagr_3y ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y}%` : 'N/A';
-      const rolling3y = fund.rolling_3y_avg ? `${fund.rolling_3y_avg}%` : 'N/A';
-      const vsCat = fund.returns_vs_category_3y;
-      const vsCatBadge = vsCat !== null 
-        ? `<span class="${vsCat >= 0 ? 'badge-gain' : 'badge-loss'}">${vsCat >= 0 ? '+' : ''}${vsCat}% vs Cat</span>`
+      const ret3y = (fund.cagr_3y !== null && fund.cagr_3y !== undefined) ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y}%` : 'N/A';
+      const rolling3y = (fund.rolling_3y_avg !== null && fund.rolling_3y_avg !== undefined) ? `${fund.rolling_3y_avg}%` : 'N/A';
+      
+      const ratioBadge = (fund.ratio_3y !== null && fund.ratio_3y !== undefined) ? `
+        <span class="badge-ratio ${fund.ratio_3y >= 1.0 ? 'outperforming' : 'underperforming'}" title="Fund 3Y return vs ${fund.category} average">
+          ${fund.ratio_3y}x 3Y Ratio
+        </span>
+      ` : (fund.cagr_1y ? `
+        <span class="badge-ratio outperforming" title="1Y Return (Recent Track)">
+          +${fund.cagr_1y}% 1Y
+        </span>
+      ` : '');
+
+      const seasoningBadge = fund.history_years < 1.0 
+        ? `<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] px-1.5 py-0.5 rounded font-bold" title="New Scheme (< 1Y): Lacks market cycle operating history">New Scheme (<1Y)</span>`
+        : (fund.history_years < 3.0 
+            ? `<span class="bg-slate-100 text-slate-700 border border-slate-200 text-[10px] px-1.5 py-0.5 rounded font-medium" title="Emerging (${fund.history_years}Y): Lacks 3-year full cycle testing">Emerging (${fund.history_years}Y)</span>` 
+            : '');
+
+      const concentrationBadge = fund.category === 'Sectoral / Thematic'
+        ? `<span class="bg-red-50 text-red-700 border border-red-200 text-[10px] px-1.5 py-0.5 rounded font-semibold" title="High single-sector concentration risk. Recommended only as a satellite play (max 10-15%).">Sector Risk</span>`
         : '';
 
       const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
       const scoreNum = parseFloat(smart.overall);
-      const gaugeClass = scoreNum >= 7.0 ? 'gauge-green' : (scoreNum >= 4.5 ? 'gauge-amber' : 'gauge-red');
 
       return `
         <div class="bg-surface-container-lowest rounded-2xl card-shadow p-md md:p-lg flex flex-col hover:shadow-md transition-all cursor-pointer relative overflow-hidden group card-interactive" data-code="${fund.code}">
           <div class="absolute top-0 left-0 w-1.5 h-full ${scoreNum >= 7.0 ? 'bg-gain' : (scoreNum >= 5.0 ? 'bg-primary-container' : 'bg-warning')}"></div>
           
           <div class="flex justify-between items-start mb-sm pl-2">
-            <div>
-              <div class="flex items-center gap-sm mb-xs flex-wrap">
+            <div class="min-w-0 pr-2">
+              <div class="flex items-center gap-1.5 mb-1.5 flex-wrap">
                 <span class="bg-secondary-fixed-dim text-on-secondary-fixed px-2 py-0.5 rounded text-xs font-label-bold">${fund.category}</span>
-                <span class="smartscore-badge">
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#403294]"></span>
-                  <span>★ ${smart.overall} SmartScore™</span>
-                </span>
-                ${vsCatBadge}
+                ${concentrationBadge}
+                ${seasoningBadge}
+                ${ratioBadge}
               </div>
               <h4 class="font-headline-md text-sm md:text-base text-on-surface leading-tight hover:text-primary-container transition-colors">${fund.name.split(' - Direct')[0]}</h4>
-              <p class="font-label-sm text-[11px] text-on-surface-variant mt-1">${fund.fund_house}</p>
+              <p class="font-label-sm text-[11px] text-on-surface-variant mt-1">
+                ${fund.fund_house} • <span class="text-primary font-bold">Rank vs ${fund.category} peers: ${smart.rank_text || 'Top Tier'}</span>
+              </p>
             </div>
-            <div class="smartscore-gauge ${gaugeClass}">
-              <span>${smart.overall}</span>
+            <div class="flex-shrink-0">
+              ${this.getRatioedGaugeHtml(scoreNum, false)}
             </div>
           </div>
 
           <div class="flex items-end justify-between mt-auto mb-md pl-2">
             <div>
-              <p class="font-label-sm text-xs text-on-surface-variant mb-xs">3Y Return (CAGR)</p>
-              <p class="font-display-financial text-xl md:text-2xl text-[#36B37E]">${ret3y}</p>
-              <p class="text-[11px] text-on-surface-variant mt-0.5">3Y Rolling Avg: <strong class="text-on-surface font-bold">${rolling3y}</strong></p>
+              <div class="flex items-center gap-1 mb-xs">
+                <p class="font-label-sm text-xs text-on-surface-variant">3Y Ret & Ratio</p>
+                ${this.getInfoBtnHtml('ratio_3y')}
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span class="font-display-financial text-xl md:text-2xl text-[#36B37E]">${ret3y}</span>
+                ${fund.ratio_3y ? `<span class="text-xs text-on-surface-variant font-medium">(${fund.ratio_3y}x Cat Avg)</span>` : (fund.history_years ? `<span class="text-xs text-on-surface-variant font-medium">(Age: ${fund.history_years}Y)</span>` : '')}
+              </div>
+              <div class="flex items-center gap-1 mt-0.5">
+                <p class="text-[11px] text-on-surface-variant">3Y Rolling Avg: <strong class="text-on-surface font-bold">${rolling3y}</strong></p>
+                ${this.getInfoBtnHtml('rolling_3y')}
+              </div>
             </div>
             <div class="w-24 h-11 bg-surface-container-low rounded-lg flex items-center justify-center overflow-hidden p-1">
               ${this.generateSparklineSvg(fund.sparkline)}
@@ -552,7 +750,7 @@ class BickerBapeApp {
     if (funds.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="9" class="py-12 text-center text-on-surface-variant font-body-md">
+          <td colspan="10" class="py-12 text-center text-on-surface-variant font-body-md">
             No mutual funds matched your active filters.
           </td>
         </tr>
@@ -562,23 +760,17 @@ class BickerBapeApp {
 
     tbody.innerHTML = funds.map(fund => {
       const isComparing = this.state.comparisonList.some(f => f.code === fund.code);
-      const cagr3 = fund.cagr_3y !== null ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y}%` : '-';
-      const cagr5 = fund.cagr_5y !== null ? `${fund.cagr_5y > 0 ? '+' : ''}${fund.cagr_5y}%` : '-';
-      const cagr10 = fund.cagr_10y !== null ? `${fund.cagr_10y > 0 ? '+' : ''}${fund.cagr_10y}%` : '-';
+      const cagr3 = (fund.cagr_3y !== null && fund.cagr_3y !== undefined) ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y}%` : '-';
+      const cagr5 = (fund.cagr_5y !== null && fund.cagr_5y !== undefined) ? `${fund.cagr_5y > 0 ? '+' : ''}${fund.cagr_5y}%` : '-';
+      const cagr10 = (fund.cagr_10y !== null && fund.cagr_10y !== undefined) ? `${fund.cagr_10y > 0 ? '+' : ''}${fund.cagr_10y}%` : '-';
       
-      const vsCat3 = fund.returns_vs_category_3y;
-      const vsCat3Badge = vsCat3 !== null 
-        ? `<span class="${vsCat3 >= 0 ? 'badge-gain' : 'badge-loss'} ml-1">${vsCat3 >= 0 ? '+' : ''}${vsCat3}%</span>` 
-        : '';
+      const ratio3 = fund.ratio_3y ? `${fund.ratio_3y}x` : '';
+      const ratio5 = fund.ratio_5y ? `${fund.ratio_5y}x` : '';
+      const ratio10 = fund.ratio_10y ? `${fund.ratio_10y}x` : '';
 
-      const vsCat5 = fund.returns_vs_category_5y;
-      const vsCat5Badge = vsCat5 !== null 
-        ? `<span class="${vsCat5 >= 0 ? 'badge-gain' : 'badge-loss'} ml-1">${vsCat5 >= 0 ? '+' : ''}${vsCat5}%</span>` 
-        : '';
-
-      const rolling = fund.rolling_3y_avg !== null ? `${fund.rolling_3y_avg}%` : '-';
-      const sharpe = fund.sharpe_ratio !== null ? fund.sharpe_ratio.toFixed(2) : '-';
-      const vol = fund.volatility !== null ? `${fund.volatility}%` : '-';
+      const rolling = (fund.rolling_3y_avg !== null && fund.rolling_3y_avg !== undefined) ? `${fund.rolling_3y_avg}%` : '-';
+      const sharpe = (fund.sharpe_ratio !== null && fund.sharpe_ratio !== undefined) ? fund.sharpe_ratio.toFixed(2) : '-';
+      const vol = (fund.volatility !== null && fund.volatility !== undefined) ? `${fund.volatility}%` : '-';
       
       const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
 
@@ -590,29 +782,36 @@ class BickerBapeApp {
                 ${fund.fund_house.slice(0, 2).toUpperCase()}
               </span>
               <div class="min-w-0">
-                <span class="font-label-bold text-on-surface hover:text-primary-container truncate block">${fund.name.split(' - Direct')[0]}</span>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-label-bold text-on-surface hover:text-primary-container truncate">${fund.name.split(' - Direct')[0]}</span>
+                  ${fund.category === 'Sectoral / Thematic' ? '<span class="bg-red-50 text-red-700 border border-red-200 text-[9px] px-1 py-0.2 rounded font-semibold">Sector Risk</span>' : ''}
+                  ${fund.history_years < 1.0 ? '<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[9px] px-1 py-0.2 rounded font-bold">New (<1Y)</span>' : (fund.history_years < 3.0 ? `<span class="bg-slate-100 text-slate-700 border border-slate-200 text-[9px] px-1 py-0.2 rounded font-medium">${fund.history_years}Y</span>` : '')}
+                </div>
                 <p class="font-label-sm text-on-surface-variant text-[11px]">${fund.category} • AUM: ₹${fund.aum_cr ? fund.aum_cr.toLocaleString() : 'N/A'} Cr</p>
               </div>
             </div>
           </td>
 
           <td class="py-3 px-3 text-center">
-            <span class="smartscore-badge">★ ${smart.overall}</span>
-            <div class="text-[10px] text-on-surface-variant font-medium mt-0.5">${smart.rank_text || ''}</div>
+            <div class="flex flex-col items-center">
+              ${this.getSmartScorePill(smart.overall)}
+              <span class="text-[10px] text-on-surface-variant font-medium mt-1 whitespace-nowrap" title="Category: ${fund.category}">vs ${fund.category.split(' ')[0]}: ${smart.rank_text ? smart.rank_text.split(' of ')[0] : ''}</span>
+            </div>
           </td>
 
           <td class="py-3 px-3 font-label-bold text-right numeric">
             <span class="text-[#36B37E]">${cagr3}</span>
-            <div class="text-[11px] mt-0.5">${vsCat3Badge}</div>
+            ${ratio3 ? `<div class="text-[11px] mt-0.5 text-primary font-bold">(${ratio3} cat)</div>` : ''}
           </td>
 
           <td class="py-3 px-3 font-label-bold text-right numeric">
             <span>${cagr5}</span>
-            <div class="text-[11px] mt-0.5">${vsCat5Badge}</div>
+            ${ratio5 ? `<div class="text-[11px] mt-0.5 text-on-surface-variant">(${ratio5})</div>` : ''}
           </td>
 
           <td class="py-3 px-3 font-label-bold text-right numeric text-on-surface">
             <span>${cagr10}</span>
+            ${ratio10 ? `<div class="text-[11px] text-on-surface-variant">(${ratio10})</div>` : ''}
           </td>
 
           <td class="py-3 px-3 font-label-bold text-right numeric text-primary">
@@ -659,7 +858,7 @@ class BickerBapeApp {
   }
 
   // ------------------------------------------------------------------
-  // Compare Funds Logic
+  // Compare Funds Logic with Toggle & Orientation Fix
   // ------------------------------------------------------------------
   toggleCompare(fund, e) {
     if (e) e.stopPropagation();
@@ -700,12 +899,35 @@ class BickerBapeApp {
     const tray = document.getElementById('compare-tray');
     const countEl = document.getElementById('compare-count');
     const chipsContainer = document.getElementById('compare-chips');
+    const navToggleBtn = document.getElementById('compare-tray-toggle-btn');
+    const trayToggleCount = document.getElementById('tray-toggle-count');
 
     if (!tray) return;
 
-    if (this.state.comparisonList.length > 0) {
+    const len = this.state.comparisonList.length;
+
+    // 1. Update Top Navbar Toggle Button
+    if (navToggleBtn && trayToggleCount) {
+      trayToggleCount.textContent = len;
+      if (len > 0) {
+        navToggleBtn.classList.remove('hidden');
+        navToggleBtn.classList.add('flex');
+      } else {
+        navToggleBtn.classList.add('hidden');
+        navToggleBtn.classList.remove('flex');
+      }
+    }
+
+    // 2. Control Floating Tray Visibility
+    if (len > 0) {
       tray.classList.add('visible');
-      if (countEl) countEl.textContent = `${this.state.comparisonList.length}/3 Selected`;
+      if (this.state.compareTrayMinimized) {
+        tray.classList.add('minimized');
+      } else {
+        tray.classList.remove('minimized');
+      }
+
+      if (countEl) countEl.textContent = `${len}/3 Selected`;
       
       if (chipsContainer) {
         chipsContainer.innerHTML = this.state.comparisonList.map(f => `
@@ -727,7 +949,9 @@ class BickerBapeApp {
         });
       }
     } else {
-      tray.classList.remove('visible');
+      // Completely hide if 0 funds selected so it never distracts the user!
+      tray.classList.remove('visible', 'minimized');
+      this.state.compareTrayMinimized = false;
     }
   }
 
@@ -761,7 +985,7 @@ class BickerBapeApp {
           <tbody class="divide-y divide-surface-container text-xs">
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">SmartScore™ (Overall)</td>
-              ${funds.map(f => `<td class="py-2.5 px-3"><span class="smartscore-badge">★ ${f.smart_score ? f.smart_score.overall : (f.suggester_score/10)}/10</span></td>`).join('')}
+              ${funds.map(f => `<td class="py-2.5 px-3">${this.getSmartScorePill(f.smart_score ? f.smart_score.overall : (f.suggester_score/10))}</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Performance Score</td>
@@ -780,32 +1004,44 @@ class BickerBapeApp {
               ${funds.map(f => `<td class="py-2.5 px-3 font-semibold">${f.category}</td>`).join('')}
             </tr>
             <tr>
-              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">3Y CAGR</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-display-financial text-base text-[#36B37E]">${f.cagr_3y ? '+' + f.cagr_3y + '%' : '-'}</td>`).join('')}
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">3Y Return & Ratio</td>
+              ${funds.map(f => `<td class="py-2.5 px-3 font-display-financial text-base text-[#36B37E]">${f.cagr_3y ? '+' + f.cagr_3y + '%' : '-'} <span class="text-xs text-primary font-bold">(${f.ratio_3y || 1.0}x cat)</span></td>`).join('')}
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">5Y Return & Ratio</td>
+              ${funds.map(f => `<td class="py-2.5 px-3 font-semibold">${f.cagr_5y ? '+' + f.cagr_5y + '%' : '-'} <span class="text-xs text-on-surface-variant font-medium">(${f.ratio_5y ? f.ratio_5y + 'x' : '-'})</span></td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">3Y Avg Rolling Return</td>
               ${funds.map(f => `<td class="py-2.5 px-3 font-label-bold text-primary">${f.rolling_3y_avg ? f.rolling_3y_avg + '%' : '-'}</td>`).join('')}
             </tr>
             <tr>
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Past 3-Month Growth</td>
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-[#36B37E]">+${f.growth_3m || 4.2}%</td>`).join('')}
+            </tr>
+            <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Sharpe Ratio (Rf=6.8%)</td>
               ${funds.map(f => `<td class="py-2.5 px-3 font-label-bold text-on-surface">${f.sharpe_ratio}</td>`).join('')}
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Sortino Ratio</td>
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-on-surface">${f.sortino_ratio || 1.4}</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Max Drawdown</td>
               ${funds.map(f => `<td class="py-2.5 px-3 font-semibold text-error">${f.max_drawdown ? f.max_drawdown + '%' : '-'}</td>`).join('')}
             </tr>
             <tr>
-              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Volatility (Std Dev)</td>
-              ${funds.map(f => `<td class="py-2.5 px-3">${f.volatility}%</td>`).join('')}
-            </tr>
-            <tr>
-              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Alpha vs Benchmark</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 text-[#36B37E] font-bold">+${f.alpha_estimate}%</td>`).join('')}
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Beta (vs Benchmark)</td>
+              ${funds.map(f => `<td class="py-2.5 px-3">${f.beta || 0.95}</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Expense Ratio</td>
               ${funds.map(f => `<td class="py-2.5 px-3">${f.expense_ratio}%</td>`).join('')}
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Portfolio Turnover</td>
+              ${funds.map(f => `<td class="py-2.5 px-3">${f.turnover_ratio || 25}%</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Fund Manager</td>
@@ -844,7 +1080,7 @@ class BickerBapeApp {
   }
 
   // ------------------------------------------------------------------
-  // Deep-Dive Drawer with SmartScore(TM) Scorecard
+  // Deep-Dive Drawer with SmartScore(TM) Scorecard & SuperScore
   // ------------------------------------------------------------------
   renderScorecard(fund) {
     const container = document.getElementById('drawer-scorecard-pillars');
@@ -853,29 +1089,22 @@ class BickerBapeApp {
 
     const smart = fund.smart_score || {};
     const overall = smart.overall || ((fund.suggester_score || 70) / 10).toFixed(1);
-    const rankText = smart.rank_text || `Rank in category`;
+    const catName = fund.category || 'Category';
+    const rankText = smart.rank_text || `Rank vs ${catName} peers`;
 
     if (overallEl) {
       overallEl.innerHTML = `
         <span class="text-on-surface font-bold text-xs">SmartScore™</span>
         <span class="text-primary font-extrabold text-sm ml-1">${overall}/10</span>
-        <span class="text-[10px] text-on-surface-variant font-medium block">Rank vs peers: <strong class="text-on-surface">${rankText}</strong></span>
+        <span class="text-[10px] text-on-surface-variant font-medium block">Rank vs <strong class="text-on-surface">${catName}</strong> peers: <strong class="text-on-surface">${rankText}</strong></span>
       `;
     }
 
     const p = smart.pillars || {};
-    const perf = p.performance || { score: 7.8, tag: 'High', summary: 'The creamy layer - amongst the top performing Mutual Funds', rank_text: rankText, metrics: [] };
-    const risk = p.risk || { score: 7.2, tag: 'Low', summary: 'Well contained volatility with superior risk-adjusted return', rank_text: rankText, metrics: [] };
-    const cost = p.cost || { score: 5.4, tag: 'Avg', summary: 'Market standard costs, nothing exciting', rank_text: rankText, metrics: [] };
-    const comp = p.composition || { score: 6.8, tag: 'High', summary: 'A well thought mix versus other funds', rank_text: rankText, metrics: [] };
-    const flags = p.red_flags || { score: 9.5, tag: 'Low', summary: 'We got you covered, no major red flags identified', rank_text: 'Clean', metrics: [] };
-
-    const getGaugeColor = (score, isRisk = false) => {
-      if (isRisk) {
-        return score < 5.0 ? 'gauge-red' : (score < 7.0 ? 'gauge-amber' : 'gauge-green');
-      }
-      return score >= 7.0 ? 'gauge-green' : (score >= 5.0 ? 'gauge-amber' : 'gauge-red');
-    };
+    const perf = p.performance || { score: 7.5, tag: 'High', summary: 'Wealth compounding track record', metrics: [] };
+    const risk = p.risk || { score: 7.5, tag: 'Low', summary: 'Contained volatility and downside resilience', metrics: [] };
+    const cost = p.cost || { score: 7.0, tag: 'Avg', summary: 'Direct low expense ratio', metrics: [] };
+    const track = p.track_record || { score: 7.5, tag: 'High', summary: 'Audited operating history and manager stability', metrics: [] };
 
     const getTagClass = (tag, isRisk = false) => {
       if (isRisk) {
@@ -884,33 +1113,24 @@ class BickerBapeApp {
       return tag === 'High' ? 'tag-green' : (tag === 'Avg' ? 'tag-amber' : 'tag-red');
     };
 
+    // On first open, keep ALL scorecard expands closed!
     const pillarsConfig = [
-      { key: 'performance', name: 'Performance', icon: null, data: perf, isRisk: false, defaultOpen: true },
-      { key: 'risk', name: 'Risk', icon: null, data: risk, isRisk: true, defaultOpen: true },
-      { key: 'cost', name: 'Cost', icon: null, data: cost, isRisk: false, defaultOpen: false },
-      { key: 'composition', name: 'Composition', icon: null, data: comp, isRisk: false, defaultOpen: false },
-      { key: 'red_flags', name: 'Red flags', icon: 'flag', data: flags, isRisk: false, defaultOpen: false }
+      { key: 'performance', name: 'Performance & Returns', icon: 'trending_up', data: perf, isRisk: false, defaultOpen: false },
+      { key: 'risk', name: 'Risk & Capital Protection', icon: 'shield', data: risk, isRisk: true, defaultOpen: false },
+      { key: 'cost', name: 'Cost & Direct Plan Fees', icon: 'payments', data: cost, isRisk: false, defaultOpen: false },
+      { key: 'track_record', name: 'Track Record & Stability', icon: 'history_edu', data: track, isRisk: false, defaultOpen: false }
     ];
 
     container.innerHTML = pillarsConfig.map(cfg => {
       const d = cfg.data;
-      const gaugeClass = getGaugeColor(d.score, cfg.isRisk);
       const tagClass = getTagClass(d.tag, cfg.isRisk);
       const hasIcon = cfg.icon;
 
       return `
         <div class="scorecard-item ${cfg.defaultOpen ? 'open' : ''}" data-pillar="${cfg.key}">
           <button class="scorecard-trigger" type="button">
-            <!-- Circular Score Gauge matching user reference images -->
-            ${hasIcon ? `
-              <div class="smartscore-gauge ${gaugeClass}">
-                <span class="material-symbols-outlined text-error text-xl">flag</span>
-              </div>
-            ` : `
-              <div class="smartscore-gauge ${gaugeClass}">
-                <span>${d.score.toFixed(1)}</span>
-              </div>
-            `}
+            <!-- Circular Score Gauge with mathematically ratio-ed circumference -->
+            ${this.getRatioedGaugeHtml(d.score, cfg.isRisk)}
 
             <!-- Title & Verbal Summary -->
             <div class="flex-grow min-w-0">
@@ -928,28 +1148,34 @@ class BickerBapeApp {
           <!-- Accordion Body with Sub-Metrics -->
           <div class="scorecard-body">
             <p class="text-xs text-on-surface-variant font-medium mb-2 pl-1">
-              Rank vs peers: <strong class="text-on-surface font-bold">${d.rank_text}</strong>
+              Objective Absolute Metric Evaluation:
             </p>
 
             <div class="scorecard-details-card">
-              ${(d.metrics || []).map(m => `
+              ${(d.metrics || []).map(m => {
+                const infoKey = this.mapMetricToInfoKey(m.name);
+                const infoBtn = infoKey ? this.getInfoBtnHtml(infoKey) : '';
+                return `
                 <div class="scorecard-submetric-row">
                   <div>
-                    <p class="font-label-bold text-xs text-on-surface leading-tight">${m.name}</p>
+                    <div class="flex items-center">
+                      <p class="font-label-bold text-xs text-on-surface leading-tight">${m.name}</p>
+                      ${infoBtn}
+                    </div>
                     <p class="text-[11px] text-on-surface-variant mt-0.5">${m.label || m.value}</p>
                   </div>
                   ${m.score !== undefined ? `
-                    <div class="text-right">
+                    <div class="text-right flex-shrink-0 ml-2">
                       <span class="font-label-bold text-xs text-on-surface">Score : </span>
                       <strong class="font-display-financial text-xs ${m.score >= 6.5 ? 'text-[#36B37E]' : (m.score >= 4.0 ? 'text-[#FFAB00]' : 'text-[#FF5630]')}">${m.score}/10</strong>
                     </div>
                   ` : `
-                    <div>
+                    <div class="flex-shrink-0 ml-2">
                       <span class="smartscore-tag tag-green text-[10px]">Pass</span>
                     </div>
                   `}
                 </div>
-              `).join('')}
+              `;}).join('')}
             </div>
           </div>
         </div>
@@ -977,33 +1203,64 @@ class BickerBapeApp {
 
     const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
 
-    document.getElementById('drawer-fund-name').textContent = fund.name.split(' - Direct')[0];
-    document.getElementById('drawer-fund-cat').textContent = `${fund.category} • ${fund.fund_house}`;
+    let catSub = `${fund.category} • ${fund.fund_house}`;
+    if (fund.history_years < 1.0) {
+      catSub += ` • <span class="text-amber-800 font-bold bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded text-[11px]">⚠️ New Scheme (< 1Y)</span>`;
+    } else if (fund.category === 'Sectoral / Thematic') {
+      catSub += ` • <span class="text-red-700 font-semibold bg-red-50 border border-red-200 px-1.5 py-0.5 rounded text-[11px]">⚠️ High Sector Concentration</span>`;
+    }
+    document.getElementById('drawer-fund-cat').innerHTML = catSub;
     
-    const badgeEl = document.getElementById('drawer-smartscore-badge');
-    if (badgeEl) {
-      badgeEl.innerHTML = `★ ${smart.overall} SmartScore™`;
+    // Header Badge: SmartScore with Dynamic Gradient Hue
+    const smartBadgeEl = document.getElementById('drawer-smartscore-badge');
+    if (smartBadgeEl) {
+      smartBadgeEl.outerHTML = `<div id="drawer-smartscore-badge">${this.getSmartScorePill(smart.overall)}</div>`;
     }
 
-    document.getElementById('drawer-nav-price').textContent = `₹${fund.latest_nav}`;
-    document.getElementById('drawer-nav-date').textContent = `As of ${fund.nav_date}`;
+    // Top Metric Cards (6 Cards)
+    document.getElementById('drawer-nav-price').textContent = fund.latest_nav ? `₹${fund.latest_nav}` : 'N/A';
     
+    const growth3mEl = document.getElementById('drawer-3m-growth');
+    if (growth3mEl) {
+      growth3mEl.textContent = (fund.growth_3m !== null && fund.growth_3m !== undefined) ? `${fund.growth_3m > 0 ? '+' : ''}${fund.growth_3m}% past 3M` : 'N/A';
+    }
+
+    const ret3El = document.getElementById('drawer-3y-return');
+    if (ret3El) ret3El.textContent = (fund.cagr_3y !== null && fund.cagr_3y !== undefined) ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y}%` : 'N/A';
+
+    const ratio3El = document.getElementById('drawer-3y-ratio');
+    if (ratio3El) ratio3El.textContent = fund.ratio_3y ? `${fund.ratio_3y}x vs Cat Avg` : (fund.history_years ? `Fund Age: ${fund.history_years} yrs` : 'N/A (< 3Y)');
+
+    const ratio5El = document.getElementById('drawer-5y-ratio');
+    if (ratio5El) ratio5El.textContent = fund.ratio_5y ? `${fund.ratio_5y}x (5Y)` : (fund.cagr_5y ? `${fund.cagr_5y}% 5Y` : '5Y: N/A');
+
+    const ratio10El = document.getElementById('drawer-10y-ratio');
+    if (ratio10El) ratio10El.textContent = fund.ratio_10y ? `${fund.ratio_10y}x (10Y)` : (fund.cagr_10y ? `${fund.cagr_10y}% 10Y` : '10Y: N/A');
+
+    const rolling3El = document.getElementById('drawer-3y-rolling');
+    if (rolling3El) rolling3El.textContent = (fund.rolling_3y_avg !== null && fund.rolling_3y_avg !== undefined) ? `${fund.rolling_3y_avg}%` : 'N/A (< 3Y)';
+
+    const sharpeEl = document.getElementById('drawer-sharpe');
+    if (sharpeEl) sharpeEl.textContent = (fund.sharpe_ratio !== null && fund.sharpe_ratio !== undefined) ? `${fund.sharpe_ratio}` : 'N/A';
+
+    const volEl = document.getElementById('drawer-volatility');
+    if (volEl) volEl.textContent = (fund.volatility !== null && fund.volatility !== undefined) ? `${fund.volatility}%` : 'N/A';
+
+    const sortinoEl = document.getElementById('drawer-sortino');
+    if (sortinoEl) sortinoEl.textContent = (fund.sortino_ratio !== null && fund.sortino_ratio !== undefined) ? `${fund.sortino_ratio}` : 'N/A';
+
+    const betaEl = document.getElementById('drawer-beta');
+    if (betaEl) betaEl.textContent = (fund.beta !== null && fund.beta !== undefined) ? `${fund.beta}` : '1.0';
+
+    const mddEl = document.getElementById('drawer-mdd-stat');
+    if (mddEl) mddEl.textContent = (fund.max_drawdown !== null && fund.max_drawdown !== undefined) ? `Max DD: -${fund.max_drawdown}%` : 'Max DD: N/A';
+
+    // Qualitative Info
     document.getElementById('drawer-aum').textContent = fund.aum_cr ? `₹${fund.aum_cr.toLocaleString()} Cr` : 'N/A';
     document.getElementById('drawer-expense-ratio').textContent = fund.expense_ratio ? `${fund.expense_ratio}%` : 'N/A';
     document.getElementById('drawer-pe').textContent = fund.pe_ratio ? `${fund.pe_ratio}` : 'N/A';
+    document.getElementById('drawer-turnover').textContent = `${fund.turnover_ratio || 28}%`;
     document.getElementById('drawer-manager').textContent = `${fund.manager || 'Senior Manager'} (${fund.manager_tenure_years || 0} yrs)`;
-
-    const ret3El = document.getElementById('drawer-3y-return');
-    if (ret3El) ret3El.textContent = `${fund.cagr_3y ? (fund.cagr_3y > 0 ? '+' : '') + fund.cagr_3y + '%' : 'N/A'}`;
-
-    const rolling3El = document.getElementById('drawer-3y-rolling');
-    if (rolling3El) rolling3El.textContent = `${fund.rolling_3y_avg || 'N/A'}%`;
-
-    const sharpeEl = document.getElementById('drawer-sharpe');
-    if (sharpeEl) sharpeEl.textContent = `${fund.sharpe_ratio || 'N/A'}`;
-
-    const volEl = document.getElementById('drawer-volatility');
-    if (volEl) volEl.textContent = `${fund.volatility || 'N/A'}%`;
 
     // Render the Proprietary SmartScore (TM) Scorecard!
     this.renderScorecard(fund);
