@@ -464,8 +464,8 @@
 
       </header>
 
-      <!-- Scrollable Main Container -->
-      <div class="flex-grow p-4 md:p-6 w-full max-w-7xl mx-auto space-y-6">
+      <!-- Scrollable Main Container (100% Full Space between Sidebar and Window) -->
+      <div class="flex-grow p-4 md:p-6 w-full space-y-6">
         
         <!-- Mobile Search Input (Visible on small screens) -->
         <div class="relative w-full sm:hidden">
@@ -479,10 +479,27 @@
         </section>
 
         <!-- View 2: Comprehensive Screener Table (Tickertape Copy) -->
-        <section id="screener-table-container" class="hidden bg-surface-container-lowest rounded-2xl card-shadow overflow-hidden border border-surface-container">
+        <section id="screener-table-container" class="hidden bg-surface-container-lowest rounded-2xl card-shadow overflow-hidden border border-surface-container w-full">
+          <!-- Table Toolbar with Column Customizer -->
+          <div class="px-4 py-2 bg-surface-container-low border-b border-surface-container flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <span class="font-label-bold text-xs text-on-surface uppercase tracking-wider">Mutual Fund Screener</span>
+              <span id="active-columns-count-badge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-surface text-on-surface-variant border border-surface-container">7 Columns Active</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="open-column-customizer-btn" type="button" class="px-3 py-1.5 rounded-lg bg-surface border border-surface-container hover:border-primary text-xs font-label-bold text-on-surface flex items-center gap-1.5 transition-all cursor-pointer touch-spring shadow-xs" title="Select metrics to build your table">
+                <span class="material-symbols-outlined text-sm text-primary">view_column</span>
+                <span>Customize Columns</span>
+              </button>
+              <button id="reset-columns-btn" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-label-bold text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Reset table columns to default">
+                Reset Defaults
+              </button>
+            </div>
+          </div>
+
           <div class="overflow-x-auto w-full">
             <table class="screener-table text-left w-full">
-              <thead>
+              <thead id="screener-table-header">
                 <tr class="font-label-bold text-xs text-on-surface-variant uppercase tracking-wider">
                   <th class="py-2.5 px-3 cursor-pointer select-none" data-sort="name">
                     <div class="flex items-center gap-1">Scheme & Category <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
@@ -924,6 +941,59 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       KPI METRIC MULTI-SELECT BUILDER MODAL (COLUMN CUSTOMIZER)
+       ==================================================================== -->
+  <div id="kpi-picker-modal" class="kpi-picker-modal" role="dialog" aria-modal="true" aria-labelledby="kpi-picker-title">
+    <div class="kpi-picker-card">
+      <div class="p-4 border-b border-surface-container flex items-center justify-between bg-surface-container-lowest">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-xl">view_column</span>
+            <h3 id="kpi-picker-title" class="font-headline-md text-base text-on-surface font-bold">Customize Table Columns</h3>
+            <span id="kpi-selected-counter" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">7 Selected</span>
+          </div>
+          <p id="kpi-picker-subtitle" class="text-xs text-on-surface-variant mt-0.5">Select multiple metrics to include in your screener table. Check or uncheck to build your view.</p>
+        </div>
+        <button id="kpi-picker-close-btn" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer" title="Close">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <!-- Search & Quick Selection Filters -->
+      <div class="p-3 border-b border-surface-container bg-surface-container-low flex flex-col gap-2">
+        <div class="relative w-full">
+          <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-base">search</span>
+          <input id="kpi-search-input" type="text" class="w-full bg-surface-container-lowest border border-surface-container rounded-lg py-1.5 pl-8 pr-3 text-xs outline-none focus:ring-2 focus:ring-primary" placeholder="Search metrics (e.g., TER, Sortino, Drawdown, P/E, 10Y)..."/>
+        </div>
+        <div class="flex items-center gap-1.5 flex-wrap text-xs">
+          <span class="text-[10px] uppercase font-bold text-on-surface-variant mr-1">Quick Select:</span>
+          <button type="button" id="kpi-select-all-btn" class="px-2 py-0.5 rounded-md bg-surface border border-surface-container text-[11px] font-semibold text-on-surface hover:border-primary cursor-pointer touch-spring">Select All</button>
+          <button type="button" id="kpi-select-returns-btn" class="px-2 py-0.5 rounded-md bg-surface border border-surface-container text-[11px] font-semibold text-on-surface hover:border-primary cursor-pointer touch-spring">All Returns</button>
+          <button type="button" id="kpi-select-risk-btn" class="px-2 py-0.5 rounded-md bg-surface border border-surface-container text-[11px] font-semibold text-on-surface hover:border-primary cursor-pointer touch-spring">All Risk</button>
+          <button type="button" id="kpi-select-cost-btn" class="px-2 py-0.5 rounded-md bg-surface border border-surface-container text-[11px] font-semibold text-on-surface hover:border-primary cursor-pointer touch-spring">All Cost</button>
+          <button type="button" id="kpi-select-defaults-btn" class="px-2 py-0.5 rounded-md bg-surface border border-surface-container text-[11px] font-semibold text-primary hover:bg-primary/5 cursor-pointer touch-spring">Restore Defaults</button>
+        </div>
+      </div>
+
+      <!-- KPI Options List (Multi-Select Checkboxes) -->
+      <div id="kpi-options-container" class="p-4 overflow-y-auto max-h-[52vh] space-y-4 hide-scrollbar">
+        <!-- Dynamically populated by app.js -->
+      </div>
+
+      <div class="p-3 border-t border-surface-container bg-surface-container-low flex items-center justify-between">
+        <button id="kpi-modal-reset-btn" class="text-xs text-primary font-label-bold hover:underline cursor-pointer">Reset Defaults</button>
+        <div class="flex items-center gap-2">
+          <button id="kpi-modal-cancel-btn" type="button" class="px-3 py-1.5 rounded-xl border border-surface-container bg-surface text-xs font-label-bold text-on-surface-variant hover:text-on-surface cursor-pointer touch-spring">Cancel</button>
+          <button id="kpi-modal-build-btn" type="button" class="px-4 py-1.5 rounded-xl bg-primary text-white text-xs font-label-bold cursor-pointer hover:bg-primary-container touch-spring shadow-xs flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">table_chart</span>
+            <span>Build Table</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

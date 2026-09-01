@@ -168,8 +168,67 @@ def run_tests():
         page.screenshot(path=shot2, full_page=False)
         print(f"  Captured: {shot2}")
 
-        # [Step 3] Test Compare Tray Toggle, Minimize & Centering Fix
-        print("\n[Step 3] Testing Compare Tray centering & minimize toggle...")
+        # [Step 2.5] Test Table Header KPI Multi-Select Customizer & Full Width
+        print("\n[Step 2.5] Testing Table Column Multi-Select Builder & Layout Expansion...")
+        
+        # 1. Verify absence of removed helper text
+        toolbar_text = page.locator("#screener-table-container").locator(".bg-surface-container-low").text_content()
+        print(f"Toolbar text: {toolbar_text.strip()}")
+        assert "Click edit" not in toolbar_text, "Helper text 'Click edit' should be removed"
+        assert "swap KPI metric" not in toolbar_text, "Helper text 'swap KPI metric' should be removed"
+        print("  Removed 'Metrics Table Click edit...' text verified successfully!")
+
+        # 2. Verify table takes full space without blank gap between sidebar and window
+        table_box = page.locator("#screener-table-container").bounding_box()
+        main_box = page.locator("#main-content").bounding_box()
+        print(f"Table width: {table_box['width']} | Main content width: {main_box['width']}")
+        assert table_box['width'] >= main_box['width'] - 55, "Table container should occupy 100% of available space!"
+        print("  Table expansion verified: fills full width between sidebar and window!")
+
+        # 3. Test 'Customize Columns' button opens Multi-Select Column Builder
+        print("Testing 'Customize Columns' multi-select button...")
+        page.click("#open-column-customizer-btn")
+        time.sleep(0.4)
+
+        modal_open = page.locator("#kpi-picker-modal").evaluate("el => el.classList.contains('open')")
+        assert modal_open, "Customize Columns button should open the column builder modal"
+        counter_text = page.locator("#kpi-selected-counter").text_content()
+        print(f"Initial selected counter in modal: {counter_text}")
+        assert "Selected" in counter_text, "Counter should display number of selected metrics"
+
+        # 4. Multi-select: toggle additional KPIs (e.g. click 'Direct TER' and 'Sortino Ratio')
+        print("Toggling multiple KPI options in builder...")
+        page.click("#kpi-options-container .kpi-option-btn[data-kpi-id='expense_ratio']")
+        time.sleep(0.2)
+        page.click("#kpi-options-container .kpi-option-btn[data-kpi-id='sortino_ratio']")
+        time.sleep(0.2)
+
+        updated_counter = page.locator("#kpi-selected-counter").text_content()
+        print(f"Updated counter after multi-select: {updated_counter}")
+
+        # 5. Click 'Build Table'
+        print("Clicking 'Build Table' button...")
+        page.click("#kpi-modal-build-btn")
+        time.sleep(0.4)
+
+        modal_closed = not page.locator("#kpi-picker-modal").evaluate("el => el.classList.contains('open')")
+        assert modal_closed, "Modal should close after building table"
+
+        # Verify table now includes newly added columns
+        table_headers_text = page.locator("#screener-table-header").text_content()
+        print(f"Table headers after Build Table: {table_headers_text}")
+        assert "Direct TER" in table_headers_text, "Table must include newly selected Direct TER column"
+        assert "Sortino Ratio" in table_headers_text, "Table must include newly selected Sortino Ratio column"
+        print("  Table built successfully from multiple selected KPI options!")
+
+        # 6. Test 'Reset Defaults' restores standard view
+        print("Testing 'Reset Defaults'...")
+        page.click("#reset-columns-btn")
+        time.sleep(0.4)
+        restored_headers = page.locator("#screener-table-header").text_content()
+        assert "Sortino Ratio" not in restored_headers, "Sortino should be removed after resetting to defaults"
+        assert "10Y CAGR" in restored_headers, "10Y CAGR should be restored"
+        print("  Reset Defaults restored standard table view!")
         page.click("#screener-table-body tr:nth-child(1) .compare-toggle-btn")
         time.sleep(0.2)
         page.click("#screener-table-body tr:nth-child(2) .compare-toggle-btn")

@@ -20,6 +20,17 @@ class BickerBapeApp {
   constructor() {
     this.allFunds = [];
     this.categoriesSummary = {};
+    this.activeEditingSlot = 0;
+    
+    let initialCols = ['smart_score', 'cagr_3y', 'cagr_5y', 'cagr_10y', 'rolling_3y_avg', 'sharpe_ratio', 'volatility'];
+    try {
+      const savedCols = localStorage.getItem('bickerbape_table_cols');
+      if (savedCols) {
+        const parsed = JSON.parse(savedCols);
+        if (Array.isArray(parsed) && parsed.length > 0) initialCols = parsed;
+      }
+    } catch (e) {}
+
     this.state = {
       mood: 'growth', // 'growth' | 'safety' | 'income'
       category: 'All Funds',
@@ -36,9 +47,11 @@ class BickerBapeApp {
       comparisonList: [],
       displayLimit: 36,
       sidebarCollapsed: false,
-      compareTrayMinimized: false
+      compareTrayMinimized: false,
+      tableColumns: initialCols
     };
 
+    this.initKpiCatalog();
     this.init();
   }
 
@@ -55,8 +68,435 @@ class BickerBapeApp {
     // 2. Setup all listeners
     this.setupEventListeners();
 
+    // Render dynamic table headers
+    this.renderTableHeader();
+
     // 3. Initial Render
     this.updateUI();
+  }
+
+  initKpiCatalog() {
+    this.KPI_CATALOG = {
+      smart_score: {
+        id: 'smart_score',
+        label: 'SmartScore™',
+        category: 'Rating',
+        align: 'text-center',
+        sortKey: 'smart_score',
+        infoKey: 'smartscore',
+        sample: 'Proprietary institutional fund score (1 to 10)',
+        format: (fund) => {
+          const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1) };
+          return `
+            <div class="flex flex-col items-center">
+              ${this.getSmartScorePill(smart.overall)}
+              <span class="text-[10px] text-on-surface-variant font-medium mt-1 whitespace-nowrap" title="Category: ${fund.category}">vs ${fund.category.split(' ')[0]}: ${smart.rank_text ? smart.rank_text.split(' of ')[0] : ''}</span>
+            </div>
+          `;
+        }
+      },
+      cagr_3y: {
+        id: 'cagr_3y',
+        label: '3Y Ret & Ratio',
+        category: 'Returns',
+        align: 'text-right',
+        sortKey: 'cagr_3y',
+        infoKey: 'ratio_3y',
+        sample: '3Y CAGR + Outperformance ratio vs category',
+        format: (fund) => {
+          const cagr3 = (fund.cagr_3y !== null && fund.cagr_3y !== undefined) ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y}%` : '-';
+          const ratio3 = fund.ratio_3y ? `<div class="text-[11px] mt-0.5 text-primary font-bold">(${fund.ratio_3y}x cat)</div>` : '';
+          return `<span class="text-[#36B37E] font-bold">${cagr3}</span>${ratio3}`;
+        }
+      },
+      cagr_5y: {
+        id: 'cagr_5y',
+        label: '5Y Ret & Ratio',
+        category: 'Returns',
+        align: 'text-right',
+        sortKey: 'cagr_5y',
+        infoKey: 'ratio_5y',
+        sample: '5Y CAGR + Outperformance ratio vs category',
+        format: (fund) => {
+          const cagr5 = (fund.cagr_5y !== null && fund.cagr_5y !== undefined) ? `${fund.cagr_5y > 0 ? '+' : ''}${fund.cagr_5y}%` : '-';
+          const ratio5 = fund.ratio_5y ? `<div class="text-[11px] mt-0.5 text-on-surface-variant font-medium">(${fund.ratio_5y}x)</div>` : '';
+          return `<span class="font-bold text-on-surface">${cagr5}</span>${ratio5}`;
+        }
+      },
+      cagr_10y: {
+        id: 'cagr_10y',
+        label: '10Y CAGR',
+        category: 'Returns',
+        align: 'text-right',
+        sortKey: 'cagr_10y',
+        infoKey: 'cagr_10y',
+        sample: '10-Year Compound Annual Growth Rate',
+        format: (fund) => {
+          const cagr10 = (fund.cagr_10y !== null && fund.cagr_10y !== undefined) ? `${fund.cagr_10y > 0 ? '+' : ''}${fund.cagr_10y}%` : '-';
+          const ratio10 = fund.ratio_10y ? `<div class="text-[11px] text-on-surface-variant font-medium">(${fund.ratio_10y}x)</div>` : '';
+          return `<span class="font-bold text-on-surface">${cagr10}</span>${ratio10}`;
+        }
+      },
+      cagr_1y: {
+        id: 'cagr_1y',
+        label: '1Y Return',
+        category: 'Returns',
+        align: 'text-right',
+        sortKey: 'cagr_1y',
+        infoKey: 'cagr_1y',
+        sample: 'Trailing 1-Year absolute compounded return',
+        format: (fund) => {
+          const c = (fund.cagr_1y !== null && fund.cagr_1y !== undefined) ? `${fund.cagr_1y > 0 ? '+' : ''}${fund.cagr_1y}%` : '-';
+          const clr = (fund.cagr_1y || 0) >= 12.0 ? 'text-[#36B37E]' : 'text-on-surface';
+          return `<span class="font-bold ${clr}">${c}</span>`;
+        }
+      },
+      growth_3m: {
+        id: 'growth_3m',
+        label: 'Past 3M Growth',
+        category: 'Returns',
+        align: 'text-right',
+        sortKey: 'growth_3m',
+        infoKey: 'growth_3m',
+        sample: 'Recent quarterly growth (+% or -%)',
+        format: (fund) => {
+          const g = (fund.growth_3m !== null && fund.growth_3m !== undefined) ? `${fund.growth_3m > 0 ? '+' : ''}${fund.growth_3m}%` : '-';
+          const clr = (fund.growth_3m || 0) >= 0 ? 'text-[#36B37E]' : 'text-error';
+          return `<span class="font-bold ${clr}">${g}</span>`;
+        }
+      },
+      rolling_3y_avg: {
+        id: 'rolling_3y_avg',
+        label: '3Y Rolling Avg',
+        category: 'Returns',
+        align: 'text-right',
+        sortKey: 'rolling_3y_avg',
+        infoKey: 'rolling_3y',
+        sample: '3-Year rolling return consistency average',
+        format: (fund) => {
+          const r = (fund.rolling_3y_avg !== null && fund.rolling_3y_avg !== undefined) ? `${fund.rolling_3y_avg}%` : '-';
+          return `<span class="font-bold text-primary">${r}</span>`;
+        }
+      },
+      sharpe_ratio: {
+        id: 'sharpe_ratio',
+        label: 'Sharpe Ratio',
+        category: 'Risk',
+        align: 'text-right',
+        sortKey: 'sharpe_ratio',
+        infoKey: 'sharpe',
+        sample: 'Excess return per unit of volatility (Rf=6.8%)',
+        format: (fund) => {
+          const s = (fund.sharpe_ratio !== null && fund.sharpe_ratio !== undefined) ? fund.sharpe_ratio.toFixed(2) : '-';
+          const clr = (fund.sharpe_ratio || 0) >= 1.0 ? 'text-[#36B37E]' : 'text-on-surface';
+          return `<span class="font-bold ${clr}">${s}</span>`;
+        }
+      },
+      sortino_ratio: {
+        id: 'sortino_ratio',
+        label: 'Sortino Ratio',
+        category: 'Risk',
+        align: 'text-right',
+        sortKey: 'sortino_ratio',
+        infoKey: 'sortino',
+        sample: 'Downside risk-adjusted performance measure',
+        format: (fund) => {
+          const s = (fund.sortino_ratio !== null && fund.sortino_ratio !== undefined) ? fund.sortino_ratio.toFixed(2) : '-';
+          const clr = (fund.sortino_ratio || 0) >= 1.2 ? 'text-[#36B37E]' : 'text-on-surface';
+          return `<span class="font-bold ${clr}">${s}</span>`;
+        }
+      },
+      volatility: {
+        id: 'volatility',
+        label: 'Volatility (σ)',
+        category: 'Risk',
+        align: 'text-right',
+        sortKey: 'volatility',
+        infoKey: 'volatility',
+        sample: 'Annualized price fluctuation standard deviation',
+        format: (fund) => {
+          const v = (fund.volatility !== null && fund.volatility !== undefined) ? `${fund.volatility}%` : '-';
+          return `<span class="font-medium text-on-surface-variant">${v}</span>`;
+        }
+      },
+      max_drawdown: {
+        id: 'max_drawdown',
+        label: 'Max Drawdown',
+        category: 'Risk',
+        align: 'text-right',
+        sortKey: 'max_drawdown',
+        infoKey: 'max_drawdown',
+        sample: 'Largest historic peak-to-trough crash drop',
+        format: (fund) => {
+          const m = (fund.max_drawdown !== null && fund.max_drawdown !== undefined) ? `-${fund.max_drawdown}%` : '-';
+          return `<span class="font-semibold text-error">${m}</span>`;
+        }
+      },
+      beta: {
+        id: 'beta',
+        label: 'Beta',
+        category: 'Risk',
+        align: 'text-right',
+        sortKey: 'beta',
+        infoKey: 'beta',
+        sample: 'Sensitivity to broader market fluctuations',
+        format: (fund) => {
+          const b = (fund.beta !== null && fund.beta !== undefined) ? fund.beta.toFixed(2) : '1.0';
+          return `<span class="font-medium text-on-surface">${b}</span>`;
+        }
+      },
+      expense_ratio: {
+        id: 'expense_ratio',
+        label: 'Direct TER',
+        category: 'Cost',
+        align: 'text-right',
+        sortKey: 'expense_ratio',
+        infoKey: 'ter',
+        sample: 'Annual direct total expense fee deducted (%)',
+        format: (fund) => {
+          const e = fund.expense_ratio ? `${fund.expense_ratio}%` : '-';
+          const clr = (fund.expense_ratio || 1.0) <= 0.65 ? 'text-[#36B37E]' : 'text-on-surface';
+          return `<span class="font-bold ${clr}">${e}</span>`;
+        }
+      },
+      pe_ratio: {
+        id: 'pe_ratio',
+        label: 'Portfolio P/E',
+        category: 'Cost',
+        align: 'text-right',
+        sortKey: 'pe_ratio',
+        infoKey: 'pe_ratio',
+        sample: 'Price-to-Earnings valuation of underlying holdings',
+        format: (fund) => {
+          const p = fund.pe_ratio ? fund.pe_ratio.toFixed(1) : '-';
+          return `<span class="font-medium text-on-surface">${p}</span>`;
+        }
+      },
+      turnover_ratio: {
+        id: 'turnover_ratio',
+        label: 'Turnover Ratio',
+        category: 'Cost',
+        align: 'text-right',
+        sortKey: 'turnover_ratio',
+        infoKey: 'turnover',
+        sample: 'Annual stock trading and portfolio churn rate (%)',
+        format: (fund) => {
+          const t = fund.turnover_ratio ? `${fund.turnover_ratio}%` : '-';
+          return `<span class="font-medium text-on-surface-variant">${t}</span>`;
+        }
+      },
+      aum_cr: {
+        id: 'aum_cr',
+        label: 'AUM (₹ Cr)',
+        category: 'Quality',
+        align: 'text-right',
+        sortKey: 'aum_cr',
+        infoKey: 'aum',
+        sample: 'Total Assets Under Management in ₹ Crores',
+        format: (fund) => {
+          const a = fund.aum_cr ? `₹${fund.aum_cr.toLocaleString()} Cr` : '-';
+          return `<span class="font-bold text-on-surface">${a}</span>`;
+        }
+      },
+      manager_tenure_years: {
+        id: 'manager_tenure_years',
+        label: 'Manager Tenure',
+        category: 'Quality',
+        align: 'text-right',
+        sortKey: 'manager_tenure_years',
+        infoKey: 'manager',
+        sample: 'Years the fund manager has steered the fund',
+        format: (fund) => {
+          const m = fund.manager_tenure_years ? `${fund.manager_tenure_years} yrs` : '-';
+          return `<span class="font-medium text-on-surface">${m}</span>`;
+        }
+      }
+    };
+  }
+
+  renderTableHeader() {
+    const thead = document.getElementById('screener-table-header');
+    if (!thead) return;
+
+    const colsHtml = this.state.tableColumns.map((colKey, idx) => {
+      const kpi = this.KPI_CATALOG[colKey] || this.KPI_CATALOG.cagr_3y;
+      const isSorted = this.state.sortBy === kpi.sortKey;
+      const sortIcon = isSorted ? (this.state.sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more';
+
+      return `
+        <th class="py-2.5 px-2.5 ${kpi.align} cursor-pointer select-none group relative" data-sort="${kpi.sortKey}" data-slot="${idx}">
+          <div class="flex items-center ${kpi.align === 'text-center' ? 'justify-center' : 'justify-end'} gap-1">
+            <button type="button" class="col-edit-btn" data-slot="${idx}" title="Click to swap this column with another metric (e.g. TER, Sortino, Drawdown)">
+              <span class="material-symbols-outlined text-[13px]">edit</span>
+            </button>
+            <span class="font-label-bold text-xs text-on-surface-variant">${kpi.label}</span>
+            ${this.getInfoBtnHtml(kpi.infoKey)}
+            <span class="material-symbols-outlined text-sm sort-icon ${isSorted ? 'text-primary' : ''}">${sortIcon}</span>
+          </div>
+        </th>
+      `;
+    }).join('');
+
+    const countBadge = document.getElementById('active-columns-count-badge');
+    if (countBadge) {
+      countBadge.textContent = `${this.state.tableColumns.length} Columns Active`;
+    }
+
+    thead.innerHTML = `
+      <tr class="font-label-bold text-xs text-on-surface-variant uppercase tracking-wider">
+        <th class="py-2.5 px-3 cursor-pointer select-none" data-sort="name">
+          <div class="flex items-center gap-1">
+            <span>Scheme & Category</span>
+            <span class="material-symbols-outlined text-sm sort-icon ${this.state.sortBy === 'name' ? 'text-primary' : ''}">${this.state.sortBy === 'name' ? (this.state.sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more'}</span>
+          </div>
+        </th>
+        ${colsHtml}
+        <th class="py-2.5 px-3 text-center">Actions</th>
+      </tr>
+    `;
+  }
+
+  openKpiPicker(slotIndex = null) {
+    this.activeEditingSlot = slotIndex;
+    const modal = document.getElementById('kpi-picker-modal');
+    const subtitle = document.getElementById('kpi-picker-subtitle');
+    if (!modal) return;
+
+    this.tempSelectedColumns = [...this.state.tableColumns];
+
+    if (slotIndex !== null && this.state.tableColumns[slotIndex]) {
+      const currentKey = this.state.tableColumns[slotIndex];
+      const currentKpi = this.KPI_CATALOG[currentKey] || {};
+      if (subtitle) {
+        subtitle.textContent = `Select metrics to build your table (Currently focused on Column ${slotIndex + 1}: ${currentKpi.label || 'Metric'}). Check or uncheck to build your view.`;
+      }
+    } else {
+      if (subtitle) {
+        subtitle.textContent = "Select multiple metrics to include in your screener table. Check or uncheck to build your custom view.";
+      }
+    }
+
+    this.updateKpiModalSelectedCounter();
+
+    const searchInput = document.getElementById('kpi-search-input');
+    if (searchInput) searchInput.value = '';
+
+    this.renderKpiOptionsList('');
+    modal.classList.add('open');
+  }
+
+  updateKpiModalSelectedCounter() {
+    const counter = document.getElementById('kpi-selected-counter');
+    if (counter) {
+      counter.textContent = `${this.tempSelectedColumns.length} Selected`;
+    }
+  }
+
+  closeKpiPicker() {
+    const modal = document.getElementById('kpi-picker-modal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  renderKpiOptionsList(query = '') {
+    const container = document.getElementById('kpi-options-container');
+    if (!container) return;
+
+    const q = query.toLowerCase().trim();
+
+    const categories = ['Returns', 'Risk', 'Cost', 'Quality', 'Rating'];
+    const badgeClasses = {
+      Returns: 'kpi-badge-returns',
+      Risk: 'kpi-badge-risk',
+      Cost: 'kpi-badge-cost',
+      Quality: 'kpi-badge-quality',
+      Rating: 'kpi-badge-rating'
+    };
+
+    let html = '';
+    categories.forEach(cat => {
+      const items = Object.values(this.KPI_CATALOG).filter(k => {
+        if (k.category !== cat) return false;
+        if (!q) return true;
+        return k.label.toLowerCase().includes(q) || k.id.toLowerCase().includes(q) || (k.sample && k.sample.toLowerCase().includes(q));
+      });
+
+      if (items.length === 0) return;
+
+      html += `
+        <div>
+          <span class="text-[11px] font-label-bold uppercase tracking-wider text-on-surface-variant mb-1.5 block">${cat} Metrics</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            ${items.map(kpi => {
+              const isSelected = this.tempSelectedColumns.includes(kpi.id);
+              return `
+                <button type="button" class="kpi-option-btn ${isSelected ? 'active' : ''} touch-spring cursor-pointer" data-kpi-id="${kpi.id}">
+                  <div class="min-w-0 pr-2">
+                    <div class="flex items-center gap-1.5">
+                      <span class="font-label-bold text-xs text-on-surface">${kpi.label}</span>
+                      <span class="kpi-category-badge ${badgeClasses[kpi.category] || 'bg-surface-container'}">${kpi.category}</span>
+                    </div>
+                    <p class="text-[11px] text-on-surface-variant truncate mt-0.5">${kpi.sample || ''}</p>
+                  </div>
+                  <span class="material-symbols-outlined text-xl ${isSelected ? 'text-primary' : 'text-surface-container-high'} flex-shrink-0">
+                    ${isSelected ? 'check_box' : 'check_box_outline_blank'}
+                  </span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    });
+
+    if (!html) {
+      html = `<p class="py-8 text-center text-xs text-on-surface-variant">No metrics match "${query}".</p>`;
+    }
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('.kpi-option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const kpiId = btn.getAttribute('data-kpi-id');
+        this.toggleKpiSelection(kpiId);
+      });
+    });
+  }
+
+  toggleKpiSelection(kpiId) {
+    if (this.tempSelectedColumns.includes(kpiId)) {
+      if (this.tempSelectedColumns.length <= 1) {
+        return; // Require at least one column
+      }
+      this.tempSelectedColumns = this.tempSelectedColumns.filter(id => id !== kpiId);
+    } else {
+      this.tempSelectedColumns.push(kpiId);
+    }
+    this.updateKpiModalSelectedCounter();
+    const searchInput = document.getElementById('kpi-search-input');
+    this.renderKpiOptionsList(searchInput ? searchInput.value : '');
+  }
+
+  buildTableFromSelection() {
+    if (this.tempSelectedColumns && this.tempSelectedColumns.length > 0) {
+      this.state.tableColumns = [...this.tempSelectedColumns];
+      try {
+        localStorage.setItem('bickerbape_table_cols', JSON.stringify(this.state.tableColumns));
+      } catch (e) {}
+    }
+    this.closeKpiPicker();
+    this.renderTableHeader();
+    this.updateUI(false);
+  }
+
+  resetTableColumnsToDefault() {
+    this.state.tableColumns = ['smart_score', 'cagr_3y', 'cagr_5y', 'cagr_10y', 'rolling_3y_avg', 'sharpe_ratio', 'volatility'];
+    this.tempSelectedColumns = [...this.state.tableColumns];
+    try {
+      localStorage.removeItem('bickerbape_table_cols');
+    } catch (e) {}
+    this.closeKpiPicker();
+    this.renderTableHeader();
+    this.updateUI(false);
   }
 
   setMood(mood) {
@@ -362,21 +802,138 @@ class BickerBapeApp {
     }
 
     // ------------------------------------------------------------------
-    // H. Table Column Sorting
+    // H. Table Column Header Delegation (Sorting & Custom KPI Editing)
     // ------------------------------------------------------------------
-    document.querySelectorAll('th[data-sort]').forEach(th => {
-      th.addEventListener('click', () => {
-        const field = th.getAttribute('data-sort');
-        if (this.state.sortBy === field) {
-          this.state.sortDir = this.state.sortDir === 'asc' ? 'desc' : 'asc';
-        } else {
-          this.state.sortBy = field;
-          this.state.sortDir = 'desc';
+    const tableHeader = document.getElementById('screener-table-header');
+    if (tableHeader) {
+      tableHeader.addEventListener('click', (e) => {
+        // 1. Column Edit Button clicked
+        const editBtn = e.target.closest('.col-edit-btn');
+        if (editBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          const slot = parseInt(editBtn.getAttribute('data-slot'));
+          this.openKpiPicker(slot);
+          return;
         }
-        this.updateSortIcons();
-        this.updateUI(false);
+
+        // 2. Info Button clicked (let info listener handle tooltip)
+        if (e.target.closest('.info-wrapper')) {
+          return;
+        }
+
+        // 3. Header Sort clicked
+        const th = e.target.closest('th[data-sort]');
+        if (th) {
+          const field = th.getAttribute('data-sort');
+          if (this.state.sortBy === field) {
+            this.state.sortDir = this.state.sortDir === 'asc' ? 'desc' : 'asc';
+          } else {
+            this.state.sortBy = field;
+            this.state.sortDir = 'desc';
+          }
+          this.updateSortIcons();
+          this.updateUI(false);
+        }
       });
-    });
+    }
+
+    // Column Customizer Toolbar Buttons
+    const openCustomizerBtn = document.getElementById('open-column-customizer-btn');
+    if (openCustomizerBtn) {
+      openCustomizerBtn.addEventListener('click', () => {
+        this.openKpiPicker(null);
+      });
+    }
+
+    const resetColsBtn = document.getElementById('reset-columns-btn');
+    if (resetColsBtn) {
+      resetColsBtn.addEventListener('click', () => {
+        this.resetTableColumnsToDefault();
+      });
+    }
+
+    const kpiModalResetBtn = document.getElementById('kpi-modal-reset-btn');
+    if (kpiModalResetBtn) {
+      kpiModalResetBtn.addEventListener('click', () => {
+        this.resetTableColumnsToDefault();
+      });
+    }
+
+    const kpiCloseBtn = document.getElementById('kpi-picker-close-btn');
+    if (kpiCloseBtn) {
+      kpiCloseBtn.addEventListener('click', () => this.closeKpiPicker());
+    }
+
+    const kpiCancelBtn = document.getElementById('kpi-modal-cancel-btn');
+    if (kpiCancelBtn) {
+      kpiCancelBtn.addEventListener('click', () => this.closeKpiPicker());
+    }
+
+    const kpiBuildBtn = document.getElementById('kpi-modal-build-btn');
+    if (kpiBuildBtn) {
+      kpiBuildBtn.addEventListener('click', () => this.buildTableFromSelection());
+    }
+
+    const kpiModal = document.getElementById('kpi-picker-modal');
+    if (kpiModal) {
+      kpiModal.addEventListener('click', (e) => {
+        if (e.target === kpiModal) this.closeKpiPicker();
+      });
+    }
+
+    const kpiSearchInput = document.getElementById('kpi-search-input');
+    if (kpiSearchInput) {
+      kpiSearchInput.addEventListener('input', (e) => {
+        this.renderKpiOptionsList(e.target.value);
+      });
+    }
+
+    // Quick selection filter buttons inside modal
+    const selectAllBtn = document.getElementById('kpi-select-all-btn');
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('click', () => {
+        this.tempSelectedColumns = Object.keys(this.KPI_CATALOG);
+        this.updateKpiModalSelectedCounter();
+        this.renderKpiOptionsList(kpiSearchInput ? kpiSearchInput.value : '');
+      });
+    }
+
+    const selectReturnsBtn = document.getElementById('kpi-select-returns-btn');
+    if (selectReturnsBtn) {
+      selectReturnsBtn.addEventListener('click', () => {
+        this.tempSelectedColumns = Object.values(this.KPI_CATALOG).filter(k => k.category === 'Returns').map(k => k.id);
+        this.updateKpiModalSelectedCounter();
+        this.renderKpiOptionsList(kpiSearchInput ? kpiSearchInput.value : '');
+      });
+    }
+
+    const selectRiskBtn = document.getElementById('kpi-select-risk-btn');
+    if (selectRiskBtn) {
+      selectRiskBtn.addEventListener('click', () => {
+        this.tempSelectedColumns = Object.values(this.KPI_CATALOG).filter(k => k.category === 'Risk').map(k => k.id);
+        this.updateKpiModalSelectedCounter();
+        this.renderKpiOptionsList(kpiSearchInput ? kpiSearchInput.value : '');
+      });
+    }
+
+    const selectCostBtn = document.getElementById('kpi-select-cost-btn');
+    if (selectCostBtn) {
+      selectCostBtn.addEventListener('click', () => {
+        this.tempSelectedColumns = Object.values(this.KPI_CATALOG).filter(k => k.category === 'Cost').map(k => k.id);
+        this.updateKpiModalSelectedCounter();
+        this.renderKpiOptionsList(kpiSearchInput ? kpiSearchInput.value : '');
+      });
+    }
+
+    const selectDefaultsBtn = document.getElementById('kpi-select-defaults-btn');
+    if (selectDefaultsBtn) {
+      selectDefaultsBtn.addEventListener('click', () => {
+        this.tempSelectedColumns = ['smart_score', 'cagr_3y', 'cagr_5y', 'cagr_10y', 'rolling_3y_avg', 'sharpe_ratio', 'volatility'];
+        this.updateKpiModalSelectedCounter();
+        this.renderKpiOptionsList(kpiSearchInput ? kpiSearchInput.value : '');
+      });
+    }
 
     // ------------------------------------------------------------------
     // I. Pagination / Load More
@@ -772,6 +1329,38 @@ class BickerBapeApp {
       ter: {
         title: "Direct Expense Ratio (TER)",
         desc: "The annual fee the fund house deducts to manage your money. Direct plans save you lakhs over 15+ years compared to regular plans."
+      },
+      cagr_10y: {
+        title: "10-Year CAGR (Compounded Return)",
+        desc: "Decade-long wealth creation rate. Confirms whether a fund creates long-term generational wealth across both bull and bear market cycles."
+      },
+      cagr_1y: {
+        title: "1-Year Return (Recent Momentum)",
+        desc: "Absolute return over the past 12 months. Shows short-term momentum and responsiveness to current market conditions."
+      },
+      growth_3m: {
+        title: "Past 3-Month Growth",
+        desc: "Absolute percentage gain or loss over the preceding quarter. Indicates very recent portfolio trajectory."
+      },
+      beta: {
+        title: "Beta (Market Sensitivity)",
+        desc: "Measures sensitivity to benchmark swings. Beta 1.0 moves with the market; under 1.0 is defensive, over 1.0 is aggressive."
+      },
+      pe_ratio: {
+        title: "Portfolio P/E Ratio",
+        desc: "Price-to-Earnings valuation of underlying holdings. Lower P/E indicates value bargains; higher P/E reflects premium growth stocks."
+      },
+      turnover: {
+        title: "Portfolio Turnover Ratio",
+        desc: "How frequently the fund manager trades stocks. Low (<30%) means patient buy-and-hold; high (>100%) means active trading."
+      },
+      aum: {
+        title: "Fund AUM (Assets Under Management)",
+        desc: "Total size of the fund in ₹ Crores. Large AUM signals institutional trust, while smaller AUM can offer agility in mid/small caps."
+      },
+      manager: {
+        title: "Fund Manager Tenure",
+        desc: "Number of years the current manager has navigated this scheme. Longer tenure (>4 yrs) confirms stability and consistency of strategy."
       }
     };
 
@@ -926,7 +1515,7 @@ class BickerBapeApp {
     if (funds.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="10" class="py-12 text-center text-on-surface-variant font-body-md">
+          <td colspan="${this.state.tableColumns.length + 2}" class="py-12 text-center text-on-surface-variant font-body-md">
             No mutual funds matched your active filters.
           </td>
         </tr>
@@ -936,19 +1525,15 @@ class BickerBapeApp {
 
     tbody.innerHTML = funds.map(fund => {
       const isComparing = this.state.comparisonList.some(f => f.code === fund.code);
-      const cagr3 = (fund.cagr_3y !== null && fund.cagr_3y !== undefined) ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y}%` : '-';
-      const cagr5 = (fund.cagr_5y !== null && fund.cagr_5y !== undefined) ? `${fund.cagr_5y > 0 ? '+' : ''}${fund.cagr_5y}%` : '-';
-      const cagr10 = (fund.cagr_10y !== null && fund.cagr_10y !== undefined) ? `${fund.cagr_10y > 0 ? '+' : ''}${fund.cagr_10y}%` : '-';
-      
-      const ratio3 = fund.ratio_3y ? `${fund.ratio_3y}x` : '';
-      const ratio5 = fund.ratio_5y ? `${fund.ratio_5y}x` : '';
-      const ratio10 = fund.ratio_10y ? `${fund.ratio_10y}x` : '';
 
-      const rolling = (fund.rolling_3y_avg !== null && fund.rolling_3y_avg !== undefined) ? `${fund.rolling_3y_avg}%` : '-';
-      const sharpe = (fund.sharpe_ratio !== null && fund.sharpe_ratio !== undefined) ? fund.sharpe_ratio.toFixed(2) : '-';
-      const vol = (fund.volatility !== null && fund.volatility !== undefined) ? `${fund.volatility}%` : '-';
-      
-      const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
+      const dynamicColsHtml = this.state.tableColumns.map(colKey => {
+        const kpi = this.KPI_CATALOG[colKey] || this.KPI_CATALOG.cagr_3y;
+        return `
+          <td class="py-3 px-2.5 ${kpi.align} font-label-bold numeric">
+            ${kpi.format(fund)}
+          </td>
+        `;
+      }).join('');
 
       return `
         <tr class="hover:bg-surface-container-low transition-colors cursor-pointer" data-code="${fund.code}">
@@ -968,39 +1553,7 @@ class BickerBapeApp {
             </div>
           </td>
 
-          <td class="py-3 px-3 text-center">
-            <div class="flex flex-col items-center">
-              ${this.getSmartScorePill(smart.overall)}
-              <span class="text-[10px] text-on-surface-variant font-medium mt-1 whitespace-nowrap" title="Category: ${fund.category}">vs ${fund.category.split(' ')[0]}: ${smart.rank_text ? smart.rank_text.split(' of ')[0] : ''}</span>
-            </div>
-          </td>
-
-          <td class="py-3 px-3 font-label-bold text-right numeric">
-            <span class="text-[#36B37E]">${cagr3}</span>
-            ${ratio3 ? `<div class="text-[11px] mt-0.5 text-primary font-bold">(${ratio3} cat)</div>` : ''}
-          </td>
-
-          <td class="py-3 px-3 font-label-bold text-right numeric">
-            <span>${cagr5}</span>
-            ${ratio5 ? `<div class="text-[11px] mt-0.5 text-on-surface-variant">(${ratio5})</div>` : ''}
-          </td>
-
-          <td class="py-3 px-3 font-label-bold text-right numeric text-on-surface">
-            <span>${cagr10}</span>
-            ${ratio10 ? `<div class="text-[11px] text-on-surface-variant">(${ratio10})</div>` : ''}
-          </td>
-
-          <td class="py-3 px-3 font-label-bold text-right numeric text-primary">
-            ${rolling}
-          </td>
-
-          <td class="py-3 px-3 text-right numeric">
-            <span class="font-label-bold ${fund.sharpe_ratio >= 1.0 ? 'text-[#36B37E]' : 'text-on-surface'}">${sharpe}</span>
-          </td>
-
-          <td class="py-3 px-3 text-right numeric text-on-surface-variant">
-            ${vol}
-          </td>
+          ${dynamicColsHtml}
 
           <td class="py-3 px-3 text-center">
             <div class="flex items-center justify-center gap-1.5">
