@@ -181,7 +181,10 @@
       </div>
 
       <!-- Scrollable Filters Container -->
-      <div class="flex-grow overflow-y-auto p-md space-y-lg hide-scrollbar">
+      <div class="flex-grow overflow-y-auto p-md hide-scrollbar">
+        
+        <!-- Portal 1: Screener Filters Sidebar Content -->
+        <div id="screener-sidebar-content" class="space-y-lg">
         
         <!-- Filter Header & Reset -->
         <div class="flex items-center justify-between pt-1">
@@ -410,14 +413,21 @@
           </p>
         </div>
 
+        </div> <!-- /#screener-sidebar-content -->
+
+        <!-- Portal 2: SimSim™ Portal Sidebar Content (Active in SimSim Mode) -->
+        <div id="simsim-sidebar-content" class="space-y-lg hidden">
+          <!-- Dynamically populated by SimSimUI -->
+        </div>
+
       </div>
 
       <!-- Sidebar Footer -->
-      <div class="p-md border-t border-surface-container bg-surface flex items-center justify-between text-xs text-on-surface-variant">
-        <span class="flex items-center gap-1">
+      <div id="sidebar-footer" class="p-md border-t border-surface-container bg-surface flex items-center justify-between text-xs text-on-surface-variant">
+        <span id="sidebar-footer-left" class="flex items-center gap-1">
           <span class="w-2 h-2 rounded-full bg-gain"></span> AMFI Live
         </span>
-        <span class="font-label-bold text-primary">620 Schemes</span>
+        <span id="sidebar-footer-right" class="font-label-bold text-primary">620 Schemes</span>
       </div>
     </aside>
 

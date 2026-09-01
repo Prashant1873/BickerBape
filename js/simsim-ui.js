@@ -1,7 +1,8 @@
 /**
  * SimSim™ User Interface & Portfolio Backtesting Controller
- * Handles Day/Night Logo Switch, Interactive Allocation Sliders,
- * Model Portfolios, Chart.js Visualizations, and Bucket Synchronization.
+ * Handles Day/Night Mode Switch, Contextual Portal Sidebar,
+ * Full-Width Cinematic Workspace, Interactive Allocation Sliders,
+ * Model Portfolios, and Chart.js Visualizations.
  */
 
 import { SimSimEngine } from './simsim-engine.js';
@@ -14,12 +15,17 @@ export class SimSimUI {
     this.weights = {}; // { [code]: 0.333, ... }
     this.investmentMode = 'lumpsum'; // 'lumpsum' or 'sip'
     this.capital = 100000;
-    this.selectedHorizon = '3Y'; // '6M', '1Y', '2Y', '3Y', '5Y', 'ALL', 'custom'
-    this.customStartDate = '2023-01-01';
+    this.selectedHorizon = '3Y'; // '6M', '1Y', '2Y', '3Y', '5Y', 'ALL'
     this.chartInstance = null;
-    this.lastSimulationResult = null;
-
     this.initBucketFromStorage();
+
+    // Global delegated listener for exiting SimSim mode
+    document.addEventListener('click', (e) => {
+      const exitTrigger = e.target.closest('.simsim-exit-trigger') || e.target.closest('#simsim-exit-btn');
+      if (exitTrigger) {
+        this.disableSimSimMode();
+      }
+    });
   }
 
   initBucketFromStorage() {
@@ -65,6 +71,7 @@ export class SimSimUI {
       this.updateTray();
       this.updateScreenerButtons();
       if (this.isSimSimMode) {
+        this.renderSimSimSidebar();
         this.renderSimSimStage();
         this.runSimulation();
       }
@@ -98,6 +105,7 @@ export class SimSimUI {
     this.updateTray();
     this.updateScreenerButtons();
     if (this.isSimSimMode) {
+      this.renderSimSimSidebar();
       this.renderSimSimStage();
       this.runSimulation();
     }
@@ -110,6 +118,7 @@ export class SimSimUI {
     this.updateTray();
     this.updateScreenerButtons();
     if (this.isSimSimMode) {
+      this.renderSimSimSidebar();
       this.renderSimSimStage();
     }
   }
@@ -129,7 +138,7 @@ export class SimSimUI {
     this.isSimSimMode = true;
     document.body.classList.add('simsim-mode');
 
-    // Hide screener view elements
+    // 1. Hide screener view elements, show SimSim container
     const screenerViews = document.getElementById('screener-views-wrapper');
     const screenerHeader = document.getElementById('screener-header-controls');
     const simsimContainer = document.getElementById('simsim-container');
@@ -138,27 +147,43 @@ export class SimSimUI {
     if (screenerHeader) screenerHeader.classList.add('hidden');
     if (simsimContainer) simsimContainer.classList.remove('hidden');
 
-    // Update Header Brand
+    // 2. Toggle Sidebar Portal Content
+    const screenerSidebar = document.getElementById('screener-sidebar-content');
+    const simsimSidebar = document.getElementById('simsim-sidebar-content');
+    if (screenerSidebar) screenerSidebar.classList.add('hidden');
+    if (simsimSidebar) simsimSidebar.classList.remove('hidden');
+
+    // 3. Update Sticky Header Brand
     const headerTitle = document.getElementById('header-platform-title');
     const headerSub = document.getElementById('funds-count');
     const headerMood = document.getElementById('header-mood-indicator');
     const modeBadge = document.getElementById('platform-mode-badge');
 
-    if (headerTitle) headerTitle.innerHTML = `<span class="simsim-neon-headline font-black">SimSim™</span> <span class="text-xs font-semibold text-on-surface-variant">Time Machine</span>`;
-    if (headerSub) headerSub.textContent = `Hypothetical Portfolio Wealth Simulator`;
+    if (headerTitle) headerTitle.textContent = `SimSim™ Time Machine`;
+    if (headerSub) headerSub.textContent = `Institutional Portfolio Simulation & Backtesting`;
     if (headerMood) headerMood.classList.add('hidden');
     if (modeBadge) {
       modeBadge.className = 'mode-switch-badge simsim-badge';
-      modeBadge.innerHTML = `<span class="material-symbols-outlined text-[12px] simsim-pulse-icon">auto_graph</span> SimSim Mode`;
+      modeBadge.innerHTML = `<span class="material-symbols-outlined text-[12px] simsim-pulse-icon">hourglass_top</span> SimSim™`;
     }
 
-    // Hide floating tray in SimSim mode
+    // 4. Update Sidebar Footer
+    const footerLeft = document.getElementById('sidebar-footer-left');
+    const footerRight = document.getElementById('sidebar-footer-right');
+    if (footerLeft) footerLeft.innerHTML = `<span class="w-2 h-2 rounded-full bg-[#00F090] shadow-[0_0_8px_#00F090]"></span> SimSim™ Active`;
+    if (footerRight) {
+      footerRight.textContent = `Backtesting Engine`;
+      footerRight.className = 'font-label-bold text-[#00F090]';
+    }
+
+    // 5. Hide floating tray in SimSim mode
     this.hideTray();
 
-    // If bucket empty, populate with a high-performing diversified starter portfolio
+    // 6. If bucket empty, populate with default Titan portfolio
     if (this.bucket.length === 0) {
       this.loadTemplate('titan');
     } else {
+      this.renderSimSimSidebar();
       this.renderSimSimStage();
       this.runSimulation();
     }
@@ -170,6 +195,7 @@ export class SimSimUI {
     this.isSimSimMode = false;
     document.body.classList.remove('simsim-mode');
 
+    // 1. Show screener views, hide SimSim container
     const screenerViews = document.getElementById('screener-views-wrapper');
     const screenerHeader = document.getElementById('screener-header-controls');
     const simsimContainer = document.getElementById('simsim-container');
@@ -178,7 +204,13 @@ export class SimSimUI {
     if (screenerHeader) screenerHeader.classList.remove('hidden');
     if (simsimContainer) simsimContainer.classList.add('hidden');
 
-    // Restore Header Brand
+    // 2. Toggle Sidebar Portal Content
+    const screenerSidebar = document.getElementById('screener-sidebar-content');
+    const simsimSidebar = document.getElementById('simsim-sidebar-content');
+    if (screenerSidebar) screenerSidebar.classList.remove('hidden');
+    if (simsimSidebar) simsimSidebar.classList.add('hidden');
+
+    // 3. Restore Sticky Header Brand
     const headerTitle = document.getElementById('header-platform-title');
     const headerSub = document.getElementById('funds-count');
     const headerMood = document.getElementById('header-mood-indicator');
@@ -190,6 +222,15 @@ export class SimSimUI {
     if (modeBadge) {
       modeBadge.className = 'mode-switch-badge screener-badge';
       modeBadge.innerHTML = `<span class="material-symbols-outlined text-[12px]">analytics</span> Screener`;
+    }
+
+    // 4. Restore Sidebar Footer
+    const footerLeft = document.getElementById('sidebar-footer-left');
+    const footerRight = document.getElementById('sidebar-footer-right');
+    if (footerLeft) footerLeft.innerHTML = `<span class="w-2 h-2 rounded-full bg-gain"></span> AMFI Live`;
+    if (footerRight) {
+      footerRight.textContent = `620 Schemes`;
+      footerRight.className = 'font-label-bold text-primary';
     }
 
     this.updateTray();
@@ -235,7 +276,6 @@ export class SimSimUI {
   loadTemplate(templateKey) {
     if (!this.app.allFunds || this.app.allFunds.length === 0) return;
 
-    // Helper to find fund by name substring or category
     const findFund = (substr, cat) => {
       return this.app.allFunds.find(f => 
         (f.name.toLowerCase().includes(substr.toLowerCase()) || f.category.toLowerCase().includes(cat.toLowerCase())) &&
@@ -244,7 +284,7 @@ export class SimSimUI {
     };
 
     if (templateKey === 'titan') {
-      // The Core Titan: Flexi Cap + Mid Cap + Large Cap
+      // The Core Titan: Flexi Cap + Mid Cap + Small Cap
       const f1 = findFund('Parag Parikh Flexi', 'Flexi Cap') || this.app.allFunds[0];
       const f2 = findFund('HDFC Mid-Cap', 'Mid Cap') || this.app.allFunds[1];
       const f3 = findFund('Nippon India Small', 'Small Cap') || this.app.allFunds[2];
@@ -268,7 +308,7 @@ export class SimSimUI {
       this.weights[f2.code] = 0.30;
       if (f3) this.weights[f3.code] = 0.30;
     } else if (templateKey === 'defensive') {
-      // Defensive Compounder: Large & Mid + Flexi
+      // Defensive Compounder: Large & Mid + Bluechip + Contra
       const f1 = findFund('Mirae Asset Large & Midcap', 'Large & Mid Cap') || this.app.allFunds[0];
       const f2 = findFund('ICICI Prudential Bluechip', 'Large Cap') || this.app.allFunds[1];
       const f3 = findFund('SBI Contra', 'Contra') || this.app.allFunds[2];
@@ -282,12 +322,13 @@ export class SimSimUI {
     }
 
     this.saveBucketToStorage();
+    this.renderSimSimSidebar();
     this.renderSimSimStage();
     this.runSimulation();
   }
 
   /**
-   * Balances all bucket funds equally to 100% / N with integer remainder distribution
+   * Balances all bucket funds equally to 100% with integer remainder distribution
    */
   equalizeWeights() {
     const funds = this.getBucketFunds();
@@ -326,22 +367,24 @@ export class SimSimUI {
     } else if (horizon === '5Y') {
       d.setFullYear(d.getFullYear() - 5);
     } else if (horizon === 'ALL') {
-      return SimSimEngine.calculateEarliestCommonDate(funds);
-    } else if (horizon === 'custom') {
-      return this.customStartDate;
+      const earliestCommon = SimSimEngine.calculateEarliestCommonDate(funds);
+      return earliestCommon;
     }
 
-    return d.toISOString().split('T')[0];
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const targetDate = `${y}-${m}-${day}`;
+
+    const earliestCommon = SimSimEngine.calculateEarliestCommonDate(funds);
+    return targetDate > earliestCommon ? targetDate : earliestCommon;
   }
 
-  /**
-   * Main Simulation execution routine
-   */
   runSimulation() {
     const funds = this.getBucketFunds();
     if (funds.length === 0) return;
 
-    // Normalize weights if needed
+    // Normalize weights
     let totalWeight = 0;
     funds.forEach(f => {
       if (this.weights[f.code] === undefined) {
@@ -350,7 +393,6 @@ export class SimSimUI {
       totalWeight += this.weights[f.code];
     });
 
-    // Rebalance to 1.0 if not zero
     const normalizedWeights = {};
     if (totalWeight > 0) {
       funds.forEach(f => {
@@ -376,32 +418,167 @@ export class SimSimUI {
   }
 
   /**
-   * Renders the entire SimSim view into #simsim-container
+   * Renders the SimSim dedicated controls inside the Sidebar
+   */
+  renderSimSimSidebar() {
+    const sidebar = document.getElementById('simsim-sidebar-content');
+    if (!sidebar) return;
+
+    sidebar.innerHTML = `
+      <div class="space-y-4">
+        
+        <!-- Portal Context Header -->
+        <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5 text-xs font-bold text-[#00F090] uppercase tracking-wider">
+              <span class="material-symbols-outlined text-base simsim-pulse-icon">hourglass_top</span>
+              <span>SimSim Portal</span>
+            </div>
+            <button id="simsim-sidebar-exit-btn" type="button" class="simsim-exit-trigger text-[11px] font-bold text-[#94A3B8] hover:text-white transition-colors cursor-pointer flex items-center gap-1" title="Return to Screener">
+              <span class="material-symbols-outlined text-xs">arrow_back</span>
+              <span>Exit ☀️</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-[#94A3B8] leading-tight">
+            Institutional backtester simulating portfolio growth on daily audited NAV data.
+          </p>
+        </div>
+
+        <!-- 1. Curated Model Portfolios -->
+        <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-2.5">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block">Curated Model Baskets:</span>
+          <div class="space-y-1.5">
+            <button type="button" class="model-preset-btn w-full text-left p-2 rounded-xl bg-[#121826] hover:bg-[#172033] border border-white/10 hover:border-[#00F090]/40 transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="titan">
+              <div>
+                <span class="text-xs font-bold text-white block">🛡️ The Titan</span>
+                <span class="text-[10px] text-[#94A3B8]">Flexi + Mid + Small (3-Fund Core)</span>
+              </div>
+              <span class="text-[10px] font-mono text-[#00F090] font-bold">40/35/25</span>
+            </button>
+            <button type="button" class="model-preset-btn w-full text-left p-2 rounded-xl bg-[#121826] hover:bg-[#172033] border border-white/10 hover:border-[#00F090]/40 transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="aggressive">
+              <div>
+                <span class="text-xs font-bold text-white block">🚀 High-Alpha Rocket</span>
+                <span class="text-[10px] text-[#94A3B8]">Aggressive Mid & Small Cap Alpha</span>
+              </div>
+              <span class="text-[10px] font-mono text-[#00F090] font-bold">40/30/30</span>
+            </button>
+            <button type="button" class="model-preset-btn w-full text-left p-2 rounded-xl bg-[#121826] hover:bg-[#172033] border border-white/10 hover:border-[#00F090]/40 transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="defensive">
+              <div>
+                <span class="text-xs font-bold text-white block">💰 Defensive Compounder</span>
+                <span class="text-[10px] text-[#94A3B8]">Bluechip + Large & Mid + Contra</span>
+              </div>
+              <span class="text-[10px] font-mono text-[#00F090] font-bold">40/30/30</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Investment Style Selector -->
+        <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-2">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block">Investment Style:</span>
+          <div class="grid grid-cols-2 gap-1.5 p-1 bg-[#07090E] rounded-xl border border-white/10">
+            <button id="simsim-mode-lumpsum" type="button" class="py-2 rounded-lg text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'lumpsum' ? 'bg-[#00F090] text-black shadow-md' : 'text-[#94A3B8] hover:text-white'}">
+              💎 Lumpsum
+            </button>
+            <button id="simsim-mode-sip" type="button" class="py-2 rounded-lg text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'sip' ? 'bg-[#00F090] text-black shadow-md' : 'text-[#94A3B8] hover:text-white'}">
+              🗓️ Monthly SIP
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Capital & Time Horizon Setup -->
+        <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-3">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">${this.investmentMode === 'lumpsum' ? 'Lumpsum Principal:' : 'Monthly Installment:'}</label>
+              <span id="capital-display-pill" class="text-xs font-mono font-bold text-[#00F090]">₹${this.capital.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white font-mono text-sm font-bold">₹</span>
+              <input id="simsim-capital-input" type="number" min="1000" step="5000" value="${this.capital}" class="w-full bg-[#07090E] border border-white/10 rounded-xl py-2 pl-7 pr-3 text-sm text-white font-mono outline-none focus:border-[#00F090] transition-colors"/>
+            </div>
+            <!-- Quick Chips -->
+            <div class="flex items-center gap-1.5 flex-wrap mt-2">
+              ${(this.investmentMode === 'lumpsum' ? [25000, 50000, 100000, 250000, 500000] : [2000, 5000, 10000, 20000, 25000]).map(val => `
+                <button type="button" class="capital-chip px-2 py-0.5 rounded-md bg-[#161e2e] border border-white/10 text-[10px] text-[#94A3B8] hover:text-white hover:border-[#00F090] cursor-pointer touch-spring" data-val="${val}">
+                  ₹${val >= 100000 ? `${val/100000}L` : `${val/1000}k`}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Time Horizon -->
+          <div>
+            <label class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block mb-1.5">Backtest Horizon:</label>
+            <div class="grid grid-cols-3 gap-1.5">
+              ${['6M', '1Y', '2Y', '3Y', '5Y', 'ALL'].map(h => `
+                <button type="button" class="horizon-pill py-1.5 text-center rounded-lg text-xs font-bold border transition-all cursor-pointer touch-spring ${this.selectedHorizon === h ? 'bg-[#00D2FF]/20 border-[#00D2FF] text-[#00D2FF]' : 'bg-[#07090E] border-white/10 text-[#94A3B8] hover:text-white'}" data-h="${h}">
+                  ${h === 'ALL' ? 'Max' : h}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Quick Scheme Search in Sidebar -->
+        <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-2">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block">Add Funds to Basket:</span>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] text-sm">search</span>
+            <input id="simsim-add-search-input" type="text" placeholder="Search by name, AMC..." class="w-full bg-[#07090E] border border-white/10 rounded-xl py-1.5 pl-8 pr-3 text-xs text-white outline-none focus:border-[#00D2FF] transition-colors"/>
+          </div>
+          <div id="simsim-search-results" class="mt-1 space-y-1 max-h-40 overflow-y-auto hidden"></div>
+        </div>
+
+        <!-- 5. Primary Run Action -->
+        <button id="simsim-run-btn" type="button" class="w-full py-3 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black font-headline-md font-bold text-sm tracking-wide transition-all cursor-pointer touch-spring shadow-lg flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-base">rocket_launch</span>
+          <span>Simulate Portfolio</span>
+        </button>
+      </div>
+    `;
+
+    this.bindSidebarEvents();
+  }
+
+  /**
+   * Renders the expansive full-width main workspace into #simsim-container
    */
   renderSimSimStage() {
     const container = document.getElementById('simsim-container');
     if (!container) return;
 
     const funds = this.getBucketFunds();
+    let weightSum = 0;
+    funds.forEach(f => {
+      const w = this.weights[f.code] !== undefined ? this.weights[f.code] : (1.0 / funds.length);
+      weightSum += Math.round(w * 100);
+    });
 
     container.innerHTML = `
       <div class="space-y-6">
         
-        <!-- SimSim Top Control Bar -->
+        <!-- Top Portfolio Status & Action Bar -->
         <div class="simsim-card p-4 flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+            <div class="w-10 h-10 rounded-xl bg-[#00F090]/10 border border-[#00F090]/30 flex items-center justify-center text-[#00F090]">
               <span class="material-symbols-outlined text-2xl simsim-pulse-icon">hourglass_top</span>
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="font-headline-md text-base md:text-lg text-white font-bold">SimSim™ Portfolio Time Machine</h2>
+                <h2 class="font-headline-md text-base md:text-lg text-white font-bold">SimSim™ Simulation Workspace</h2>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#00F090]/10 text-[#00F090] border border-[#00F090]/30">Real Historical Backtest</span>
               </div>
-              <p class="text-xs text-[#94A3B8]">Allocate hypothetical capital back in time to simulate wealth generation with daily NAV data</p>
+              <div class="flex items-center gap-2 text-xs text-[#94A3B8] mt-0.5">
+                <span>Active Basket: <strong class="text-white">${funds.length} Scheme${funds.length === 1 ? '' : 's'}</strong></span>
+                <span>•</span>
+                <div id="simsim-weight-sum-badge" class="text-xs font-mono font-bold px-2 py-0.5 rounded-md ${weightSum === 100 ? 'bg-[#00F090]/10 text-[#00F090] border border-[#00F090]/30' : 'bg-[#FFB800]/10 text-[#FFB800] border border-[#FFB800]/30'}">
+                  Total: ${weightSum}%
+                </div>
+              </div>
             </div>
           </div>
 
+          <!-- Top Action Controls -->
           <div class="flex items-center gap-2 flex-wrap">
             <button id="simsim-equal-weight-btn" type="button" class="simsim-template-chip touch-spring" title="Split weights equally across funds">
               <span class="material-symbols-outlined text-xs">balance</span>
@@ -411,169 +588,79 @@ export class SimSimUI {
               <span class="material-symbols-outlined text-xs">delete_sweep</span>
               <span>Clear</span>
             </button>
-            <button id="simsim-exit-btn" type="button" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5" title="Return to Mutual Fund Screener">
+            <button id="simsim-exit-btn" type="button" class="simsim-exit-trigger px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5" title="Return to Mutual Fund Screener">
               <span class="material-symbols-outlined text-sm">arrow_back</span>
               <span>Exit to Screener ☀️</span>
             </button>
           </div>
         </div>
 
-        <!-- Main Two-Column Layout -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
-          <!-- Left Column: Portfolio Construction & Setup Deck (5 Cols) -->
-          <div class="lg:col-span-5 space-y-5">
-            
-            <!-- Curated Model Portfolio Presets -->
-            <div class="simsim-card p-4 space-y-3">
-              <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block">Curated Model Portfolios:</span>
-              <div class="flex items-center gap-2 flex-wrap">
-                <button type="button" class="simsim-template-chip model-preset-btn" data-preset="titan">
-                  🛡️ The Titan (Core 3-Fund)
-                </button>
-                <button type="button" class="simsim-template-chip model-preset-btn" data-preset="aggressive">
-                  🚀 High-Alpha Rocket
-                </button>
-                <button type="button" class="simsim-template-chip model-preset-btn" data-preset="defensive">
-                  💰 Defensive Compounder
-                </button>
-              </div>
+        <!-- Simulation Results Area (Key Metric Cards + Area Chart) -->
+        <div id="simsim-results-container">
+          <div class="simsim-card p-12 text-center text-xs text-[#94A3B8]">
+            <span class="material-symbols-outlined text-3xl text-[#00F090] mb-2 block simsim-pulse-icon">hourglass_empty</span>
+            Calculating historical trajectory...
+          </div>
+        </div>
+
+        <!-- Portfolio Holdings & Asset Weight Allocation Grid (Full Width) -->
+        <div class="simsim-card p-5 space-y-4">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-white">Portfolio Holdings & Asset Weight Allocation</h3>
+              <p class="text-[11px] text-[#94A3B8]">Drag sliders to customize percentage allocations or use Equal Weight ⚖️</p>
             </div>
+            <button id="simsim-recalc-btn" type="button" class="px-3 py-1.5 rounded-lg bg-[#00F090] text-black font-bold text-xs hover:bg-[#00d880] transition-colors flex items-center gap-1 cursor-pointer touch-spring shadow-sm">
+              <span class="material-symbols-outlined text-sm">rocket_launch</span>
+              <span>Re-Simulate ⚡</span>
+            </button>
+          </div>
 
-            <!-- Investment Setup Controls -->
-            <div class="simsim-card p-5 space-y-5">
-              
-              <!-- Mode: Lumpsum vs Monthly SIP -->
-              <div>
-                <label class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block mb-2">Investment Style:</label>
-                <div class="grid grid-cols-2 gap-2 p-1 bg-[#090D14] rounded-xl border border-white/10">
-                  <button id="simsim-mode-lumpsum" type="button" class="py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.investmentMode === 'lumpsum' ? 'bg-[#00F090] text-black shadow-sm' : 'text-[#94A3B8] hover:text-white'}">
-                    One-Time Lumpsum
-                  </button>
-                  <button id="simsim-mode-sip" type="button" class="py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.investmentMode === 'sip' ? 'bg-[#00F090] text-black shadow-sm' : 'text-[#94A3B8] hover:text-white'}">
-                    Monthly SIP (5th)
-                  </button>
-                </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" id="simsim-holdings-grid">
+            ${funds.length === 0 ? `
+              <div class="col-span-full py-10 text-center text-xs text-[#94A3B8]">
+                No funds in SimSim bucket yet. Select a model portfolio from the sidebar or add schemes from BickerBape Screener.
               </div>
+            ` : funds.map(f => {
+              const w = this.weights[f.code] !== undefined ? this.weights[f.code] : (1.0 / funds.length);
+              const pct = Math.round(w * 100);
+              const rupeeShare = Math.round(this.capital * (pct / 100));
 
-              <!-- Capital Input -->
-              <div>
-                <div class="flex items-center justify-between mb-1.5">
-                  <label class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">
-                    ${this.investmentMode === 'lumpsum' ? 'Hypothetical Capital Invested:' : 'Monthly SIP Amount:'}
-                  </label>
-                  <span id="capital-display-pill" class="text-xs font-bold text-[#00F090] font-mono">₹${this.capital.toLocaleString('en-IN')}</span>
-                </div>
-                <div class="relative">
-                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-[#94A3B8]">₹</span>
-                  <input id="simsim-capital-input" type="number" min="1000" step="5000" value="${this.capital}" class="w-full bg-[#090D14] border border-white/10 rounded-xl py-2 pl-7 pr-3 text-sm text-white font-mono outline-none focus:border-[#00F090] transition-colors"/>
-                </div>
-                <!-- Capital Preset Chips -->
-                <div class="flex items-center gap-1.5 mt-2 flex-wrap text-xs">
-                  ${(this.investmentMode === 'lumpsum' ? [50000, 100000, 500000, 1000000, 2500000] : [2000, 5000, 10000, 25000, 50000]).map(val => `
-                    <button type="button" class="capital-chip px-2 py-0.5 rounded-md bg-[#161e2e] border border-white/10 text-[11px] text-[#94A3B8] hover:text-white hover:border-[#00F090] cursor-pointer touch-spring" data-val="${val}">
-                      ₹${val >= 100000 ? `${val / 100000}L` : `${val / 1000}k`}
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
-
-              <!-- Time Machine Starting Point -->
-              <div>
-                <label class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block mb-2">Backtest Starting Point (Time Machine):</label>
-                <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
-                  ${['6M', '1Y', '2Y', '3Y', '5Y', 'ALL'].map(h => `
-                    <button type="button" class="horizon-pill py-1.5 text-center rounded-lg text-xs font-bold border transition-all cursor-pointer touch-spring ${this.selectedHorizon === h ? 'bg-[#00D2FF]/20 border-[#00D2FF] text-[#00D2FF]' : 'bg-[#090D14] border-white/10 text-[#94A3B8] hover:text-white'}" data-h="${h}">
-                      ${h === 'ALL' ? 'Earliest' : h}
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
-
-            </div>
-
-            <!-- Portfolio Allocation Sliders Deck -->
-            <div class="simsim-card p-5 space-y-4">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-xs font-bold uppercase tracking-wider text-white">Portfolio Allocation (${funds.length} Schemes)</h3>
-                  <p class="text-[11px] text-[#94A3B8]">Adjust weights to distribute your capital</p>
-                </div>
-                <div id="simsim-weight-sum-badge" class="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-[#00F090]/10 text-[#00F090] border border-[#00F090]/30">
-                  Total: 100%
-                </div>
-              </div>
-
-              <!-- Fund Cards List -->
-              <div class="space-y-3 max-h-[380px] overflow-y-auto pr-1 hide-scrollbar">
-                ${funds.length === 0 ? `
-                  <div class="py-8 text-center text-xs text-[#94A3B8]">
-                    No funds in SimSim bucket yet. Select a model portfolio above or add schemes from BickerBape Screener.
-                  </div>
-                ` : funds.map(f => {
-                  const w = this.weights[f.code] !== undefined ? this.weights[f.code] : (1.0 / funds.length);
-                  const pct = Math.round(w * 100);
-                  const rupeeShare = Math.round(this.capital * (pct / 100));
-
-                  return `
-                    <div class="p-3 rounded-xl bg-[#090D14] border border-white/10 space-y-2" data-fund-card="${f.code}">
-                      <div class="flex items-start justify-between gap-2">
-                        <div class="min-w-0">
-                          <h4 class="text-xs font-bold text-white truncate" title="${f.name}">${f.name.split(' - Direct')[0]}</h4>
-                          <div class="flex items-center gap-1.5 mt-0.5">
-                            <span class="text-[10px] px-1.5 py-0.2 rounded bg-white/10 text-[#94A3B8] font-bold uppercase">${f.category}</span>
-                            <span class="text-[10px] text-[#64748B]">NAV: ₹${(f.latest_nav || 0).toFixed(2)}</span>
-                          </div>
-                        </div>
-                        <button type="button" class="remove-fund-btn text-[#94A3B8] hover:text-[#FF4D4D] transition-colors cursor-pointer" data-code="${f.code}" title="Remove fund">
-                          <span class="material-symbols-outlined text-sm">close</span>
-                        </button>
-                      </div>
-
-                      <div class="flex items-center gap-3">
-                        <input type="range" min="0" max="100" value="${pct}" class="simsim-slider weight-slider" data-code="${f.code}"/>
-                        <div class="flex items-center gap-1 flex-shrink-0">
-                          <input type="number" min="0" max="100" value="${pct}" class="w-12 bg-[#161e2e] border border-white/10 rounded px-1.5 py-0.5 text-xs text-right font-mono text-white weight-number" data-code="${f.code}"/>
-                          <span class="text-xs text-[#94A3B8] font-bold">%</span>
-                        </div>
-                      </div>
-
-                      <div class="flex items-center justify-between text-[11px] text-[#94A3B8] pt-0.5">
-                        <span>Allocated Share:</span>
-                        <span class="font-mono text-white font-bold" data-share-for="${f.code}">₹${rupeeShare.toLocaleString('en-IN')}</span>
+              return `
+                <div class="p-4 rounded-xl bg-[#090D14] border border-white/10 space-y-3" data-fund-card="${f.code}">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="min-w-0">
+                      <h4 class="text-xs font-bold text-white truncate" title="${f.name}">${f.name.split(' - Direct')[0]}</h4>
+                      <div class="flex items-center gap-1.5 mt-0.5">
+                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-white/10 text-[#94A3B8] font-bold uppercase">${f.category}</span>
+                        <span class="text-[10px] text-[#64748B]">NAV: ₹${(f.latest_nav || 0).toFixed(2)}</span>
                       </div>
                     </div>
-                  `;
-                }).join('')}
-              </div>
+                    <button type="button" class="remove-fund-btn text-[#94A3B8] hover:text-[#FF4D4D] transition-colors cursor-pointer" data-code="${f.code}" title="Remove fund">
+                      <span class="material-symbols-outlined text-sm">close</span>
+                    </button>
+                  </div>
 
-              <!-- Quick Scheme Search inside SimSim -->
-              <div class="pt-2 border-t border-white/10">
-                <div class="relative">
-                  <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] text-sm">add_circle</span>
-                  <input id="simsim-add-search-input" type="text" placeholder="Add more schemes by name or AMC..." class="w-full bg-[#090D14] border border-white/10 rounded-xl py-1.5 pl-8 pr-3 text-xs text-white outline-none focus:border-[#00D2FF] transition-colors"/>
+                  <div class="flex items-center gap-3">
+                    <input type="range" min="0" max="100" value="${pct}" class="simsim-slider weight-slider" data-code="${f.code}"/>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                      <input type="number" min="0" max="100" value="${pct}" class="w-12 bg-[#161e2e] border border-white/10 rounded px-1.5 py-0.5 text-xs text-right font-mono text-white weight-number" data-code="${f.code}"/>
+                      <span class="text-xs text-[#94A3B8] font-bold">%</span>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between text-[11px] text-[#94A3B8] pt-1 border-t border-white/5">
+                    <span>Allocated Share:</span>
+                    <span class="font-mono text-white font-bold" data-share-for="${f.code}">₹${rupeeShare.toLocaleString('en-IN')}</span>
+                  </div>
                 </div>
-                <div id="simsim-search-results" class="mt-1 space-y-1 max-h-36 overflow-y-auto hidden"></div>
-              </div>
-
-              <!-- Run Simulation Action -->
-              <button id="simsim-run-btn" type="button" class="w-full py-3 rounded-xl bg-[#00F090] text-black font-headline-md font-bold text-sm tracking-wide hover:bg-[#00d880] transition-all cursor-pointer touch-spring shadow-lg flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-base">rocket_launch</span>
-                <span>Simulate Portfolio</span>
-              </button>
-
-            </div>
-
+              `;
+            }).join('')}
           </div>
-
-          <!-- Right Column: Live Simulation Results Dashboard (7 Cols) -->
-          <div class="lg:col-span-7 space-y-5">
-            <div id="simsim-results-container">
-              <!-- Dynamically populated by renderSimulationResults -->
-            </div>
-          </div>
-
         </div>
+
+        <!-- Detailed Constituent Performance Table -->
+        <div id="simsim-table-container"></div>
 
       </div>
     `;
@@ -582,16 +669,30 @@ export class SimSimUI {
   }
 
   /**
-   * Binds interactive events for sliders, buttons, inputs, and search
+   * Binds sidebar controls
    */
-  bindStageEvents() {
-    // Mode toggles
+  bindSidebarEvents() {
+    // Exit buttons
+    document.querySelectorAll('.simsim-exit-trigger').forEach(btn => {
+      btn.addEventListener('click', () => this.disableSimSimMode());
+    });
+
+    // Model presets in sidebar
+    document.querySelectorAll('.model-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const preset = btn.getAttribute('data-preset');
+        this.loadTemplate(preset);
+      });
+    });
+
+    // Mode toggles (Lumpsum vs SIP)
     const lumpsumBtn = document.getElementById('simsim-mode-lumpsum');
     const sipBtn = document.getElementById('simsim-mode-sip');
 
     if (lumpsumBtn) {
       lumpsumBtn.addEventListener('click', () => {
         this.investmentMode = 'lumpsum';
+        this.renderSimSimSidebar();
         this.renderSimSimStage();
         this.runSimulation();
       });
@@ -601,12 +702,13 @@ export class SimSimUI {
       sipBtn.addEventListener('click', () => {
         this.investmentMode = 'sip';
         if (this.capital >= 100000) this.capital = 10000;
+        this.renderSimSimSidebar();
         this.renderSimSimStage();
         this.runSimulation();
       });
     }
 
-    // Capital input
+    // Capital input & chips
     const capInput = document.getElementById('simsim-capital-input');
     if (capInput) {
       capInput.addEventListener('input', (e) => {
@@ -623,11 +725,11 @@ export class SimSimUI {
       capInput.addEventListener('change', () => this.runSimulation());
     }
 
-    // Capital chips
     document.querySelectorAll('.capital-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         const val = parseFloat(chip.getAttribute('data-val'));
         this.capital = val;
+        this.renderSimSimSidebar();
         this.renderSimSimStage();
         this.runSimulation();
       });
@@ -639,13 +741,79 @@ export class SimSimUI {
         this.selectedHorizon = pill.getAttribute('data-h');
         document.querySelectorAll('.horizon-pill').forEach(p => {
           p.classList.remove('bg-[#00D2FF]/20', 'border-[#00D2FF]', 'text-[#00D2FF]');
-          p.classList.add('bg-[#090D14]', 'border-white/10', 'text-[#94A3B8]');
+          p.classList.add('bg-[#07090E]', 'border-white/10', 'text-[#94A3B8]');
         });
         pill.classList.add('bg-[#00D2FF]/20', 'border-[#00D2FF]', 'text-[#00D2FF]');
-        pill.classList.remove('bg-[#090D14]', 'border-white/10', 'text-[#94A3B8]');
+        pill.classList.remove('bg-[#07090E]', 'border-white/10', 'text-[#94A3B8]');
         this.runSimulation();
       });
     });
+
+    // Scheme search inside sidebar
+    const searchInput = document.getElementById('simsim-add-search-input');
+    const searchResults = document.getElementById('simsim-search-results');
+
+    if (searchInput && searchResults) {
+      searchInput.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        if (q.length < 2) {
+          searchResults.classList.add('hidden');
+          searchResults.innerHTML = '';
+          return;
+        }
+
+        const matches = (this.app.allFunds || []).filter(f => 
+          !this.isInBucket(f.code) &&
+          (f.name.toLowerCase().includes(q) || f.fund_house.toLowerCase().includes(q) || f.category.toLowerCase().includes(q))
+        ).slice(0, 8);
+
+        if (matches.length === 0) {
+          searchResults.innerHTML = `<div class="p-2 text-xs text-[#94A3B8]">No matching funds</div>`;
+          searchResults.classList.remove('hidden');
+          return;
+        }
+
+        searchResults.innerHTML = matches.map(f => `
+          <div class="p-2 bg-[#121824] hover:bg-[#192132] border border-white/10 rounded-lg flex items-center justify-between cursor-pointer touch-spring add-match-item" data-code="${f.code}">
+            <div class="min-w-0 pr-2">
+              <p class="text-xs font-bold text-white truncate">${f.name.split(' - Direct')[0]}</p>
+              <p class="text-[10px] text-[#94A3B8]">${f.category} • NAV ₹${(f.latest_nav || 0).toFixed(1)}</p>
+            </div>
+            <span class="material-symbols-outlined text-[#00F090] text-sm flex-shrink-0">add_circle</span>
+          </div>
+        `).join('');
+
+        searchResults.classList.remove('hidden');
+
+        searchResults.querySelectorAll('.add-match-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const code = Number(item.getAttribute('data-code'));
+            this.addToBucket(code);
+            searchInput.value = '';
+            searchResults.classList.add('hidden');
+          });
+        });
+      });
+    }
+
+    // Sidebar Simulate Launch Button
+    const sideRunBtn = document.getElementById('simsim-run-btn') || document.getElementById('simsim-sidebar-run-btn');
+    if (sideRunBtn) sideRunBtn.addEventListener('click', () => this.runSimulation());
+  }
+
+  /**
+   * Binds main stage interactive controls (sliders, equal weight, recalculate)
+   */
+  bindStageEvents() {
+    // Action bar buttons
+    const eqBtn = document.getElementById('simsim-equal-weight-btn');
+    if (eqBtn) eqBtn.addEventListener('click', () => this.equalizeWeights());
+
+    const clearBtn = document.getElementById('simsim-clear-btn');
+    if (clearBtn) clearBtn.addEventListener('click', () => this.clearBucket());
+
+    const recalcBtn = document.getElementById('simsim-recalc-btn');
+    if (recalcBtn) recalcBtn.addEventListener('click', () => this.runSimulation());
 
     // Weight sliders & number inputs
     const syncWeights = (code, val) => {
@@ -697,254 +865,162 @@ export class SimSimUI {
         this.removeFromBucket(code);
       });
     });
-
-    // Top action buttons
-    const exitBtn = document.getElementById('simsim-exit-btn');
-    if (exitBtn) exitBtn.addEventListener('click', () => this.disableSimSimMode());
-
-    const clearBtn = document.getElementById('simsim-clear-btn');
-    if (clearBtn) clearBtn.addEventListener('click', () => this.clearBucket());
-
-    const eqBtn = document.getElementById('simsim-equal-weight-btn');
-    if (eqBtn) eqBtn.addEventListener('click', () => this.equalizeWeights());
-
-    const runBtn = document.getElementById('simsim-run-btn');
-    if (runBtn) runBtn.addEventListener('click', () => this.runSimulation());
-
-    // Curated model presets
-    document.querySelectorAll('.model-preset-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const preset = btn.getAttribute('data-preset');
-        this.loadTemplate(preset);
-      });
-    });
-
-    // Inline search to add schemes
-    const searchInput = document.getElementById('simsim-add-search-input');
-    const searchResults = document.getElementById('simsim-search-results');
-
-    if (searchInput && searchResults) {
-      searchInput.addEventListener('input', (e) => {
-        const q = e.target.value.toLowerCase().trim();
-        if (q.length < 2) {
-          searchResults.classList.add('hidden');
-          return;
-        }
-
-        const matches = (this.app.allFunds || []).filter(f => 
-          !this.isInBucket(f.code) &&
-          (f.name.toLowerCase().includes(q) || f.category.toLowerCase().includes(q) || f.fund_house.toLowerCase().includes(q))
-        ).slice(0, 5);
-
-        if (matches.length === 0) {
-          searchResults.innerHTML = `<p class="p-2 text-[11px] text-[#94A3B8]">No schemes found.</p>`;
-          searchResults.classList.remove('hidden');
-          return;
-        }
-
-        searchResults.innerHTML = matches.map(f => `
-          <div class="p-2 bg-[#121824] hover:bg-[#192132] border border-white/10 rounded-lg flex items-center justify-between cursor-pointer touch-spring add-match-item" data-code="${f.code}">
-            <div class="min-w-0 pr-2">
-              <p class="text-xs font-bold text-white truncate">${f.name.split(' - Direct')[0]}</p>
-              <p class="text-[10px] text-[#94A3B8]">${f.category} • ${f.fund_house}</p>
-            </div>
-            <span class="material-symbols-outlined text-sm text-[#00F090]">add_circle</span>
-          </div>
-        `).join('');
-
-        searchResults.classList.remove('hidden');
-
-        searchResults.querySelectorAll('.add-match-item').forEach(item => {
-          item.addEventListener('click', () => {
-            const code = Number(item.getAttribute('data-code'));
-            this.addToBucket(code);
-            searchInput.value = '';
-            searchResults.classList.add('hidden');
-          });
-        });
-      });
-    }
   }
 
   /**
-   * Renders the simulation calculation results & Chart.js graph
+   * Renders the simulation results: 4 Key KPI cards and full-width Chart.js Canvas
    */
   renderSimulationResults(res) {
-    const container = document.getElementById('simsim-results-container');
-    if (!container) return;
+    const resultsContainer = document.getElementById('simsim-results-container') || document.getElementById('simsim-results-view');
+    const tableContainer = document.getElementById('simsim-table-container');
+    if (!resultsContainer || !res) return;
 
-    if (!res) {
-      container.innerHTML = `
-        <div class="simsim-card p-12 text-center text-[#94A3B8]">
-          <span class="material-symbols-outlined text-4xl text-[#64748B] mb-2">query_stats</span>
-          <p class="text-sm font-bold text-white">No Simulation Results Available</p>
-          <p class="text-xs mt-1">Please add funds to your bucket and click 'Simulate Portfolio'.</p>
-        </div>
-      `;
-      return;
-    }
-
-    const isProfit = res.totalGain >= 0;
-    const gainPrefix = isProfit ? '+' : '';
-    const gainColor = isProfit ? 'text-[#00F090]' : 'text-[#FF4D4D]';
-
-    container.innerHTML = `
-      <div class="space-y-5">
+    resultsContainer.innerHTML = `
+      <div class="space-y-6">
         
-        <!-- Big Present Value Headline Card -->
-        <div class="simsim-card simsim-card-glow p-6 relative overflow-hidden">
-          <div class="flex flex-wrap items-center justify-between gap-4 relative z-10">
-            <div>
-              <span class="text-xs font-bold uppercase tracking-wider text-[#94A3B8] block mb-1">
-                ${res.type === 'lumpsum' ? 'Present Portfolio Value' : 'Accumulated Wealth Value'} (as of Today)
-              </span>
-              <div class="flex items-baseline gap-3">
-                <h1 class="font-display-financial text-3xl sm:text-4xl lg:text-5xl font-black ${gainColor} tracking-tight">
-                  ₹${Math.round(res.presentValue).toLocaleString('en-IN')}
-                </h1>
-                <span class="text-sm sm:text-base font-bold font-mono px-2.5 py-1 rounded-full ${isProfit ? 'bg-[#00F090]/15 text-[#00F090] border border-[#00F090]/30' : 'bg-[#FF4D4D]/15 text-[#FF4D4D] border border-[#FF4D4D]/30'}">
-                  ${gainPrefix}₹${Math.round(res.totalGain).toLocaleString('en-IN')} (${gainPrefix}${res.totalGainPct.toFixed(1)}%)
-                </span>
-              </div>
-            </div>
-
-            <div class="text-right">
-              <span class="text-[11px] font-bold text-[#94A3B8] block">Simulation Period:</span>
-              <span class="text-xs font-mono font-bold text-white">${res.startDate} to ${res.endDate}</span>
-              <span class="text-[11px] text-[#00D2FF] font-semibold block mt-0.5">(${res.years} Years Elapsed)</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4 Institutional KPI Metric Cards -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <!-- 4 Key KPI Metrics Cards (Full Width Grid) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
-          <!-- Card 1: Annualized Return -->
-          <div class="simsim-card p-4">
-            <div class="flex items-center gap-1.5 text-[#94A3B8] mb-1">
-              <span class="material-symbols-outlined text-sm text-[#00F090]">trending_up</span>
-              <span class="text-[10px] font-bold uppercase tracking-wider">${res.type === 'lumpsum' ? 'Annualized CAGR' : 'Internal Rate (XIRR)'}</span>
+          <!-- Card 1: Present Value -->
+          <div class="simsim-card p-4 border-l-4 border-l-[#00F090]">
+            <div class="flex items-center justify-between text-[#94A3B8] mb-1">
+              <span class="text-[10px] font-bold uppercase tracking-wider">Simulated Present Value</span>
+              <span class="material-symbols-outlined text-base text-[#00F090]">account_balance_wallet</span>
             </div>
-            <p class="font-display-financial text-lg sm:text-xl font-bold ${gainColor}">
-              ${gainPrefix}${res.cagr.toFixed(2)}% <span class="text-xs text-[#94A3B8] font-normal">p.a.</span>
+            <p class="font-display-financial text-2xl font-black simsim-neon-headline">
+              ₹${Math.round(res.presentValue).toLocaleString('en-IN')}
             </p>
-            <p class="text-[10px] text-[#64748B] mt-1">Compounded annual growth</p>
+            <p class="text-[11px] font-medium ${res.totalGain >= 0 ? 'text-[#00F090]' : 'text-[#FF4D4D]'} mt-1 flex items-center gap-1">
+              <span>${res.totalGain >= 0 ? '▲' : '▼'} ₹${Math.abs(Math.round(res.totalGain)).toLocaleString('en-IN')}</span>
+              <span class="text-[10px] text-[#64748B]">(${res.totalGainPct >= 0 ? '+' : ''}${res.totalGainPct.toFixed(2)}%)</span>
+            </p>
           </div>
 
-          <!-- Card 2: Alpha vs Benchmark -->
-          <div class="simsim-card p-4">
-            <div class="flex items-center gap-1.5 text-[#94A3B8] mb-1">
-              <span class="material-symbols-outlined text-sm text-[#00D2FF]">military_tech</span>
-              <span class="text-[10px] font-bold uppercase tracking-wider">Alpha vs Nifty</span>
+          <!-- Card 2: Annualized CAGR / XIRR -->
+          <div class="simsim-card p-4 border-l-4 border-l-[#00D2FF]">
+            <div class="flex items-center justify-between text-[#94A3B8] mb-1">
+              <span class="text-[10px] font-bold uppercase tracking-wider">${res.type === 'lumpsum' ? 'Annualized CAGR' : 'Annualized XIRR'}</span>
+              <span class="material-symbols-outlined text-base text-[#00D2FF]">trending_up</span>
             </div>
-            <p class="font-display-financial text-lg sm:text-xl font-bold ${res.alpha >= 0 ? 'text-[#00D2FF]' : 'text-[#FF4D4D]'}">
-              ${res.alpha >= 0 ? '+' : ''}${res.alpha.toFixed(2)}%
+            <p class="font-display-financial text-2xl font-black text-white">
+              ${res.cagr.toFixed(2)}%
             </p>
-            <p class="text-[10px] text-[#64748B] mt-1">Outperformance vs market</p>
+            <p class="text-[11px] font-medium ${res.alpha >= 0 ? 'text-[#00D2FF]' : 'text-[#FF4D4D]'} mt-1">
+              ${res.alpha >= 0 ? '+' : ''}${res.alpha.toFixed(2)}% Alpha vs Nifty 50 TRI
+            </p>
           </div>
 
           <!-- Card 3: Max Drawdown -->
-          <div class="simsim-card p-4">
-            <div class="flex items-center gap-1.5 text-[#94A3B8] mb-1">
-              <span class="material-symbols-outlined text-sm text-[#FF4D4D]">shield</span>
+          <div class="simsim-card p-4 border-l-4 border-l-[#FF4D4D]">
+            <div class="flex items-center justify-between text-[#94A3B8] mb-1">
               <span class="text-[10px] font-bold uppercase tracking-wider">Max Drawdown</span>
+              <span class="material-symbols-outlined text-base text-[#FF4D4D]">shield</span>
             </div>
-            <p class="font-display-financial text-lg sm:text-xl font-bold text-[#FF4D4D]">
+            <p class="font-display-financial text-2xl font-black text-[#FF4D4D]">
               ${res.maxDrawdown > 0 ? `-${res.maxDrawdown.toFixed(2)}%` : '0.00%'}
             </p>
-            <p class="text-[10px] text-[#64748B] mt-1">Worst peak-to-trough drop</p>
+            <p class="text-[11px] text-[#64748B] mt-1">Worst peak-to-trough drop</p>
           </div>
 
-          <!-- Card 4: Capital Put In -->
-          <div class="simsim-card p-4">
-            <div class="flex items-center gap-1.5 text-[#94A3B8] mb-1">
-              <span class="material-symbols-outlined text-sm text-[#FFB800]">savings</span>
+          <!-- Card 4: Total Invested Capital -->
+          <div class="simsim-card p-4 border-l-4 border-l-[#FFB800]">
+            <div class="flex items-center justify-between text-[#94A3B8] mb-1">
               <span class="text-[10px] font-bold uppercase tracking-wider">Total Invested</span>
+              <span class="material-symbols-outlined text-base text-[#FFB800]">savings</span>
             </div>
-            <p class="font-display-financial text-lg sm:text-xl font-bold text-white">
+            <p class="font-display-financial text-2xl font-black text-white">
               ₹${Math.round(res.totalCapital).toLocaleString('en-IN')}
             </p>
-            <p class="text-[10px] text-[#64748B] mt-1">${res.type === 'lumpsum' ? 'One-time principal' : `${res.installmentsCount || 0} installments`}</p>
+            <p class="text-[11px] text-[#64748B] mt-1">${res.type === 'lumpsum' ? 'One-time principal' : `${res.installmentsCount || 0} installments`}</p>
           </div>
 
         </div>
 
-        <!-- Interactive Chart.js Dual Area Chart -->
+        <!-- Interactive Chart.js Dual Area Chart (Full Width) -->
         <div class="simsim-card p-5 space-y-3">
           <div class="flex items-center justify-between flex-wrap gap-2">
             <div>
               <h3 class="text-xs font-bold uppercase tracking-wider text-white">Historical Wealth Trajectory</h3>
-              <p class="text-[11px] text-[#94A3B8]">Your Portfolio vs Nifty 50 TRI Benchmark</p>
+              <p class="text-[11px] text-[#94A3B8]">Simulated Portfolio vs Nifty 50 TRI Benchmark (${res.startDate} to ${res.endDate})</p>
             </div>
             <div class="flex items-center gap-4 text-xs font-bold">
               <div class="flex items-center gap-1.5">
                 <span class="w-3 h-3 rounded-full bg-[#00F090]"></span>
-                <span class="text-white">SimSim Portfolio</span>
+                <span class="text-white">Portfolio</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <span class="w-3 h-0.5 bg-[#00D2FF]"></span>
-                <span class="text-[#00D2FF]">Nifty TRI Proxy</span>
+                <span class="w-3 h-3 rounded-full bg-[#00D2FF]"></span>
+                <span class="text-[#00D2FF]">Nifty 50 TRI</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <span class="w-3 h-0.5 bg-[#FFB800]"></span>
-                <span class="text-[#FFB800]">Invested Capital</span>
+                <span class="w-3 h-3 rounded-full bg-[#FFB800]"></span>
+                <span class="text-[#FFB800]">Invested</span>
               </div>
             </div>
           </div>
 
-          <div class="simsim-chart-wrap p-2 h-[320px] w-full relative">
+          <div class="simsim-chart-wrap p-2" style="height: 380px;">
             <canvas id="simsim-chart-canvas"></canvas>
-          </div>
-        </div>
-
-        <!-- Constituent Funds Breakdown Table -->
-        <div class="simsim-card overflow-hidden">
-          <div class="p-4 border-b border-white/10 bg-[#0C1018]">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-white">Constituent Scheme Performance Breakdown</h3>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="simsim-table">
-              <thead>
-                <tr>
-                  <th class="text-left">Scheme</th>
-                  <th class="text-center">Weight</th>
-                  <th class="text-right">Capital Put In</th>
-                  <th class="text-right">Present Value</th>
-                  <th class="text-right">Wealth Gain</th>
-                  <th class="text-right">${res.type === 'lumpsum' ? 'CAGR' : 'Return'}</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${res.constituents.map(c => `
-                  <tr>
-                    <td class="font-bold text-white">
-                      <div>${c.name}</div>
-                      <span class="text-[10px] text-[#94A3B8] font-normal">${c.category} • ${c.fund_house}</span>
-                    </td>
-                    <td class="text-center font-mono text-white">${c.weightPct}%</td>
-                    <td class="text-right font-mono text-[#94A3B8]">₹${Math.round(c.allocatedCap).toLocaleString('en-IN')}</td>
-                    <td class="text-right font-mono font-bold text-white">₹${Math.round(c.presentValue).toLocaleString('en-IN')}</td>
-                    <td class="text-right font-mono font-bold ${c.gain >= 0 ? 'text-[#00F090]' : 'text-[#FF4D4D]'}">
-                      ${c.gain >= 0 ? '+' : ''}₹${Math.round(c.gain).toLocaleString('en-IN')} (${c.gain >= 0 ? '+' : ''}${c.gainPct.toFixed(1)}%)
-                    </td>
-                    <td class="text-right font-mono font-bold ${c.cagr >= 0 ? 'text-[#00F090]' : 'text-[#FF4D4D]'}">
-                      ${c.cagr >= 0 ? '+' : ''}${c.cagr.toFixed(2)}%
-                    </td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
           </div>
         </div>
 
       </div>
     `;
 
-    this.renderChart(res);
+    // Render detailed constituent performance table
+    if (tableContainer) {
+      tableContainer.innerHTML = `
+        <div class="simsim-card overflow-hidden">
+          <div class="p-4 border-b border-white/10 bg-[#0C1018] flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-white">Constituent Schemes Performance Breakdown</h3>
+            <span class="text-[11px] font-mono text-[#94A3B8]">Period: ${res.startDate} to ${res.endDate} (${res.years} Years)</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="simsim-table">
+              <thead>
+                <tr>
+                  <th class="text-left">Scheme & Category</th>
+                  <th class="text-right">Weight</th>
+                  <th class="text-right">Invested</th>
+                  <th class="text-right">Present Value</th>
+                  <th class="text-right">Gain / Loss</th>
+                  <th class="text-right">${res.type === 'lumpsum' ? 'CAGR' : 'Return'}</th>
+                  <th class="text-right">Units Held</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${res.constituents.map(c => `
+                  <tr>
+                    <td>
+                      <p class="font-bold text-white text-xs truncate max-w-xs" title="${c.name}">${c.name}</p>
+                      <p class="text-[10px] text-[#94A3B8]">${c.category} • ${c.fund_house}</p>
+                    </td>
+                    <td class="text-right font-mono text-[#00F090] font-bold">${c.weightPct}%</td>
+                    <td class="text-right font-mono text-[#94A3B8]">₹${Math.round(c.allocatedCap).toLocaleString('en-IN')}</td>
+                    <td class="text-right font-mono font-bold text-white">₹${Math.round(c.presentValue).toLocaleString('en-IN')}</td>
+                    <td class="text-right font-mono font-bold ${c.gain >= 0 ? 'text-[#00F090]' : 'text-[#FF4D4D]'}">
+                      ${c.gain >= 0 ? '+' : ''}₹${Math.round(c.gain).toLocaleString('en-IN')} (${c.gainPct >= 0 ? '+' : ''}${c.gainPct.toFixed(1)}%)
+                    </td>
+                    <td class="text-right font-mono font-bold ${c.cagr >= 0 ? 'text-[#00D2FF]' : 'text-[#FF4D4D]'}">
+                      ${c.cagr >= 0 ? '+' : ''}${c.cagr.toFixed(2)}%
+                    </td>
+                    <td class="text-right font-mono text-xs text-[#64748B]">${c.units.toLocaleString('en-IN')}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render interactive chart
+    setTimeout(() => this.renderChart(res), 50);
   }
 
   /**
-   * Renders the dynamic neon Chart.js area chart
+   * Renders Chart.js visualization
    */
   renderChart(res) {
     const canvas = document.getElementById('simsim-chart-canvas');
@@ -958,7 +1034,7 @@ export class SimSimUI {
     const ctx = canvas.getContext('2d');
 
     // Emerald gradient fill for portfolio curve
-    const emeraldGrad = ctx.createLinearGradient(0, 0, 0, 300);
+    const emeraldGrad = ctx.createLinearGradient(0, 0, 0, 320);
     emeraldGrad.addColorStop(0, 'rgba(0, 240, 144, 0.35)');
     emeraldGrad.addColorStop(1, 'rgba(0, 240, 144, 0.00)');
 
@@ -1021,7 +1097,7 @@ export class SimSimUI {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(12, 16, 24, 0.95)',
+            backgroundColor: 'rgba(10, 14, 23, 0.95)',
             titleColor: '#ffffff',
             bodyColor: '#e2e8f0',
             borderColor: 'rgba(0, 240, 144, 0.4)',
