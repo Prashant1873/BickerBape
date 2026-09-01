@@ -48,6 +48,22 @@ body.simsim-mode #sidebar {
   border-right-color: var(--simsim-border) !important;
 }
 
+body.simsim-mode header.sticky #header-platform-title,
+body.simsim-mode #sidebar h1 {
+  color: #ffffff !important;
+}
+
+body.simsim-mode header.sticky #funds-count,
+body.simsim-mode #sidebar p {
+  color: var(--simsim-text-secondary) !important;
+}
+
+body.simsim-mode #sidebar-expand-btn {
+  background: var(--simsim-surface-card) !important;
+  color: var(--simsim-emerald) !important;
+  border: 1px solid var(--simsim-border) !important;
+}
+
 /* --------------------------------------------------------------------------
    Brand Logo Interactive Mode Switcher
    -------------------------------------------------------------------------- */
@@ -57,12 +73,16 @@ body.simsim-mode #sidebar {
   border-radius: 14px;
   padding: 4px 6px;
   margin: -4px -6px;
-  transition: all 220ms ease;
+  transition: background-color 200ms ease, transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 
 .logo-mode-switch:hover {
   background: rgba(0, 82, 204, 0.08);
+}
+
+.logo-mode-switch:active {
+  transform: scale(0.97);
 }
 
 body.simsim-mode .logo-mode-switch:hover {
@@ -76,7 +96,7 @@ body.simsim-mode .logo-mode-switch:hover {
   background: radial-gradient(circle, rgba(0, 240, 144, 0.4) 0%, transparent 70%);
   opacity: 0;
   transform: scale(0.85);
-  transition: all 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1), transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
   z-index: 0;
 }
@@ -103,7 +123,7 @@ body.simsim-mode .logo-mode-switch .logo-aura {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  transition: all 180ms ease;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
   border: 1px solid transparent;
 }
 
@@ -157,13 +177,25 @@ body.simsim-mode .mode-switch-badge.simsim-badge {
   transform: translateY(120px);
   opacity: 0;
   visibility: hidden;
-  transition: all 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), opacity 260ms ease, visibility 260ms;
+}
+
+@media (max-width: 768px) {
+  .simsim-tray {
+    bottom: 84px;
+    right: 16px;
+    padding: 8px 12px;
+  }
 }
 
 .simsim-tray.visible {
   transform: translateY(0);
   opacity: 1;
   visibility: visible;
+}
+
+.simsim-tray button:active {
+  transform: scale(0.96);
 }
 
 /* SimSim Add button on Screener cards and table */
@@ -179,7 +211,7 @@ body.simsim-mode .mode-switch-badge.simsim-badge {
   background: transparent;
   color: #5c5e63;
   cursor: pointer;
-  transition: all 140ms ease;
+  transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease, color 140ms ease;
 }
 
 .simsim-add-btn:hover {
@@ -187,6 +219,10 @@ body.simsim-mode .mode-switch-badge.simsim-badge {
   border-color: #22c55e;
   color: #15803d;
   transform: translateY(-1px);
+}
+
+.simsim-add-btn:active {
+  transform: scale(0.94);
 }
 
 .simsim-add-btn.in-bucket {
@@ -204,6 +240,10 @@ body.simsim-mode .simsim-add-btn:hover {
   background: rgba(0, 240, 144, 0.12);
   border-color: var(--simsim-emerald);
   color: var(--simsim-emerald);
+}
+
+body.simsim-mode .simsim-add-btn:active {
+  transform: scale(0.94);
 }
 
 body.simsim-mode .simsim-add-btn.in-bucket {
@@ -287,7 +327,7 @@ body.simsim-mode .simsim-add-btn.in-bucket {
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 140ms ease;
+  transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
 }
 
 .simsim-template-chip:hover {
@@ -297,11 +337,56 @@ body.simsim-mode .simsim-add-btn.in-bucket {
   transform: translateY(-1px);
 }
 
+.simsim-template-chip:active {
+  transform: scale(0.96);
+}
+
 .simsim-template-chip.active {
   background: rgba(0, 240, 144, 0.14);
   border-color: var(--simsim-emerald);
   color: var(--simsim-emerald);
   box-shadow: 0 0 12px rgba(0, 240, 144, 0.2);
+}
+
+/* Button Active Springs in SimSim */
+#simsim-exit-btn:active {
+  transform: scale(0.96);
+}
+
+#simsim-balance-btn:active,
+#simsim-clear-btn:active {
+  transform: scale(0.95);
+}
+
+#simsim-run-btn:active {
+  transform: scale(0.97);
+}
+
+.cap-preset-btn:active {
+  transform: scale(0.95);
+}
+
+.horizon-pill:active {
+  transform: scale(0.95);
+}
+
+.model-preset-btn:active {
+  transform: scale(0.96);
+}
+
+#simsim-mode-lumpsum:active,
+#simsim-mode-sip:active {
+  transform: scale(0.97);
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .simsim-pulse-icon {
+    animation: none !important;
+  }
+  .logo-aura {
+    display: none !important;
+  }
 }
 
 /* Big Value Headline in Neon Emerald */

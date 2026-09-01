@@ -800,7 +800,7 @@ export class SimSimUI {
               <span class="text-[10px] font-bold uppercase tracking-wider">Max Drawdown</span>
             </div>
             <p class="font-display-financial text-lg sm:text-xl font-bold text-[#FF4D4D]">
-              -${res.maxDrawdown.toFixed(2)}%
+              ${res.maxDrawdown > 0 ? `-${res.maxDrawdown.toFixed(2)}%` : '0.00%'}
             </p>
             <p class="text-[10px] text-[#64748B] mt-1">Worst peak-to-trough drop</p>
           </div>

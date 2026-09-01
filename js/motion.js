@@ -35,9 +35,9 @@ export class FluidMotion {
    */
   static initTactileFeedback() {
     document.addEventListener('pointerdown', (e) => {
-      const target = e.target.closest('.touch-spring, button, .category-pill, .strategy-chip, tr[data-fund-code]');
+      const target = e.target.closest('.touch-spring, button, .category-pill, .strategy-chip, tr[data-code], .card-interactive, .simsim-template-chip, .logo-mode-switch, .info-btn, .simsim-add-btn');
       if (!target) return;
-      target.style.transform = 'scale(0.968)';
+      target.style.transform = 'scale(0.97)';
       target.style.transition = 'transform 100ms cubic-bezier(0.2, 0.8, 0.2, 1)';
       
       const reset = () => {
