@@ -187,9 +187,9 @@ def test_all():
         print("  PASSED: Multi-Segment Split Bar drag reallocated weights seamlessly while keeping sum at 100%!")
 
         # -------------------------------------------------------------
-        # 4. Verify SimSim KPI Cards Depth (No border-l-4)
+        # 4. Verify SimSim KPI Cards Depth & Zero Colored Borders
         # -------------------------------------------------------------
-        print("\n[Test 4] Verifying SimSim KPI Cards depth and aura...")
+        print("\n[Test 4] Verifying SimSim KPI Cards depth, zero colored borders, and rich button styles...")
         kpi_solid_borders = page.locator(".simsim-kpi-card.border-l-4")
         print(f"  KPI cards with solid border-l-4: {kpi_solid_borders.count()}")
         assert kpi_solid_borders.count() == 0, "KPI cards should not have border-l-4"
@@ -197,6 +197,23 @@ def test_all():
         kpi_depth_cards = page.locator(".simsim-kpi-card")
         print(f"  KPI depth cards count: {kpi_depth_cards.count()}")
         assert kpi_depth_cards.count() == 4, "Should have 4 depth-styled KPI cards"
+
+        # Check KPI card borders are strictly 1px subtle border without colored border-top lines
+        kpi_bt = kpi_depth_cards.nth(0).evaluate("el => getComputedStyle(el).borderTopWidth")
+        kpi_bl = kpi_depth_cards.nth(0).evaluate("el => getComputedStyle(el).borderLeftWidth")
+        print(f"  KPI card border-top: {kpi_bt}, border-left: {kpi_bl}")
+        assert kpi_bt == "1px" and kpi_bl == "1px", "KPI cards should have uniform 1px border without colored stripes"
+
+        # Check Model Preset cards have 1px border and zero colored border-left lines
+        preset_bl = page.locator(".model-preset-btn").nth(0).evaluate("el => getComputedStyle(el).borderLeftWidth")
+        print(f"  Model preset card border-left: {preset_bl}")
+        assert preset_bl == "1px", "Model preset card should have uniform 1px border without colored border-left"
+
+        # Check radiant preset emblem discs
+        emblem_count = page.locator(".preset-emblem-emerald, .preset-emblem-coral, .preset-emblem-gold").count()
+        print(f"  Model preset emblem discs: {emblem_count}")
+        assert emblem_count == 3, "Should have 3 radiant emblem discs inside model preset cards"
+        print("  PASSED: Zero colored border lines verified across SimSim cards, rich emblem discs and button styling active!")
 
         # Capture SimSim screenshots
         page.evaluate("document.getElementById('main-content').scrollTop = 0")

@@ -323,38 +323,37 @@ body.simsim-mode .simsim-add-btn.in-bucket {
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
-/* KPI Cards with ambient aura glow & depth instead of generic solid left lines */
+/* KPI Cards with obsidian glass depth & subtle ambient radial glow (Zero colored border lines) */
 .simsim-kpi-card {
   position: relative;
   background: var(--simsim-surface-card);
-  border: 1px solid var(--simsim-border);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.07);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .simsim-kpi-card:hover {
   transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 14px 36px -4px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .simsim-kpi-emerald {
-  border-top: 1.5px solid rgba(0, 240, 144, 0.4);
-  box-shadow: 0 10px 30px -6px rgba(0, 240, 144, 0.12), inset 0 1px 0 rgba(0, 240, 144, 0.25);
+  background: radial-gradient(circle at 90% 12%, rgba(0, 240, 144, 0.07) 0%, rgba(13, 19, 34, 0.96) 65%);
 }
 
 .simsim-kpi-cyan {
-  border-top: 1.5px solid rgba(0, 210, 255, 0.4);
-  box-shadow: 0 10px 30px -6px rgba(0, 210, 255, 0.12), inset 0 1px 0 rgba(0, 210, 255, 0.25);
+  background: radial-gradient(circle at 90% 12%, rgba(0, 210, 255, 0.07) 0%, rgba(13, 19, 34, 0.96) 65%);
 }
 
 .simsim-kpi-crimson {
-  border-top: 1.5px solid rgba(255, 77, 77, 0.4);
-  box-shadow: 0 10px 30px -6px rgba(255, 77, 77, 0.12), inset 0 1px 0 rgba(255, 77, 77, 0.25);
+  background: radial-gradient(circle at 90% 12%, rgba(255, 77, 77, 0.07) 0%, rgba(13, 19, 34, 0.96) 65%);
 }
 
 .simsim-kpi-amber {
-  border-top: 1.5px solid rgba(255, 184, 0, 0.4);
-  box-shadow: 0 10px 30px -6px rgba(255, 184, 0, 0.12), inset 0 1px 0 rgba(255, 184, 0, 0.25);
+  background: radial-gradient(circle at 90% 12%, rgba(255, 184, 0, 0.07) 0%, rgba(13, 19, 34, 0.96) 65%);
 }
 
 /* ==========================================================================
@@ -593,12 +592,12 @@ body.simsim-mode .simsim-add-btn.in-bucket {
   transform: scale(0.95);
 }
 
-/* Curated Model Preset Cards with distinct depth & neon edge aura */
+/* Curated Model Preset Cards with distinct depth, emblem discs & zero colored border lines */
 .model-preset-btn {
-  border-radius: 14px;
-  background: rgba(18, 24, 38, 0.85);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #111726 0%, #0C111D 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.07);
   transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
   position: relative;
   overflow: hidden;
@@ -606,36 +605,166 @@ body.simsim-mode .simsim-add-btn.in-bucket {
 
 .model-preset-btn:hover {
   transform: translateY(-2px);
-  background: rgba(24, 32, 50, 0.95);
-  border-color: rgba(0, 240, 144, 0.35);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 16px rgba(0, 240, 144, 0.1);
+  background: linear-gradient(180deg, #161F33 0%, #0F1626 100%);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-.model-preset-btn[data-preset="titan"] {
-  border-left: 3.5px solid #00F090;
+/* Radiant Preset Emblem Discs */
+.preset-emblem-emerald {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: radial-gradient(circle, rgba(0, 240, 144, 0.22) 0%, rgba(0, 240, 144, 0.05) 100%);
+  border: 1px solid rgba(0, 240, 144, 0.35);
+  box-shadow: 0 0 14px rgba(0, 240, 144, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.model-preset-btn[data-preset="aggressive"] {
-  border-left: 3.5px solid #FF5630;
+.preset-emblem-coral {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: radial-gradient(circle, rgba(255, 86, 48, 0.22) 0%, rgba(255, 86, 48, 0.05) 100%);
+  border: 1px solid rgba(255, 86, 48, 0.35);
+  box-shadow: 0 0 14px rgba(255, 86, 48, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.model-preset-btn[data-preset="defensive"] {
-  border-left: 3.5px solid #FFB800;
+.preset-emblem-gold {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: radial-gradient(circle, rgba(255, 184, 0, 0.22) 0%, rgba(255, 184, 0, 0.05) 100%);
+  border: 1px solid rgba(255, 184, 0, 0.35);
+  box-shadow: 0 0 14px rgba(255, 184, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SimSim Primary Run CTA Button (Capsule Pill with Specular Sheen) */
+.simsim-primary-cta,
+#simsim-run-btn,
+#basket-modal-apply-btn {
+  border-radius: 9999px !important;
+  background: linear-gradient(135deg, #00FF9D 0%, #00D880 100%) !important;
+  color: #06150D !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em;
+  border: none !important;
+  box-shadow: 0 4px 18px -2px rgba(0, 240, 144, 0.45), 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  transition: transform 140ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 140ms ease !important;
+}
+
+.simsim-primary-cta:hover,
+#simsim-run-btn:hover,
+#basket-modal-apply-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px -2px rgba(0, 240, 144, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+}
+
+.simsim-primary-cta:active,
+#simsim-run-btn:active,
+#basket-modal-apply-btn:active {
+  transform: scale(0.97) !important;
+}
+
+/* Re-Simulate Pill */
+.simsim-recalc-pill,
+#simsim-recalc-btn {
+  border-radius: 9999px !important;
+  background: linear-gradient(135deg, #00FF9D 0%, #00C875 100%) !important;
+  color: #06150D !important;
+  font-weight: 800 !important;
+  border: none !important;
+  box-shadow: 0 3px 12px rgba(0, 240, 144, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  transition: transform 140ms ease, box-shadow 140ms ease !important;
+}
+
+.simsim-recalc-pill:hover,
+#simsim-recalc-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(0, 240, 144, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Top Control Action Buttons in Stage */
+.simsim-btn-indigo,
+#simsim-equal-weight-btn {
+  border-radius: 12px !important;
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.16) 0%, rgba(79, 70, 229, 0.1) 100%) !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  color: #A5B4FC !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  transition: all 140ms ease !important;
+}
+
+.simsim-btn-indigo:hover,
+#simsim-equal-weight-btn:hover {
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.28) 0%, rgba(79, 70, 229, 0.18) 100%) !important;
+  border-color: rgba(99, 102, 241, 0.6) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25) !important;
+  transform: translateY(-1.5px);
+}
+
+.simsim-btn-ruby,
+#simsim-clear-btn {
+  border-radius: 12px !important;
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.14) 0%, rgba(185, 28, 28, 0.08) 100%) !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+  color: #FCA5A5 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  transition: all 140ms ease !important;
+}
+
+.simsim-btn-ruby:hover,
+#simsim-clear-btn:hover {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.25) 0%, rgba(185, 28, 28, 0.15) 100%) !important;
+  border-color: rgba(239, 68, 68, 0.55) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25) !important;
+  transform: translateY(-1.5px);
+}
+
+.simsim-btn-pearl,
+#simsim-exit-btn {
+  border-radius: 12px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  transition: all 140ms ease !important;
+}
+
+.simsim-btn-pearl:hover,
+#simsim-exit-btn:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.09) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1.5px);
 }
 
 /* Quick Capital Chips & Horizon Pills with Pill Curvature */
 .capital-chip {
   border-radius: 9999px !important;
+  background: linear-gradient(180deg, #131B2A 0%, #0D1320 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   font-family: monospace;
   font-weight: 700;
   transition: transform 140ms ease, background 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
 }
 
 .capital-chip:hover {
-  border-color: #00F090 !important;
-  color: #ffffff !important;
-  background: rgba(0, 240, 144, 0.15) !important;
-  box-shadow: 0 2px 8px rgba(0, 240, 144, 0.2);
+  border-color: rgba(0, 240, 144, 0.6) !important;
+  color: #00F090 !important;
+  background: rgba(0, 240, 144, 0.12) !important;
+  box-shadow: 0 3px 10px rgba(0, 240, 144, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
 }
 
 .horizon-pill {
@@ -646,9 +775,13 @@ body.simsim-mode .simsim-add-btn.in-bucket {
 #simsim-mode-lumpsum,
 #simsim-mode-sip {
   border-radius: 9999px !important;
+  transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 #simsim-mode-lumpsum:active,
+#simsim-mode-sip:active {
+  transform: scale(0.97);
+}
 #simsim-mode-sip:active {
   transform: scale(0.97);
 }

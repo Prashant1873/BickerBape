@@ -906,24 +906,33 @@ export class SimSimUI {
         <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-2.5">
           <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block">Curated Model Baskets:</span>
           <div class="space-y-1.5">
-            <button type="button" class="model-preset-btn w-full text-left p-3 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="titan">
-              <div>
-                <span class="text-xs font-bold text-white block">🛡️ The Titan</span>
-                <span class="text-[10px] text-[#94A3B8]">Flexi + Mid + Small (3-Fund Core)</span>
+            <button type="button" class="model-preset-btn w-full text-left p-2.5 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="titan">
+              <div class="flex items-center gap-2.5">
+                <div class="preset-emblem-emerald text-sm">🛡️</div>
+                <div>
+                  <span class="text-xs font-bold text-white block">The Titan</span>
+                  <span class="text-[10px] text-[#94A3B8]">Flexi + Mid + Small (Core)</span>
+                </div>
               </div>
               <span class="text-[10px] font-mono text-[#00F090] font-bold px-2 py-0.5 rounded-full bg-[#00F090]/10 border border-[#00F090]/30">40/35/25</span>
             </button>
-            <button type="button" class="model-preset-btn w-full text-left p-3 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="aggressive">
-              <div>
-                <span class="text-xs font-bold text-white block">🚀 High-Alpha Rocket</span>
-                <span class="text-[10px] text-[#94A3B8]">Aggressive Mid & Small Cap Alpha</span>
+            <button type="button" class="model-preset-btn w-full text-left p-2.5 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="aggressive">
+              <div class="flex items-center gap-2.5">
+                <div class="preset-emblem-coral text-sm">🚀</div>
+                <div>
+                  <span class="text-xs font-bold text-white block">High-Alpha Rocket</span>
+                  <span class="text-[10px] text-[#94A3B8]">Mid & Small Cap Alpha</span>
+                </div>
               </div>
               <span class="text-[10px] font-mono text-[#FF5630] font-bold px-2 py-0.5 rounded-full bg-[#FF5630]/10 border border-[#FF5630]/30">40/30/30</span>
             </button>
-            <button type="button" class="model-preset-btn w-full text-left p-3 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="defensive">
-              <div>
-                <span class="text-xs font-bold text-white block">💰 Defensive Compounder</span>
-                <span class="text-[10px] text-[#94A3B8]">Bluechip + Large & Mid + Contra</span>
+            <button type="button" class="model-preset-btn w-full text-left p-2.5 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="defensive">
+              <div class="flex items-center gap-2.5">
+                <div class="preset-emblem-gold text-sm">💰</div>
+                <div>
+                  <span class="text-xs font-bold text-white block">Defensive Compounder</span>
+                  <span class="text-[10px] text-[#94A3B8]">Bluechip + Large-Mid + Contra</span>
+                </div>
               </div>
               <span class="text-[10px] font-mono text-[#FFB800] font-bold px-2 py-0.5 rounded-full bg-[#FFB800]/10 border border-[#FFB800]/30">40/30/30</span>
             </button>
@@ -934,10 +943,10 @@ export class SimSimUI {
         <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-2">
           <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block">Investment Style:</span>
           <div class="grid grid-cols-2 gap-1.5 p-1 bg-[#07090E] rounded-full border border-white/10">
-            <button id="simsim-mode-lumpsum" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'lumpsum' ? 'bg-[#00F090] text-black shadow-md' : 'text-[#94A3B8] hover:text-white'}">
+            <button id="simsim-mode-lumpsum" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'lumpsum' ? 'bg-[#00F090] bg-gradient-to-r from-[#00FF9D] to-[#00D880] text-[#06150D] shadow-md font-extrabold' : 'text-[#94A3B8] hover:text-white'}">
               💎 Lumpsum
             </button>
-            <button id="simsim-mode-sip" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'sip' ? 'bg-[#00F090] text-black shadow-md' : 'text-[#94A3B8] hover:text-white'}">
+            <button id="simsim-mode-sip" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'sip' ? 'bg-[#00F090] bg-gradient-to-r from-[#00FF9D] to-[#00D880] text-[#06150D] shadow-md font-extrabold' : 'text-[#94A3B8] hover:text-white'}">
               🗓️ Monthly SIP
             </button>
           </div>
@@ -1038,15 +1047,15 @@ export class SimSimUI {
 
           <!-- Top Action Controls -->
           <div class="flex items-center gap-2 flex-wrap">
-            <button id="simsim-equal-weight-btn" type="button" class="simsim-template-chip touch-spring" title="Split weights equally across funds">
-              <span class="material-symbols-outlined text-xs">balance</span>
+            <button id="simsim-equal-weight-btn" type="button" class="simsim-btn-indigo px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer touch-spring" title="Split weights equally across funds">
+              <span class="material-symbols-outlined text-sm">balance</span>
               <span>Equal Weight ⚖️</span>
             </button>
-            <button id="simsim-clear-btn" type="button" class="simsim-template-chip text-[#FF4D4D] hover:text-[#FF4D4D] touch-spring" title="Remove all funds from bucket">
-              <span class="material-symbols-outlined text-xs">delete_sweep</span>
+            <button id="simsim-clear-btn" type="button" class="simsim-btn-ruby px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer touch-spring" title="Remove all funds from bucket">
+              <span class="material-symbols-outlined text-sm">delete_sweep</span>
               <span>Clear</span>
             </button>
-            <button id="simsim-exit-btn" type="button" class="simsim-exit-trigger px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5" title="Return to Mutual Fund Screener">
+            <button id="simsim-exit-btn" type="button" class="simsim-exit-trigger simsim-btn-pearl px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer touch-spring" title="Return to Mutual Fund Screener">
               <span class="material-symbols-outlined text-sm">arrow_back</span>
               <span>Exit to Screener ☀️</span>
             </button>
@@ -1068,7 +1077,7 @@ export class SimSimUI {
               <h3 class="text-xs font-bold uppercase tracking-wider text-white">Portfolio Allocation (${funds.length} Schemes)</h3>
               <p class="text-[11px] text-[#94A3B8]">Adjust weights to distribute your capital (Drag bar dividers or card sliders)</p>
             </div>
-            <button id="simsim-recalc-btn" type="button" class="px-3 py-1.5 rounded-lg bg-[#00F090] text-black font-bold text-xs hover:bg-[#00d880] transition-colors flex items-center gap-1 cursor-pointer touch-spring shadow-sm">
+            <button id="simsim-recalc-btn" type="button" class="simsim-recalc-pill px-4 py-2 rounded-full text-[#06150D] font-extrabold text-xs transition-all flex items-center gap-1.5 cursor-pointer touch-spring">
               <span class="material-symbols-outlined text-sm">rocket_launch</span>
               <span>Re-Simulate ⚡</span>
             </button>
@@ -1088,29 +1097,29 @@ export class SimSimUI {
               const rupeeShare = Math.round(this.capital * (pct / 100));
 
               return `
-                <div class="p-4 rounded-xl bg-[#090D14] border border-white/10 space-y-3" data-fund-card="${f.code}">
+                <div class="p-4 rounded-2xl bg-gradient-to-b from-[#101625] to-[#0A0E18] border border-white/10 space-y-3 shadow-lg hover:border-white/20 transition-all" data-fund-card="${f.code}">
                   <div class="flex items-start justify-between gap-2">
                     <div class="min-w-0">
                       <h4 class="text-xs font-bold text-white truncate" title="${f.name}">${f.name.split(' - Direct')[0]}</h4>
                       <div class="flex items-center gap-1.5 mt-0.5">
-                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-white/10 text-[#94A3B8] font-bold uppercase">${f.category}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-[#94A3B8] font-bold uppercase">${f.category}</span>
                         <span class="text-[10px] text-[#64748B]">NAV: ₹${(f.latest_nav || 0).toFixed(2)}</span>
                       </div>
                     </div>
-                    <button type="button" class="remove-fund-btn text-[#94A3B8] hover:text-[#FF4D4D] transition-colors cursor-pointer" data-code="${f.code}" title="Remove fund">
-                      <span class="material-symbols-outlined text-sm">close</span>
+                    <button type="button" class="remove-fund-btn w-6 h-6 rounded-full bg-white/5 hover:bg-[#FF4D4D]/20 text-[#94A3B8] hover:text-[#FF4D4D] flex items-center justify-center transition-all cursor-pointer touch-spring" data-code="${f.code}" title="Remove fund">
+                      <span class="material-symbols-outlined text-xs">close</span>
                     </button>
                   </div>
 
                   <div class="flex items-center gap-3">
                     <input type="range" min="0" max="100" value="${pct}" class="simsim-slider weight-slider" data-code="${f.code}"/>
                     <div class="flex items-center gap-1 flex-shrink-0">
-                      <input type="number" min="0" max="100" value="${pct}" class="w-12 bg-[#161e2e] border border-white/10 rounded px-1.5 py-0.5 text-xs text-right font-mono text-white weight-number" data-code="${f.code}"/>
+                      <input type="number" min="0" max="100" value="${pct}" class="w-12 bg-[#060A12] border border-white/15 focus:border-[#00F090] rounded-lg px-1.5 py-0.5 text-xs text-right font-mono text-white weight-number outline-none" data-code="${f.code}"/>
                       <span class="text-xs text-[#94A3B8] font-bold">%</span>
                     </div>
                   </div>
 
-                  <div class="flex items-center justify-between text-[11px] text-[#94A3B8] pt-1 border-t border-white/5">
+                  <div class="flex items-center justify-between text-[11px] text-[#94A3B8] pt-2 border-t border-white/5">
                     <span>Allocated Share:</span>
                     <span class="font-mono text-white font-bold" data-share-for="${f.code}">₹${rupeeShare.toLocaleString('en-IN')}</span>
                   </div>
@@ -1400,14 +1409,16 @@ export class SimSimUI {
     resultsContainer.innerHTML = `
       <div class="space-y-6">
         
-        <!-- 4 Key KPI Metrics Cards (Full Width Grid with Depth & Soft Glow) -->
+        <!-- 4 Key KPI Metrics Cards (Full Width Grid with Obsidian Depth & Zero Colored Border Lines) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
           <!-- Card 1: Present Value -->
           <div class="simsim-card simsim-kpi-card simsim-kpi-emerald p-4">
-            <div class="flex items-center justify-between text-[#94A3B8] mb-1">
+            <div class="flex items-center justify-between text-[#94A3B8] mb-1.5">
               <span class="text-[10px] font-bold uppercase tracking-wider">Simulated Present Value</span>
-              <span class="material-symbols-outlined text-base text-[#00F090]">account_balance_wallet</span>
+              <div class="w-7 h-7 rounded-lg bg-[#00F090]/10 border border-[#00F090]/25 flex items-center justify-center text-[#00F090]">
+                <span class="material-symbols-outlined text-sm">account_balance_wallet</span>
+              </div>
             </div>
             <p class="font-display-financial text-2xl font-black simsim-neon-headline">
               ₹${Math.round(res.presentValue).toLocaleString('en-IN')}
@@ -1420,9 +1431,11 @@ export class SimSimUI {
 
           <!-- Card 2: Annualized CAGR / XIRR -->
           <div class="simsim-card simsim-kpi-card simsim-kpi-cyan p-4">
-            <div class="flex items-center justify-between text-[#94A3B8] mb-1">
+            <div class="flex items-center justify-between text-[#94A3B8] mb-1.5">
               <span class="text-[10px] font-bold uppercase tracking-wider">${res.type === 'lumpsum' ? 'Annualized CAGR' : 'Annualized XIRR'}</span>
-              <span class="material-symbols-outlined text-base text-[#00D2FF]">trending_up</span>
+              <div class="w-7 h-7 rounded-lg bg-[#00D2FF]/10 border border-[#00D2FF]/25 flex items-center justify-center text-[#00D2FF]">
+                <span class="material-symbols-outlined text-sm">trending_up</span>
+              </div>
             </div>
             <p class="font-display-financial text-2xl font-black text-white">
               ${res.cagr.toFixed(2)}%
@@ -1434,9 +1447,11 @@ export class SimSimUI {
 
           <!-- Card 3: Max Drawdown -->
           <div class="simsim-card simsim-kpi-card simsim-kpi-crimson p-4">
-            <div class="flex items-center justify-between text-[#94A3B8] mb-1">
+            <div class="flex items-center justify-between text-[#94A3B8] mb-1.5">
               <span class="text-[10px] font-bold uppercase tracking-wider">Max Drawdown</span>
-              <span class="material-symbols-outlined text-base text-[#FF4D4D]">shield</span>
+              <div class="w-7 h-7 rounded-lg bg-[#FF4D4D]/10 border border-[#FF4D4D]/25 flex items-center justify-center text-[#FF4D4D]">
+                <span class="material-symbols-outlined text-sm">shield</span>
+              </div>
             </div>
             <p class="font-display-financial text-2xl font-black text-[#FF4D4D]">
               ${res.maxDrawdown > 0 ? `-${res.maxDrawdown.toFixed(2)}%` : '0.00%'}
@@ -1446,9 +1461,11 @@ export class SimSimUI {
 
           <!-- Card 4: Total Invested Capital -->
           <div class="simsim-card simsim-kpi-card simsim-kpi-amber p-4">
-            <div class="flex items-center justify-between text-[#94A3B8] mb-1">
+            <div class="flex items-center justify-between text-[#94A3B8] mb-1.5">
               <span class="text-[10px] font-bold uppercase tracking-wider">Total Invested</span>
-              <span class="material-symbols-outlined text-base text-[#FFB800]">savings</span>
+              <div class="w-7 h-7 rounded-lg bg-[#FFB800]/10 border border-[#FFB800]/25 flex items-center justify-center text-[#FFB800]">
+                <span class="material-symbols-outlined text-sm">savings</span>
+              </div>
             </div>
             <p class="font-display-financial text-2xl font-black text-white">
               ₹${Math.round(res.totalCapital).toLocaleString('en-IN')}
