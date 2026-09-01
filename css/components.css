@@ -295,9 +295,9 @@
 
 /* Circular Score Gauge: Mathematically Ratio-ed Circumference using conic-gradient */
 .smartscore-gauge {
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -305,29 +305,46 @@
   position: relative;
   font-family: 'Hanken Grotesk', system-ui, sans-serif;
   font-weight: 800;
-  font-size: 15px;
   color: #191c1e;
-  box-shadow: 0 2px 6px rgba(9, 30, 66, 0.08);
+  box-shadow: 0 2px 8px rgba(9, 30, 66, 0.08);
   /* The circumference is dynamically covered by --score-pct (0 to 100%) */
   background: conic-gradient(var(--ring-color, #36B37E) calc(var(--score-pct, 75) * 1%), #edeef0 0deg);
-  padding: 3.5px;
+  padding: 4px;
   transition: transform 150ms ease;
   user-select: none;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.smartscore-gauge.gauge-large {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
 }
 
 .smartscore-gauge::before {
   content: '';
   position: absolute;
-  inset: 3.5px;
+  inset: 4px;
   background: #ffffff;
   border-radius: 50%;
   z-index: 1;
 }
 
-.smartscore-gauge span,
-.smartscore-gauge .material-symbols-outlined {
+.smartscore-gauge .gauge-value,
+.smartscore-gauge span {
   position: relative;
   z-index: 2;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  color: #191c1e;
+  letter-spacing: -0.02em;
+}
+
+.smartscore-gauge.gauge-large .gauge-value {
+  font-size: 16px;
 }
 
 .smartscore-gauge:hover {
@@ -338,11 +355,11 @@
 .smartscore-pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
+  justify-content: center;
+  padding: 2.5px 8px;
   border-radius: 8px;
-  font-weight: 700;
-  font-size: 11.5px;
+  font-weight: 800;
+  font-size: 12px;
   line-height: 14px;
   box-shadow: 0 1px 3px rgba(9, 30, 66, 0.06);
   transition: transform 120ms ease;

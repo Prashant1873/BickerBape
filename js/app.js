@@ -1320,9 +1320,8 @@ class BickerBapeApp {
     }
 
     return `
-      <span class="smartscore-pill smartscore-pill-gradient" style="background: linear-gradient(135deg, ${fromColor} 0%, ${toColor} 100%); color: ${textColor};" title="SmartScore(TM): ${s}/10 (${pct}% Quality Rating)">
+      <span class="smartscore-pill smartscore-pill-gradient" style="background: linear-gradient(135deg, ${fromColor} 0%, ${toColor} 100%); color: ${textColor};" title="SmartScore™: ${s.toFixed(1)} (${pct}% Quality Rating)">
         <span class="smartscore-pill-val">${s.toFixed(1)}</span>
-        <span class="smartscore-pill-unit">/10</span>
       </span>
     `;
   }
@@ -1342,11 +1341,8 @@ class BickerBapeApp {
     const sizeClass = isLarge ? 'gauge-large' : 'gauge-standard';
 
     return `
-      <div class="ratio-gauge smartscore-gauge ${sizeClass}" style="--score-pct: ${pct}; --ring-color: ${ringColor};" title="SmartScore™: ${s}/10">
-        <div class="gauge-inner">
-          <span class="gauge-value font-display-financial font-extrabold text-on-surface">${s.toFixed(1)}</span>
-          <span class="gauge-sub font-label-sm font-bold text-on-surface-variant">/10</span>
-        </div>
+      <div class="ratio-gauge smartscore-gauge ${sizeClass}" style="--score-pct: ${pct}; --ring-color: ${ringColor};" title="SmartScore™: ${s.toFixed(1)}">
+        <span class="gauge-value font-display-financial font-extrabold text-on-surface">${s.toFixed(1)}</span>
       </div>
     `;
   }
@@ -1815,15 +1811,15 @@ class BickerBapeApp {
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Performance Score</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-[#36B37E]">${f.smart_score ? f.smart_score.pillars.performance.score : '-'}/10</td>`).join('')}
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-[#36B37E]">${f.smart_score ? f.smart_score.pillars.performance.score : '-'}</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Risk Score (Safety)</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-on-surface">${f.smart_score ? f.smart_score.pillars.risk.score : '-'}/10</td>`).join('')}
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-on-surface">${f.smart_score ? f.smart_score.pillars.risk.score : '-'}</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Cost Score (Low Fee)</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-primary">${f.smart_score ? f.smart_score.pillars.cost.score : '-'}/10</td>`).join('')}
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-primary">${f.smart_score ? f.smart_score.pillars.cost.score : '-'}</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Category</td>
@@ -1930,7 +1926,7 @@ class BickerBapeApp {
     if (overallEl) {
       overallEl.innerHTML = `
         <span class="text-on-surface font-bold text-xs">SmartScore™ (${moodLabel} Mood)</span>
-        <span class="text-primary font-extrabold text-sm ml-1">${overall}/10</span>
+        <span class="text-primary font-extrabold text-sm ml-1">${overall}</span>
         <span class="text-[10px] text-on-surface-variant font-medium block">Rank vs <strong class="text-on-surface">${catName}</strong> peers: <strong class="text-on-surface">${rankText}</strong></span>
       `;
     }
@@ -2002,7 +1998,7 @@ class BickerBapeApp {
                   ${m.score !== undefined ? `
                     <div class="text-right flex-shrink-0 ml-2">
                       <span class="font-label-bold text-xs text-on-surface">Score : </span>
-                      <strong class="font-display-financial text-xs ${m.score >= 6.5 ? 'text-[#36B37E]' : (m.score >= 4.0 ? 'text-[#FFAB00]' : 'text-[#FF5630]')}">${m.score}/10</strong>
+                      <strong class="font-display-financial text-xs ${m.score >= 6.5 ? 'text-[#36B37E]' : (m.score >= 4.0 ? 'text-[#FFAB00]' : 'text-[#FF5630]')}">${m.score}</strong>
                     </div>
                   ` : `
                     <div class="flex-shrink-0 ml-2">
