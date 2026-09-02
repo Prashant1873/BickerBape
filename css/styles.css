@@ -114,6 +114,26 @@ html.dark, .dark {
   font-feature-settings: "tnum" 1;
 }
 
+/* Perceptual Dark Mode Typography Compensation */
+html.dark, .dark {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark body, .dark body {
+  letter-spacing: 0.01em;
+}
+
+html.dark h1, html.dark h2, html.dark h3, html.dark h4,
+.dark h1, .dark h2, .dark h3, .dark h4 {
+  letter-spacing: 0.015em;
+}
+
+/* Optimal Prose Measure Bounding */
+.prose-measure {
+  max-width: 68ch;
+}
+
 /* Elevation utilities */
 .card-shadow {
   box-shadow: var(--shadow-level-1);
