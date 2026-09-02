@@ -54,6 +54,12 @@
   --ease-out-apple: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Tactile Spring Press Feedback */
+.touch-spring:active, button:active, .category-pill:active, .strategy-chip:active, tr[data-code]:active, .card-interactive:active, .simsim-template-chip:active, .logo-mode-switch:active, .info-btn:active, .simsim-add-btn:active {
+  transform: scale(0.97);
+  transition: transform 100ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 /* Dark Mode Theme Tokens (Class .dark & System prefers-color-scheme) */
 html.dark, .dark {
   /* Surface & Background */

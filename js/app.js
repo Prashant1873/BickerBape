@@ -11,7 +11,6 @@
  * - Interactive Chart.js Visualizations (including 3M NAV Growth)
  */
 
-import { DataService } from './data-service.js';
 import { AnalyticsEngine } from './analytics.js';
 import { ChartEngine } from './charts.js';
 import { FluidMotion } from './motion.js';
@@ -58,11 +57,17 @@ class BickerBapeApp {
   }
 
   async init() {
-    FluidMotion.initTactileFeedback();
-
     // 1. Load data
-    this.allFunds = await DataService.loadFunds();
-    this.categoriesSummary = await DataService.loadCategoriesSummary();
+    try {
+      const [fundsRes, catRes] = await Promise.all([
+        fetch('data/equity_funds.json'),
+        fetch('data/categories_summary.json')
+      ]);
+      if (fundsRes.ok) this.allFunds = await fundsRes.json();
+      if (catRes.ok) this.categoriesSummary = await catRes.json();
+    } catch (err) {
+      console.warn('Could not load local data files', err);
+    }
 
     // Initialize with default Growth Mood
     this.recalculateSmartScoresForMood('growth');

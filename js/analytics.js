@@ -3,32 +3,7 @@
  * Pure math & strategy evaluators matching the 10-step video framework.
  */
 
-const RISK_FREE_RATE = 6.8; // RBI 10Y G-Sec / T-bill rate (%)
-
 export class AnalyticsEngine {
-  /**
-   * Calculates Compound Annual Growth Rate (CAGR)
-   * @param {number} startNav 
-   * @param {number} endNav 
-   * @param {number} years 
-   * @returns {number|null}
-   */
-  static calculateCAGR(startNav, endNav, years) {
-    if (!startNav || !endNav || startNav <= 0 || endNav <= 0 || years <= 0) return null;
-    return Number((((endNav / startNav) ** (1 / years) - 1) * 100).toFixed(2));
-  }
-
-  /**
-   * Calculates Sharpe Ratio
-   * @param {number} returnPct Annualized return (%)
-   * @param {number} volatilityPct Annualized standard deviation (%)
-   * @returns {number}
-   */
-  static calculateSharpe(returnPct, volatilityPct) {
-    if (!volatilityPct || volatilityPct <= 0) return 0;
-    return Number(((returnPct - RISK_FREE_RATE) / volatilityPct).toFixed(2));
-  }
-
   /**
    * Filters and sorts funds based on user criteria & active preset
    * @param {Array} funds 

@@ -31,28 +31,6 @@ export class FluidMotion {
   }
 
   /**
-   * Initializes tactile pointerdown response on all interactive elements
-   */
-  static initTactileFeedback() {
-    document.addEventListener('pointerdown', (e) => {
-      const target = e.target.closest('.touch-spring, button, .category-pill, .strategy-chip, tr[data-code], .card-interactive, .simsim-template-chip, .logo-mode-switch, .info-btn, .simsim-add-btn');
-      if (!target) return;
-      target.style.transform = 'scale(0.97)';
-      target.style.transition = 'transform 100ms cubic-bezier(0.2, 0.8, 0.2, 1)';
-      
-      const reset = () => {
-        target.style.transform = '';
-        target.style.transition = 'transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1)';
-        window.removeEventListener('pointerup', reset);
-        window.removeEventListener('pointercancel', reset);
-      };
-      
-      window.addEventListener('pointerup', reset, { once: true });
-      window.addEventListener('pointercancel', reset, { once: true });
-    }, { passive: true });
-  }
-
-  /**
    * Attaches direct-manipulation drag-to-dismiss gesture to the drawer/sheet
    * @param {HTMLElement} drawerElement 
    * @param {HTMLElement} grabHandle 
