@@ -136,13 +136,11 @@
     };
   </script>
 
-  <!-- Custom Stylesheets -->
+  <!-- Custom Stylesheets (Cache-Busted for Impeccable Design System) -->
   <link rel="icon" type="image/png" href="assets/favicon.png"/>
-  <!-- Custom Stylesheets -->
-  <link rel="icon" type="image/png" href="assets/favicon.png"/>
-  <link href="css/styles.css" rel="stylesheet"/>
-  <link href="css/components.css" rel="stylesheet"/>
-  <link href="css/simsim.css" rel="stylesheet"/>
+  <link href="css/styles.css?v=impeccable_v2" rel="stylesheet"/>
+  <link href="css/components.css?v=impeccable_v2" rel="stylesheet"/>
+  <link href="css/simsim.css?v=impeccable_v2" rel="stylesheet"/>
 </head>
 
 <body class="bg-background text-on-background font-body-md antialiased overflow-hidden">
@@ -489,6 +487,11 @@
                 <span class="hidden sm:inline">Table</span>
               </button>
             </div>
+
+            <!-- Theme Mode Toggle Button (☀️ / 🌙) -->
+            <button id="theme-toggle-btn" class="flex items-center justify-center p-2 min-h-[38px] min-w-[38px] rounded-xl border border-surface-container bg-surface-container-lowest text-on-surface hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
+              <span id="theme-toggle-icon" class="material-symbols-outlined text-sm">dark_mode</span>
+            </button>
           </div>
         </div>
 
@@ -1148,7 +1151,7 @@
   </div>
 
   <!-- Main ES6 Application Script -->
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=impeccable_v2"></script>
 
 </body>
 </html>
