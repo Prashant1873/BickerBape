@@ -404,11 +404,16 @@
         </div>
 
         <!-- Prashant's Strategy Tip Card -->
-        <div class="p-sm rounded-xl bg-surface-container-low text-xs text-on-surface-variant border border-surface-container">
-          <div class="flex items-center gap-1 text-primary font-label-bold mb-1">
-            <span class="material-symbols-outlined text-sm">psychology</span> Prashant's Insight
+        <div id="prashants-insight-card" class="p-sm rounded-xl bg-surface-container-low text-xs text-on-surface-variant border border-surface-container cursor-pointer hover:border-primary-container transition-all touch-spring group" title="Click to cycle quant insights" role="button" tabindex="0" aria-label="Cycle Prashant's quant strategy insights">
+          <div class="flex items-center justify-between gap-1 text-primary font-label-bold mb-1">
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm text-primary">psychology</span> Prashant's Insight
+            </span>
+            <span class="text-[10px] font-bold text-on-surface-variant opacity-60 group-hover:opacity-100 flex items-center gap-0.5">
+              <span>Next</span> <span class="material-symbols-outlined text-xs">arrow_forward</span>
+            </span>
           </div>
-          <p class="leading-snug text-[11px]">
+          <p id="prashants-insight-text" class="leading-snug text-[11px] text-on-surface transition-opacity duration-150">
             "Chasing rank-1 funds every year triggers taxes and exit loads. Focus on 3-year rolling consistency and stable tenure."
           </p>
         </div>

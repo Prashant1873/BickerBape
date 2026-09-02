@@ -635,6 +635,35 @@ class BickerBapeApp {
 
   setupEventListeners() {
     // ------------------------------------------------------------------
+    // Prashant's Strategy Insight Cycling Card (Interactive Micro-Delight)
+    // ------------------------------------------------------------------
+    const insightCard = document.getElementById('prashants-insight-card');
+    const insightText = document.getElementById('prashants-insight-text');
+    if (insightCard && insightText) {
+      const insights = [
+        `"Chasing rank-1 funds every year triggers taxes and exit loads. Focus on 3-year rolling consistency and stable tenure."`,
+        `"An outperformance ratio >= 1.35x proves the fund manager generates real alpha over their category benchmark, not just sector luck."`,
+        `"Young schemes (<3Y) lack full market cycle validation. BickerBape caps unproven schemes at 7.0/10 to protect fiduciary discipline."`,
+        `"Single-sector thematic funds carry 100% idiosyncratic risk. Keep them capped at max 10-15% as satellite plays in your portfolio."`
+      ];
+      let insightIdx = 0;
+      insightCard.addEventListener('click', () => {
+        insightIdx = (insightIdx + 1) % insights.length;
+        insightText.style.opacity = '0';
+        setTimeout(() => {
+          insightText.innerText = insights[insightIdx];
+          insightText.style.opacity = '1';
+        }, 150);
+      });
+      insightCard.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          insightCard.click();
+        }
+      });
+    }
+
+    // ------------------------------------------------------------------
     // A. Collapsible Sidebar Logic
     // ------------------------------------------------------------------
     const sidebar = document.getElementById('sidebar');
@@ -1515,12 +1544,17 @@ class BickerBapeApp {
       const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
       const scoreNum = parseFloat(smart.overall);
 
+      const alphaChampionBadge = (scoreNum >= 9.0 || (fund.ratio_3y && fund.ratio_3y >= 1.35))
+        ? `<span class="meta-tag meta-tag-elite" title="Institutional Alpha Champion: Top 5% multi-cycle outperformance">✦ Alpha Champion</span>`
+        : '';
+
       return `
         <div class="bg-surface-container-lowest rounded-2xl card-shadow p-md md:p-lg flex flex-col hover:shadow-md transition-all cursor-pointer relative overflow-hidden group card-interactive animate-card-enter" data-code="${fund.code}">
           <div class="flex justify-between items-start mb-sm">
             <div class="min-w-0 pr-2">
               <div class="flex items-center gap-1.5 mb-1.5 flex-wrap">
                 <span class="cat-badge ${catBadgeClass}">${fund.category}</span>
+                ${alphaChampionBadge}
                 ${concentrationBadge}
                 ${seasoningBadge}
                 ${ratioBadge}
