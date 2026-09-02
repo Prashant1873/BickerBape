@@ -502,11 +502,12 @@ html, body {
     min-width: 0 !important;
   }
 
-  /* Screener table: horizontal scroll & sticky first column */
+  /* Screener table: horizontal scroll & optimized sticky first column */
   #screener-table-container {
     overflow: hidden !important;
     width: 100% !important;
     border-radius: 16px !important;
+    position: relative;
   }
 
   #screener-table-container .overflow-x-auto {
@@ -516,16 +517,23 @@ html, body {
   }
 
   .screener-table {
-    min-width: 760px;
+    min-width: 680px;
     width: max-content;
   }
 
+  /* Compact sticky first column on mobile (~36% of 375px screen, leaving 64% for scrolling metrics) */
   .screener-table th:first-child {
     position: sticky !important;
     left: 0 !important;
     z-index: 25 !important;
     background: #f8f9fb !important;
-    box-shadow: 3px 0 8px -2px rgba(0, 0, 0, 0.12) !important;
+    width: 135px !important;
+    min-width: 135px !important;
+    max-width: 135px !important;
+    padding: 8px 6px !important;
+    box-shadow: 4px 0 10px -2px rgba(0, 0, 0, 0.12) !important;
+    border-right: 1px solid var(--color-surface-container);
+    font-size: 11px !important;
   }
 
   .screener-table td:first-child {
@@ -533,7 +541,59 @@ html, body {
     left: 0 !important;
     z-index: 15 !important;
     background: #ffffff !important;
-    box-shadow: 3px 0 8px -2px rgba(0, 0, 0, 0.12) !important;
+    width: 135px !important;
+    min-width: 135px !important;
+    max-width: 135px !important;
+    padding: 8px 6px !important;
+    box-shadow: 4px 0 10px -2px rgba(0, 0, 0, 0.12) !important;
+    border-right: 1px solid var(--color-surface-container);
+  }
+
+  /* Hide bulky 2-letter avatar icon on mobile to give maximum room to fund title */
+  .screener-table td:first-child .amc-avatar {
+    display: none !important;
+  }
+
+  .screener-table td:first-child .fund-title {
+    font-size: 11.5px !important;
+    line-height: 1.25 !important;
+    font-weight: 600;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    white-space: normal !important;
+    word-break: break-word;
+  }
+
+  .screener-table td:first-child .fund-subtitle {
+    font-size: 9.5px !important;
+    line-height: 1.2 !important;
+    color: var(--color-on-surface-variant);
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-top: 2px;
+  }
+
+  /* Hide column header edit pencils on mobile (use Customize Columns modal instead) */
+  .col-edit-btn {
+    display: none !important;
+  }
+
+  /* Compact numeric data columns on mobile */
+  .screener-table th:not(:first-child) {
+    min-width: 80px !important;
+    max-width: 125px !important;
+    padding: 8px 5px !important;
+    font-size: 11.5px !important;
+  }
+
+  .screener-table td:not(:first-child) {
+    min-width: 80px !important;
+    max-width: 125px !important;
+    padding: 8px 5px !important;
+    font-size: 12px !important;
   }
 
   .screener-table tbody tr:hover td:first-child {
@@ -553,9 +613,71 @@ html, body {
     right: 0 !important;
   }
 
-  /* Touch targets: minimum 44px */
-  button, .touch-spring, [role="button"] {
+  /* Mobile Drawer Metrics Equalizer */
+  #fund-drawer .grid-cols-2 {
+    gap: 8px !important;
+  }
+
+  #fund-drawer .drawer-metric-card {
+    padding: 10px 12px !important;
+    min-height: 100px !important;
+  }
+
+  #fund-drawer .drawer-metric-header {
+    min-height: 28px !important;
+  }
+
+  #fund-drawer .drawer-metric-header-title {
+    font-size: 11px !important;
+  }
+
+  #fund-drawer .drawer-metric-value {
+    font-size: 1.05rem !important; /* ~17px */
+    line-height: 1.2 !important;
+  }
+
+  #fund-drawer .drawer-metric-sub {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Qualitative Stats Bar on Mobile: 2x2 Clean Grid */
+  .drawer-qualitative-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+  }
+
+  .drawer-qualitative-item {
+    display: flex !important;
+    align-items: center !important;
+    font-size: 11.5px !important;
+    gap: 2px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Touch targets: minimum 36px (exclude micro-buttons like info-btn) */
+  button:not(.info-btn), .touch-spring:not(.info-btn), [role="button"]:not(.info-btn) {
     min-height: 36px;
+  }
+
+  /* Force info-btn to maintain a perfect 15px circular aspect-ratio */
+  .info-btn {
+    width: 15px !important;
+    height: 15px !important;
+    min-width: 15px !important;
+    min-height: 15px !important;
+    max-width: 15px !important;
+    max-height: 15px !important;
+    aspect-ratio: 1 / 1 !important;
+    border-radius: 50% !important;
+    flex-shrink: 0 !important;
+    padding: 0 !important;
+  }
+
+  .info-wrapper {
+    flex-shrink: 0 !important;
   }
 
   /* Sidebar expand button: more prominent on mobile */

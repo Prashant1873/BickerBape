@@ -98,7 +98,7 @@ class BickerBapeApp {
           return `
             <div class="flex flex-col items-center">
               ${this.getSmartScorePill(smart.overall)}
-              <span class="text-[10px] text-on-surface-variant font-medium mt-1 whitespace-nowrap" title="Category: ${fund.category}">vs ${fund.category.split(' ')[0]}: ${smart.rank_text ? smart.rank_text.split(' of ')[0] : ''}</span>
+              <span class="text-[10px] text-on-surface-variant font-medium mt-1 truncate max-w-[110px]" title="Category: ${fund.category}">vs ${fund.category.split(' ')[0]}: ${smart.rank_text ? smart.rank_text.split(' of ')[0] : ''}</span>
             </div>
           `;
         }
@@ -1633,16 +1633,16 @@ class BickerBapeApp {
         <tr class="hover:bg-surface-container-low transition-colors cursor-pointer" data-code="${fund.code}">
           <td class="py-3 px-4">
             <div class="flex items-center gap-2">
-              <span class="w-7 h-7 rounded-lg bg-primary-fixed text-primary flex items-center justify-center font-label-bold text-xs flex-shrink-0">
+              <span class="w-7 h-7 rounded-lg bg-primary-fixed text-primary flex items-center justify-center font-label-bold text-xs flex-shrink-0 amc-avatar">
                 ${fund.fund_house.slice(0, 2).toUpperCase()}
               </span>
-              <div class="min-w-0">
+              <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="font-label-bold text-on-surface hover:text-primary-container truncate">${fund.name.split(' - Direct')[0]}</span>
-                  ${fund.category === 'Sectoral / Thematic' ? '<span class="bg-red-50 text-red-700 border border-red-200 text-[9px] px-1 py-0.2 rounded font-semibold">Sector Risk</span>' : ''}
-                  ${fund.history_years < 1.0 ? '<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[9px] px-1 py-0.2 rounded font-bold">New (<1Y)</span>' : (fund.history_years < 3.0 ? `<span class="bg-slate-100 text-slate-700 border border-slate-200 text-[9px] px-1 py-0.2 rounded font-medium">${fund.history_years}Y</span>` : '')}
+                  <span class="font-label-bold text-on-surface hover:text-primary-container fund-title">${fund.name.split(' - Direct')[0]}</span>
+                  ${fund.category === 'Sectoral / Thematic' ? '<span class="bg-red-50 text-red-700 border border-red-200 text-[9px] px-1 py-0.2 rounded font-semibold flex-shrink-0">Sector Risk</span>' : ''}
+                  ${fund.history_years < 1.0 ? '<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[9px] px-1 py-0.2 rounded font-bold flex-shrink-0">New (<1Y)</span>' : (fund.history_years < 3.0 ? `<span class="bg-slate-100 text-slate-700 border border-slate-200 text-[9px] px-1 py-0.2 rounded font-medium flex-shrink-0">${fund.history_years}Y</span>` : '')}
                 </div>
-                <p class="font-label-sm text-on-surface-variant text-[11px]">${fund.category} • AUM: ₹${fund.aum_cr ? fund.aum_cr.toLocaleString() : 'N/A'} Cr</p>
+                <p class="font-label-sm text-on-surface-variant text-[11px] fund-subtitle">${fund.category} • AUM: ₹${fund.aum_cr ? fund.aum_cr.toLocaleString() : 'N/A'} Cr</p>
               </div>
             </div>
           </td>

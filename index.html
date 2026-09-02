@@ -753,129 +753,156 @@
     <!-- Drawer Scrollable Content (Smooth Touchpad & Wheel Scroll) -->
     <div id="drawer-scroll-container" class="flex-grow min-h-0 overflow-y-auto px-md md:px-lg py-md space-y-lg hide-scrollbar">
       
-      <!-- Key Metric Cards Grid (Expanded to 6 Core Pillars) -->
+      <!-- Key Metric Cards Grid (Expanded to 6 Core Pillars with Standardized Alignment) -->
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-sm">
-        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <p class="text-xs text-on-surface-variant font-label-sm">Latest NAV</p>
-          <p id="drawer-nav-price" class="font-display-financial text-xl text-primary mt-0.5">₹90.78</p>
-          <p id="drawer-3m-growth" class="text-[10px] text-[#36B37E] font-bold mt-0.5">+4.8% past 3M</p>
+        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="drawer-metric-header">
+            <span class="drawer-metric-header-title">Latest NAV</span>
+            <span class="info-wrapper">
+              <button type="button" class="info-btn" title="About Latest NAV">i</button>
+              <span class="info-popup">
+                <strong class="block font-bold text-white mb-0.5">Net Asset Value (NAV)</strong>
+                <span>The current per-unit price of the fund, along with short-term 3-month growth momentum.</span>
+              </span>
+            </span>
+          </div>
+          <div class="drawer-metric-body">
+            <p id="drawer-nav-price" class="drawer-metric-value text-primary">₹90.78</p>
+            <p id="drawer-3m-growth" class="drawer-metric-sub text-[#36B37E]">+4.8% past 3M</p>
+          </div>
         </div>
 
-        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="flex items-center justify-between">
-            <p class="text-xs text-on-surface-variant font-label-sm">3Y Ret & Ratio</p>
+        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="drawer-metric-header">
+            <span class="drawer-metric-header-title">3Y Ret & Ratio</span>
             <span class="info-wrapper">
               <button type="button" class="info-btn" title="About 3Y Return & Ratio">i</button>
               <span class="info-popup">
                 <strong class="block font-bold text-white mb-0.5">3Y Return & Ratio vs Category</strong>
-                <span>Shows how much better or worse this fund performed compared to other funds in the same category. For example, 1.45x means it made 45% more return than the category average.</span>
+                <span>Shows how much better or worse this fund performed compared to category peers. 1.45x means 45% more return than category average.</span>
               </span>
             </span>
           </div>
-          <p id="drawer-3y-return" class="font-display-financial text-xl text-[#36B37E] mt-0.5">+18.4%</p>
-          <p id="drawer-3y-ratio" class="text-[10px] font-bold text-primary mt-0.5">1.48x vs Cat Avg</p>
+          <div class="drawer-metric-body">
+            <p id="drawer-3y-return" class="drawer-metric-value text-[#36B37E]">+18.4%</p>
+            <p id="drawer-3y-ratio" class="drawer-metric-sub text-primary">1.48x vs Cat Avg</p>
+          </div>
         </div>
 
-        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="flex items-center justify-between">
-            <p class="text-xs text-on-surface-variant font-label-sm">5Y & 10Y Ratios</p>
+        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="drawer-metric-header">
+            <span class="drawer-metric-header-title">5Y & 10Y Ratios</span>
             <span class="info-wrapper">
               <button type="button" class="info-btn" title="About 5Y & 10Y Ratios">i</button>
               <span class="info-popup">
                 <strong class="block font-bold text-white mb-0.5">Multi-Cycle Outperformance Ratios</strong>
-                <span>Compares 5-year and 10-year growth against category peers. A ratio above 1.15x indicates durable fund manager skill across market cycles.</span>
+                <span>Compares 5-year and 10-year growth against peers. Ratios above 1.15x indicate durable fund manager skill across cycles.</span>
               </span>
             </span>
           </div>
-          <p id="drawer-5y-ratio" class="font-display-financial text-base text-on-surface mt-0.5">1.22x (5Y)</p>
-          <p id="drawer-10y-ratio" class="text-[10px] text-on-surface-variant font-medium mt-0.5">1.18x (10Y CAGR)</p>
+          <div class="drawer-metric-body">
+            <p id="drawer-5y-ratio" class="drawer-metric-value text-on-surface">1.22x (5Y)</p>
+            <p id="drawer-10y-ratio" class="drawer-metric-sub text-on-surface-variant font-medium">1.18x (10Y CAGR)</p>
+          </div>
         </div>
 
-        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="flex items-center justify-between">
-            <p class="text-xs text-on-surface-variant font-label-sm">3Y Rolling Avg</p>
+        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="drawer-metric-header">
+            <span class="drawer-metric-header-title">3Y Rolling Avg</span>
             <span class="info-wrapper">
               <button type="button" class="info-btn" title="About 3Y Rolling Average">i</button>
               <span class="info-popup">
                 <strong class="block font-bold text-white mb-0.5">3-Year Rolling Average</strong>
-                <span>The average return you would have earned if you invested on ANY random day in the past and held for 3 years. It removes entry timing luck.</span>
+                <span>The average return you would have earned investing on ANY random day in history and holding for 3 years. Removes entry timing luck.</span>
               </span>
             </span>
           </div>
-          <p id="drawer-3y-rolling" class="font-display-financial text-xl text-primary mt-0.5">21.2%</p>
-          <p class="text-[10px] text-[#36B37E] font-bold mt-0.5">Consistent Compounding</p>
+          <div class="drawer-metric-body">
+            <p id="drawer-3y-rolling" class="drawer-metric-value text-primary">21.2%</p>
+            <p class="drawer-metric-sub text-[#36B37E]">Consistent Compounding</p>
+          </div>
         </div>
 
-        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="flex items-center justify-between">
-            <p class="text-xs text-on-surface-variant font-label-sm">Sharpe / Volatility</p>
+        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="drawer-metric-header">
+            <span class="drawer-metric-header-title">Sharpe / Vol</span>
             <span class="info-wrapper">
               <button type="button" class="info-btn" title="About Sharpe & Volatility">i</button>
-              <span class="info-popup">
+              <span class="info-popup align-right">
                 <strong class="block font-bold text-white mb-0.5">Sharpe Ratio & Volatility</strong>
-                <span>Sharpe measures return per unit of risk above safe government bonds (6.8%). Volatility measures price swings. High Sharpe (> 1.0) and low volatility (< 14%) indicate calm, high-quality growth.</span>
+                <span>Sharpe measures excess return per unit of risk above safe T-Bills (6.8%). Volatility measures price swings. High Sharpe (> 1.0) and low volatility (< 14%) indicate steady, high-quality growth.</span>
               </span>
             </span>
           </div>
-          <p class="font-display-financial text-xl text-on-surface mt-0.5"><span id="drawer-sharpe">1.24</span> <span class="text-xs font-normal text-on-surface-variant">/ <span id="drawer-volatility">13.2%</span></span></p>
-          <p class="text-[10px] text-on-surface-variant mt-0.5">Rf = 6.8% (T-Bill)</p>
+          <div class="drawer-metric-body">
+            <div class="drawer-metric-value flex items-baseline gap-1 text-on-surface">
+              <span id="drawer-sharpe">1.24</span>
+              <span class="text-xs font-normal text-on-surface-variant">/ <span id="drawer-volatility">13.2%</span></span>
+            </div>
+            <p class="drawer-metric-sub text-on-surface-variant">Rf = 6.8% (T-Bill)</p>
+          </div>
         </div>
 
-        <div class="p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="flex items-center justify-between">
-            <p class="text-xs text-on-surface-variant font-label-sm">Sortino / Beta</p>
+        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+          <div class="drawer-metric-header">
+            <span class="drawer-metric-header-title">Sortino / Beta</span>
             <span class="info-wrapper">
               <button type="button" class="info-btn" title="About Sortino & Beta">i</button>
-              <span class="info-popup">
+              <span class="info-popup align-right">
                 <strong class="block font-bold text-white mb-0.5">Sortino Ratio & Beta</strong>
-                <span>Sortino only penalizes bad drops (downside risk), ignoring good upward jumps (above 1.2 is great). Beta measures market sensitivity (1.0 = moves with market; < 1.0 = defensive).</span>
+                <span>Sortino only penalizes downside drops, ignoring upside jumps. Beta measures market sensitivity (1.0 = moves with market).</span>
               </span>
             </span>
           </div>
-          <p class="font-display-financial text-xl text-on-surface mt-0.5"><span id="drawer-sortino">1.64</span> <span class="text-xs font-normal text-on-surface-variant">/ β <span id="drawer-beta">0.94</span></span></p>
-          <p id="drawer-mdd-stat" class="text-[10px] text-error font-medium mt-0.5">Max DD: -18.5%</p>
+          <div class="drawer-metric-body">
+            <div class="drawer-metric-value flex items-baseline gap-1 text-on-surface">
+              <span id="drawer-sortino">1.64</span>
+              <span class="text-xs font-normal text-on-surface-variant">/ β <span id="drawer-beta">0.94</span></span>
+            </div>
+            <p id="drawer-mdd-stat" class="drawer-metric-sub text-error font-medium">Max DD: -18.5%</p>
+          </div>
         </div>
       </div>
 
-      <!-- Qualitative Info: AUM, Expense Ratio, P/E, Turnover -->
-      <div class="flex flex-wrap gap-md py-sm px-md rounded-xl bg-surface-container-low text-xs text-on-surface-variant justify-between items-center">
-        <span>AUM: <strong id="drawer-aum" class="text-on-surface font-label-bold">₹72,450 Cr</strong></span>
-        <span class="flex items-center">
-          <span>Expense Ratio</span>
-          <span class="info-wrapper">
+      <!-- Qualitative Info: AUM, Expense Ratio, P/E, Turnover (Clean Responsive 2x2 Grid) -->
+      <div class="drawer-qualitative-grid rounded-xl bg-surface-container-low text-xs text-on-surface-variant border border-surface-container">
+        <div class="drawer-qualitative-item">
+          <span>AUM:</span>
+          <strong id="drawer-aum" class="text-on-surface font-label-bold ml-1">₹72,450 Cr</strong>
+        </div>
+        <div class="drawer-qualitative-item">
+          <span>TER:</span>
+          <span class="info-wrapper ml-0.5">
             <button type="button" class="info-btn" title="About Expense Ratio">i</button>
             <span class="info-popup">
               <strong class="block font-bold text-white mb-0.5">Direct Expense Ratio (TER)</strong>
               <span>The annual fee deducted by the fund house to manage the fund. Direct plans charge up to 1% less than regular plans, saving you lakhs over 15+ years.</span>
             </span>
           </span>
-          <span class="mx-1">:</span>
-          <strong id="drawer-expense-ratio" class="text-on-surface font-label-bold">0.63%</strong>
-        </span>
-        <span class="flex items-center">
-          <span>Portfolio P/E</span>
-          <span class="info-wrapper">
+          <strong id="drawer-expense-ratio" class="text-on-surface font-label-bold ml-1">0.63%</strong>
+        </div>
+        <div class="drawer-qualitative-item">
+          <span>P/E:</span>
+          <span class="info-wrapper ml-0.5">
             <button type="button" class="info-btn" title="About P/E Ratio">i</button>
             <span class="info-popup">
               <strong class="block font-bold text-white mb-0.5">Portfolio P/E Ratio</strong>
               <span>Price-to-Earnings ratio of the underlying stocks. Lower P/E indicates value bargains; higher P/E indicates high-growth premium companies.</span>
             </span>
           </span>
-          <span class="mx-1">:</span>
-          <strong id="drawer-pe" class="text-on-surface font-label-bold">24.1</strong>
-        </span>
-        <span class="flex items-center">
-          <span>Turnover</span>
-          <span class="info-wrapper">
+          <strong id="drawer-pe" class="text-on-surface font-label-bold ml-1">24.1</strong>
+        </div>
+        <div class="drawer-qualitative-item">
+          <span>Turnover:</span>
+          <span class="info-wrapper ml-0.5">
             <button type="button" class="info-btn" title="About Turnover Ratio">i</button>
-            <span class="info-popup">
+            <span class="info-popup align-right">
               <strong class="block font-bold text-white mb-0.5">Portfolio Turnover Ratio</strong>
               <span>How frequently the manager buys and sells stocks. 20% means patient buy-and-hold; 100%+ means frequent short-term trading.</span>
             </span>
           </span>
-          <span class="mx-1">:</span>
-          <strong id="drawer-turnover" class="text-on-surface font-label-bold">32%</strong>
-        </span>
+          <strong id="drawer-turnover" class="text-on-surface font-label-bold ml-1">32%</strong>
+        </div>
       </div>
 
       <!-- ====================================================================
