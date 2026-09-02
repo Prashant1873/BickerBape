@@ -103,7 +103,7 @@ class BickerBapeApp {
           return `
             <div class="flex flex-col items-center">
               ${this.getSmartScorePill(smart.overall)}
-              <span class="text-[10px] text-on-surface-variant font-medium mt-1 truncate max-w-[110px]" title="Category: ${fund.category}">vs ${fund.category.split(' ')[0]}: ${smart.rank_text ? smart.rank_text.split(' of ')[0] : ''}</span>
+              <span class="text-[11px] text-on-surface-variant font-medium mt-1 truncate max-w-[110px]" title="Category: ${fund.category}">vs ${fund.category.split(' ')[0]}: ${smart.rank_text ? smart.rank_text.split(' of ')[0] : ''}</span>
             </div>
           `;
         }
@@ -119,7 +119,7 @@ class BickerBapeApp {
         format: (fund) => {
           const cagr3 = (fund.cagr_3y !== null && fund.cagr_3y !== undefined) ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y}%` : '-';
           const ratio3 = fund.ratio_3y ? `<div class="text-[11px] mt-0.5 text-primary font-bold">(${fund.ratio_3y}x cat)</div>` : '';
-          return `<span class="text-[#36B37E] font-bold">${cagr3}</span>${ratio3}`;
+          return `<span class="text-gain font-bold">${cagr3}</span>${ratio3}`;
         }
       },
       cagr_5y: {
@@ -160,7 +160,7 @@ class BickerBapeApp {
         sample: 'Trailing 1-Year absolute compounded return',
         format: (fund) => {
           const c = (fund.cagr_1y !== null && fund.cagr_1y !== undefined) ? `${fund.cagr_1y > 0 ? '+' : ''}${fund.cagr_1y}%` : '-';
-          const clr = (fund.cagr_1y || 0) >= 12.0 ? 'text-[#36B37E]' : 'text-on-surface';
+          const clr = (fund.cagr_1y || 0) >= 12.0 ? 'text-gain' : 'text-on-surface';
           return `<span class="font-bold ${clr}">${c}</span>`;
         }
       },
@@ -174,7 +174,7 @@ class BickerBapeApp {
         sample: 'Recent quarterly growth (+% or -%)',
         format: (fund) => {
           const g = (fund.growth_3m !== null && fund.growth_3m !== undefined) ? `${fund.growth_3m > 0 ? '+' : ''}${fund.growth_3m}%` : '-';
-          const clr = (fund.growth_3m || 0) >= 0 ? 'text-[#36B37E]' : 'text-error';
+          const clr = (fund.growth_3m || 0) >= 0 ? 'text-gain' : 'text-error';
           return `<span class="font-bold ${clr}">${g}</span>`;
         }
       },
@@ -201,7 +201,7 @@ class BickerBapeApp {
         sample: 'Excess return per unit of volatility (Rf=6.8%)',
         format: (fund) => {
           const s = (fund.sharpe_ratio !== null && fund.sharpe_ratio !== undefined) ? fund.sharpe_ratio.toFixed(2) : '-';
-          const clr = (fund.sharpe_ratio || 0) >= 1.0 ? 'text-[#36B37E]' : 'text-on-surface';
+          const clr = (fund.sharpe_ratio || 0) >= 1.0 ? 'text-gain' : 'text-on-surface';
           return `<span class="font-bold ${clr}">${s}</span>`;
         }
       },
@@ -215,7 +215,7 @@ class BickerBapeApp {
         sample: 'Downside risk-adjusted performance measure',
         format: (fund) => {
           const s = (fund.sortino_ratio !== null && fund.sortino_ratio !== undefined) ? fund.sortino_ratio.toFixed(2) : '-';
-          const clr = (fund.sortino_ratio || 0) >= 1.2 ? 'text-[#36B37E]' : 'text-on-surface';
+          const clr = (fund.sortino_ratio || 0) >= 1.2 ? 'text-gain' : 'text-on-surface';
           return `<span class="font-bold ${clr}">${s}</span>`;
         }
       },
@@ -268,7 +268,7 @@ class BickerBapeApp {
         sample: 'Annual direct total expense fee deducted (%)',
         format: (fund) => {
           const e = fund.expense_ratio ? `${fund.expense_ratio}%` : '-';
-          const clr = (fund.expense_ratio || 1.0) <= 0.65 ? 'text-[#36B37E]' : 'text-on-surface';
+          const clr = (fund.expense_ratio || 1.0) <= 0.65 ? 'text-gain' : 'text-on-surface';
           return `<span class="font-bold ${clr}">${e}</span>`;
         }
       },
@@ -396,6 +396,7 @@ class BickerBapeApp {
 
     this.renderKpiOptionsList('');
     modal.classList.add('open');
+    this.trapFocus(modal, '#kpi-picker-close-btn');
   }
 
   updateKpiModalSelectedCounter() {
@@ -407,7 +408,10 @@ class BickerBapeApp {
 
   closeKpiPicker() {
     const modal = document.getElementById('kpi-picker-modal');
-    if (modal) modal.classList.remove('open');
+    if (modal) {
+      modal.classList.remove('open');
+      this.untrapFocus(modal);
+    }
   }
 
   renderKpiOptionsList(query = '') {
@@ -554,7 +558,7 @@ class BickerBapeApp {
 
     if (badgeEl) {
       badgeEl.textContent = cfg.label;
-      badgeEl.className = `text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${cfg.tagClass}`;
+      badgeEl.className = `text-[11px] px-2.5 py-0.5 rounded-full font-bold uppercase ${cfg.tagClass}`;
     }
 
     if (headerIndicator) {
@@ -1054,6 +1058,21 @@ class BickerBapeApp {
       if (e.key === 'Escape') {
         this.closeDrawer();
         this.closeComparisonModal();
+        this.closeKpiPicker();
+        if (window.simsimUI && typeof window.simsimUI.closeBasketModal === 'function') {
+          window.simsimUI.closeBasketModal();
+        }
+        const searchInput = document.getElementById('search-input');
+        if (searchInput && document.activeElement === searchInput) {
+          searchInput.blur();
+        }
+      } else if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+        e.preventDefault();
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
       }
     });
 
@@ -1120,39 +1139,53 @@ class BickerBapeApp {
       });
     });
 
-    const drawer = document.getElementById('fund-drawer');
-    const grabHandle = document.getElementById('drawer-grab-handle');
-    if (drawer && grabHandle) {
-      FluidMotion.attachDrawerGestures(drawer, grabHandle, () => this.closeDrawer());
+    // Initialize UX Laws Features: Drawer Tabs, Mode Switch, Filters Bar
+    this.initDrawerTabs();
+    this.initModeSegmentedSwitch();
+
+    // Active Filters Bar & Zero-Results Recovery Listeners (Zeigarnik Effect & Postel's Law)
+    const clearFiltersBtn = document.getElementById('clear-active-filters-btn');
+    if (clearFiltersBtn) {
+      clearFiltersBtn.addEventListener('click', () => this.resetFilters());
     }
 
-    // Dynamic boundary alignment for interactive info (i) buttons
-    const handleInfoPosition = (e) => {
-      const wrapper = e.target.closest('.info-wrapper');
-      if (wrapper) {
-        this.adjustInfoPopupPosition(wrapper);
-      }
-    };
-    document.addEventListener('mouseover', handleInfoPosition);
-    document.addEventListener('focusin', handleInfoPosition);
+    const relaxBtn = document.getElementById('relax-filters-btn');
+    if (relaxBtn) {
+      relaxBtn.addEventListener('click', () => this.relaxFilterConstraints());
+    }
 
-    // Global listener for interactive info (i) buttons (mobile tap toggle & outside click)
-    document.addEventListener('click', (e) => {
-      const infoBtn = e.target.closest('.info-btn');
-      if (infoBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const wrapper = infoBtn.closest('.info-wrapper');
-        const isActive = wrapper.classList.contains('active');
-        document.querySelectorAll('.info-wrapper.active').forEach(w => w.classList.remove('active'));
-        if (!isActive) {
-          this.adjustInfoPopupPosition(wrapper);
-          wrapper.classList.add('active');
+    const resetZeroBtn = document.getElementById('reset-all-zero-btn');
+    if (resetZeroBtn) {
+      resetZeroBtn.addEventListener('click', () => this.resetFilters());
+    }
+
+    // Drawer Sticky Footer Action Listeners (Fitts's Law)
+    const quickCompareCatBtn = document.getElementById('drawer-quick-compare-cat-btn');
+    if (quickCompareCatBtn) {
+      quickCompareCatBtn.addEventListener('click', () => {
+        if (!this.state.selectedFund) return;
+        this.toggleCompare(this.state.selectedFund);
+      });
+    }
+
+    const drawerCompareBtn = document.getElementById('drawer-toggle-compare-btn');
+    if (drawerCompareBtn) {
+      drawerCompareBtn.addEventListener('click', () => {
+        if (!this.state.selectedFund) return;
+        this.toggleCompare(this.state.selectedFund);
+      });
+    }
+
+    const drawerSimsimBtn = document.getElementById('drawer-add-simsim-btn');
+    if (drawerSimsimBtn) {
+      drawerSimsimBtn.addEventListener('click', () => {
+        if (!this.state.selectedFund) return;
+        if (this.simsim) {
+          this.simsim.addToBucket(this.state.selectedFund.code);
+          this.showToast(`Added ${this.state.selectedFund.short_name || this.state.selectedFund.name} to SimSim Bucket`, 'success');
         }
-        return;
-      }
-      document.querySelectorAll('.info-wrapper.active').forEach(w => w.classList.remove('active'));
-    });
+      });
+    }
   }
 
   adjustInfoPopupPosition(wrapper) {
@@ -1308,6 +1341,7 @@ class BickerBapeApp {
     this.renderCardsGrid(displayed);
     this.renderTable(displayed);
     this.updateComparisonTray();
+    this.updateActiveFiltersBar(filtered.length);
     if (this.simsim) {
       this.simsim.updateScreenerButtons();
     }
@@ -1576,7 +1610,7 @@ class BickerBapeApp {
                 ${this.getInfoBtnHtml('ratio_3y')}
               </div>
               <div class="flex items-baseline gap-1.5">
-                <span class="font-display-financial text-xl md:text-2xl text-[#36B37E]">${ret3y}</span>
+                <span class="font-display-financial text-xl md:text-2xl text-gain">${ret3y}</span>
                 ${fund.ratio_3y ? `<span class="text-xs text-on-surface-variant font-medium">(${fund.ratio_3y}x Cat Avg)</span>` : (fund.history_years ? `<span class="text-xs text-on-surface-variant font-medium">(Age: ${fund.history_years}Y)</span>` : '')}
               </div>
               <div class="flex items-center gap-1 mt-0.5">
@@ -1673,8 +1707,8 @@ class BickerBapeApp {
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <span class="font-label-bold text-on-surface hover:text-primary-container fund-title">${fund.name.split(' - Direct')[0]}</span>
-                  ${fund.category === 'Sectoral / Thematic' ? '<span class="bg-red-50 text-red-700 border border-red-200 text-[9px] px-1 py-0.2 rounded font-semibold flex-shrink-0">Sector Risk</span>' : ''}
-                  ${fund.history_years < 1.0 ? '<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[9px] px-1 py-0.2 rounded font-bold flex-shrink-0">New (<1Y)</span>' : (fund.history_years < 3.0 ? `<span class="bg-slate-100 text-slate-700 border border-slate-200 text-[9px] px-1 py-0.2 rounded font-medium flex-shrink-0">${fund.history_years}Y</span>` : '')}
+                  ${fund.category === 'Sectoral / Thematic' ? '<span class="bg-red-50 text-red-700 border border-red-200 text-[11px] px-1.5 py-0.5 rounded font-semibold flex-shrink-0">Sector Risk</span>' : ''}
+                  ${fund.history_years < 1.0 ? '<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[11px] px-1.5 py-0.5 rounded font-bold flex-shrink-0">New (<1Y)</span>' : (fund.history_years < 3.0 ? `<span class="bg-slate-100 text-slate-700 border border-slate-200 text-[11px] px-1.5 py-0.5 rounded font-medium flex-shrink-0">${fund.history_years}Y</span>` : '')}
                 </div>
                 <p class="font-label-sm text-on-surface-variant text-[11px] fund-subtitle">${fund.category} • AUM: ₹${fund.aum_cr ? fund.aum_cr.toLocaleString() : 'N/A'} Cr</p>
               </div>
@@ -1730,6 +1764,211 @@ class BickerBapeApp {
     });
   }
 
+  showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+    const iconMap = {
+      info: 'info',
+      success: 'check_circle',
+      warning: 'warning'
+    };
+    toast.innerHTML = `
+      <span class="material-symbols-outlined text-base">${iconMap[type] || 'info'}</span>
+      <span>${message}</span>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.animation = 'toastFadeOut 200ms ease forwards';
+      setTimeout(() => toast.remove(), 200);
+    }, 3000);
+  }
+
+  initDrawerTabs() {
+    const tabHeader = document.getElementById('drawer-tabs-header');
+    if (!tabHeader) return;
+    tabHeader.addEventListener('click', (e) => {
+      const btn = e.target.closest('.drawer-tab-btn');
+      if (!btn) return;
+      const targetTab = btn.getAttribute('data-tab');
+      
+      tabHeader.querySelectorAll('.drawer-tab-btn').forEach(b => {
+        b.classList.remove('active', 'bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+        b.classList.add('text-on-surface-variant');
+      });
+      btn.classList.add('active', 'bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+      btn.classList.remove('text-on-surface-variant');
+
+      const panes = {
+        scorecard: 'drawer-pane-scorecard',
+        charts: 'drawer-pane-charts',
+        risk: 'drawer-pane-risk',
+        checklist: 'drawer-pane-checklist'
+      };
+
+      Object.values(panes).forEach(paneId => {
+        const el = document.getElementById(paneId);
+        if (el) el.classList.add('hidden');
+      });
+
+      const activeEl = document.getElementById(panes[targetTab]);
+      if (activeEl) activeEl.classList.remove('hidden');
+    });
+  }
+
+  initModeSegmentedSwitch() {
+    const screenerBtns = document.querySelectorAll('[data-mode="screener"]');
+    const simsimBtns = document.querySelectorAll('[data-mode="simsim"]');
+
+    screenerBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (this.simsim) this.simsim.disableSimSimMode();
+      });
+    });
+
+    simsimBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (this.simsim) this.simsim.enableSimSimMode();
+      });
+    });
+  }
+
+  updateActiveFiltersBar(filteredCount) {
+    const bar = document.getElementById('active-filters-bar');
+    const container = document.getElementById('active-filter-chips-container');
+    const countTag = document.getElementById('active-filters-count-tag');
+    const zeroCard = document.getElementById('zero-results-card');
+    const grid = document.getElementById('featured-funds-grid');
+    const table = document.getElementById('screener-table-container');
+    if (!bar || !container) return;
+
+    const activeFilters = [];
+    if (this.state.category && this.state.category !== 'All Funds') {
+      activeFilters.push({ type: 'category', label: `Cat: ${this.state.category}` });
+    }
+    if (this.state.minSmartScore > 0) {
+      activeFilters.push({ type: 'smartscore', label: `SmartScore ≥ ${this.state.minSmartScore}` });
+    }
+    if (this.state.minRollingReturn > 0) {
+      activeFilters.push({ type: 'rolling', label: `Rolling ≥ ${this.state.minRollingReturn}%` });
+    }
+    if (this.state.minSharpe > 0) {
+      activeFilters.push({ type: 'sharpe', label: `Sharpe ≥ ${this.state.minSharpe}` });
+    }
+    if (this.state.maxVolatility < 25) {
+      activeFilters.push({ type: 'volatility', label: `Vol ≤ ${this.state.maxVolatility}%` });
+    }
+    if (this.state.searchQuery && this.state.searchQuery.trim()) {
+      activeFilters.push({ type: 'search', label: `Search: "${this.state.searchQuery}"` });
+    }
+
+    if (activeFilters.length > 0) {
+      bar.classList.remove('hidden');
+      if (countTag) countTag.textContent = `${activeFilters.length} Active Filter${activeFilters.length > 1 ? 's' : ''}`;
+      container.innerHTML = activeFilters.map(f => `
+        <span class="active-filter-chip">
+          <span>${f.label}</span>
+          <span class="chip-remove-btn material-symbols-outlined text-xs" data-filter-type="${f.type}">close</span>
+        </span>
+      `).join('');
+
+      container.querySelectorAll('.chip-remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const type = e.target.getAttribute('data-filter-type');
+          this.removeSingleFilter(type);
+        });
+      });
+    } else {
+      bar.classList.add('hidden');
+    }
+
+    if (filteredCount === 0) {
+      if (zeroCard) zeroCard.classList.remove('hidden');
+      if (grid) grid.classList.add('hidden');
+      if (table) table.classList.add('hidden');
+    } else {
+      if (zeroCard) zeroCard.classList.add('hidden');
+      if (this.state.currentView === 'cards') {
+        if (grid) grid.classList.remove('hidden');
+      } else {
+        if (table) table.classList.remove('hidden');
+      }
+    }
+  }
+
+  removeSingleFilter(type) {
+    if (type === 'category') this.state.category = 'All Funds';
+    if (type === 'smartscore') {
+      this.state.minSmartScore = 0;
+      const s = document.getElementById('slider-smartscore');
+      const v = document.getElementById('val-smartscore');
+      if (s) s.value = 0;
+      if (v) v.textContent = '0.0';
+    }
+    if (type === 'rolling') {
+      this.state.minRollingReturn = 0;
+      const s = document.getElementById('slider-rolling');
+      const v = document.getElementById('val-rolling');
+      if (s) s.value = 0;
+      if (v) v.textContent = '0%';
+    }
+    if (type === 'sharpe') {
+      this.state.minSharpe = 0;
+      const s = document.getElementById('slider-sharpe');
+      const v = document.getElementById('val-sharpe');
+      if (s) s.value = 0;
+      if (v) v.textContent = '0';
+    }
+    if (type === 'volatility') {
+      this.state.maxVolatility = 25;
+      const s = document.getElementById('slider-vol');
+      const v = document.getElementById('val-vol');
+      if (s) s.value = 25;
+      if (v) v.textContent = '25%';
+    }
+    if (type === 'search') {
+      this.state.searchQuery = '';
+      const i1 = document.getElementById('search-input');
+      const i2 = document.getElementById('mobile-search-input');
+      if (i1) i1.value = '';
+      if (i2) i2.value = '';
+    }
+    this.updateUI(false);
+  }
+
+  relaxFilterConstraints() {
+    this.state.minSmartScore = Math.max(0, this.state.minSmartScore - 1.0);
+    this.state.minRollingReturn = Math.max(0, this.state.minRollingReturn - 4);
+    this.state.minSharpe = Math.max(0, this.state.minSharpe - 0.3);
+    this.state.maxVolatility = Math.min(25, this.state.maxVolatility + 5);
+
+    const ss = document.getElementById('slider-smartscore');
+    const vs = document.getElementById('val-smartscore');
+    if (ss) ss.value = this.state.minSmartScore;
+    if (vs) vs.textContent = this.state.minSmartScore.toFixed(1);
+
+    const sr = document.getElementById('slider-rolling');
+    const vr = document.getElementById('val-rolling');
+    if (sr) sr.value = this.state.minRollingReturn;
+    if (vr) vr.textContent = `${this.state.minRollingReturn}%`;
+
+    const sh = document.getElementById('slider-sharpe');
+    const vh = document.getElementById('val-sharpe');
+    if (sh) sh.value = this.state.minSharpe;
+    if (vh) vh.textContent = this.state.minSharpe.toFixed(1);
+
+    const sv = document.getElementById('slider-vol');
+    const vv = document.getElementById('val-vol');
+    if (sv) sv.value = this.state.maxVolatility;
+    if (vv) vv.textContent = `${this.state.maxVolatility}%`;
+
+    this.showToast('Relaxed filter parameters by 20%', 'info');
+    this.updateUI(false);
+  }
+
   // ------------------------------------------------------------------
   // Compare Funds Logic with Toggle & Orientation Fix
   // ------------------------------------------------------------------
@@ -1740,12 +1979,14 @@ class BickerBapeApp {
     const existsIdx = this.state.comparisonList.findIndex(f => f.code === fund.code);
     if (existsIdx >= 0) {
       this.state.comparisonList.splice(existsIdx, 1);
+      this.showToast(`Removed ${fund.short_name || fund.name} from Compare`, 'info');
     } else {
       if (this.state.comparisonList.length >= 3) {
-        alert('You can compare up to 3 funds at a time. Please remove one to add another.');
+        this.showToast('Compare limit reached (max 3 funds)', 'warning');
         return;
       }
       this.state.comparisonList.push(fund);
+      this.showToast(`Added ${fund.short_name || fund.name} to Compare`, 'success');
     }
 
     this.updateComparisonTray();
@@ -1832,6 +2073,7 @@ class BickerBapeApp {
     if (!modal) return;
 
     modal.classList.remove('hidden');
+    this.trapFocus(modal, '#compare-close-btn');
 
     const tableContainer = document.getElementById('comparison-matrix');
     if (tableContainer) {
@@ -1860,7 +2102,7 @@ class BickerBapeApp {
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Performance Score</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-[#36B37E]">${f.smart_score ? f.smart_score.pillars.performance.score : '-'}</td>`).join('')}
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-gain">${f.smart_score ? f.smart_score.pillars.performance.score : '-'}</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Risk Score (Safety)</td>
@@ -1876,7 +2118,7 @@ class BickerBapeApp {
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">3Y Return & Ratio</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-display-financial text-base text-[#36B37E]">${f.cagr_3y ? '+' + f.cagr_3y + '%' : '-'} <span class="text-xs text-primary font-bold">(${f.ratio_3y || 1.0}x cat)</span></td>`).join('')}
+              ${funds.map(f => `<td class="py-2.5 px-3 font-display-financial text-base text-gain">${f.cagr_3y ? '+' + f.cagr_3y + '%' : '-'} <span class="text-xs text-primary font-bold">(${f.ratio_3y || 1.0}x cat)</span></td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">5Y Return & Ratio</td>
@@ -1888,7 +2130,7 @@ class BickerBapeApp {
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Past 3-Month Growth</td>
-              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-[#36B37E]">+${f.growth_3m || 4.2}%</td>`).join('')}
+              ${funds.map(f => `<td class="py-2.5 px-3 font-bold text-gain">+${f.growth_3m || 4.2}%</td>`).join('')}
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-label-bold text-on-surface-variant">Sharpe Ratio (Rf=6.8%)</td>
@@ -1947,7 +2189,10 @@ class BickerBapeApp {
 
   closeComparisonModal() {
     const modal = document.getElementById('comparison-modal');
-    if (modal) modal.classList.add('hidden');
+    if (modal) {
+      modal.classList.add('hidden');
+      this.untrapFocus(modal);
+    }
   }
 
   // ------------------------------------------------------------------
@@ -1976,7 +2221,7 @@ class BickerBapeApp {
       overallEl.innerHTML = `
         <span class="text-on-surface font-bold text-xs">SmartScore™ (${moodLabel} Mood)</span>
         <span class="text-primary font-extrabold text-sm ml-1">${overall}</span>
-        <span class="text-[10px] text-on-surface-variant font-medium block">Rank vs <strong class="text-on-surface">${catName}</strong> peers: <strong class="text-on-surface">${rankText}</strong></span>
+        <span class="text-[11px] text-on-surface-variant font-medium block">Rank vs <strong class="text-on-surface">${catName}</strong> peers: <strong class="text-on-surface">${rankText}</strong></span>
       `;
     }
 
@@ -2047,11 +2292,11 @@ class BickerBapeApp {
                   ${m.score !== undefined ? `
                     <div class="text-right flex-shrink-0 ml-2">
                       <span class="font-label-bold text-xs text-on-surface">Score : </span>
-                      <strong class="font-display-financial text-xs ${m.score >= 6.5 ? 'text-[#36B37E]' : (m.score >= 4.0 ? 'text-[#FFAB00]' : 'text-[#FF5630]')}">${m.score}</strong>
+                      <strong class="font-display-financial text-xs ${m.score >= 6.5 ? 'text-gain' : (m.score >= 4.0 ? 'text-warning' : 'text-loss')}">${m.score}</strong>
                     </div>
                   ` : `
                     <div class="flex-shrink-0 ml-2">
-                      <span class="smartscore-tag tag-green text-[10px]">Pass</span>
+                      <span class="smartscore-tag tag-green text-[11px] font-bold">Pass</span>
                     </div>
                   `}
                 </div>
@@ -2071,6 +2316,72 @@ class BickerBapeApp {
     });
   }
 
+  // ------------------------------------------------------------------
+  // Accessible Focus Management & Dialog Focus Trapping
+  // ------------------------------------------------------------------
+  trapFocus(dialogEl, initialFocusSelector = 'button, [href], input, select, textarea') {
+    if (!dialogEl) return;
+    dialogEl._previousActiveElement = document.activeElement;
+
+    const getFocusable = () => {
+      return Array.from(dialogEl.querySelectorAll(
+        'button:not([disabled]):not([tabindex="-1"]), [href]:not([tabindex="-1"]), input:not([disabled]):not([tabindex="-1"]), select:not([disabled]):not([tabindex="-1"]), textarea:not([disabled]):not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])'
+      )).filter(el => {
+        return el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0;
+      });
+    };
+
+    setTimeout(() => {
+      const initialEl = initialFocusSelector ? dialogEl.querySelector(initialFocusSelector) : null;
+      const focusable = getFocusable();
+      if (initialEl && focusable.includes(initialEl)) {
+        initialEl.focus();
+      } else if (focusable.length > 0) {
+        focusable[0].focus();
+      }
+    }, 60);
+
+    const keyHandler = (e) => {
+      if (e.key === 'Tab') {
+        const focusable = getFocusable();
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first || !dialogEl.contains(document.activeElement)) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last || !dialogEl.contains(document.activeElement)) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    };
+
+    dialogEl._focusTrapKeyHandler = keyHandler;
+    document.addEventListener('keydown', keyHandler);
+  }
+
+  untrapFocus(dialogEl) {
+    if (!dialogEl) return;
+    if (dialogEl._focusTrapKeyHandler) {
+      document.removeEventListener('keydown', dialogEl._focusTrapKeyHandler);
+      dialogEl._focusTrapKeyHandler = null;
+    }
+    if (dialogEl._previousActiveElement && typeof dialogEl._previousActiveElement.focus === 'function') {
+      try {
+        dialogEl._previousActiveElement.focus();
+      } catch (err) {
+        // Element may no longer exist
+      }
+      dialogEl._previousActiveElement = null;
+    }
+  }
+
   openDrawer(fund) {
     this.state.selectedFund = fund;
     const drawer = document.getElementById('fund-drawer');
@@ -2080,6 +2391,7 @@ class BickerBapeApp {
 
     backdrop.classList.add('active');
     drawer.classList.add('open');
+    this.trapFocus(drawer, '#drawer-close-btn');
 
     const smart = fund.smart_score || { overall: ((fund.suggester_score || 70) / 10).toFixed(1), rank_text: '' };
 
@@ -2187,7 +2499,10 @@ class BickerBapeApp {
     const drawer = document.getElementById('fund-drawer');
     const backdrop = document.getElementById('drawer-backdrop');
 
-    if (drawer) drawer.classList.remove('open');
+    if (drawer) {
+      drawer.classList.remove('open');
+      this.untrapFocus(drawer);
+    }
     if (backdrop) backdrop.classList.remove('active');
     this.state.selectedFund = null;
   }

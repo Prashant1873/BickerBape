@@ -7,8 +7,14 @@ colors:
   secondary: "#285ab9"
   secondary-container: "#709bfe"
   gain: "#36B37E"
+  gain-text: "#00875A"
   loss: "#FF5630"
+  loss-text: "#DE350B"
   warning: "#FF9F0A"
+  warning-text: "#B76E00"
+  simsim-neon: "#00F090"
+  simsim-surface: "#0B0F19"
+  simsim-header: "#070A12"
   surface: "#f8f9fb"
   surface-container-lowest: "#ffffff"
   surface-container-low: "#f3f4f6"
@@ -126,9 +132,14 @@ The palette character is defined by institutional fiduciary trust, combining ric
 - **Ice Cobalt Container** (`#709bfe`): Soft background highlight for active filters and secondary selections.
 
 ### Semantic Financial Indicators
-- **Emerald Alpha Gain** (`#36B37E`): Highlights positive outperformance ratios ($\ge 1.35\times$), 3Y/5Y alpha generation, and 🚀 Growth Investor Mood presets.
-- **Coral Risk Loss** (`#FF5630`): Flags severe underperformance, high annual volatility ($\sigma > 18\%$), and bottom-tier scores ($< 5.0$).
-- **Amber Concentration Warning** (`#FF9F0A`): Used for 💰 Income Mood accents, single-sector concentration risk badges (`⚠️ Sector Risk`), and track record warnings (<1Y/3Y schemes).
+- **Emerald Alpha Gain** (`#36B37E` for graphics/badges, `#00875A` for text): Highlights positive outperformance ratios ($\ge 1.35\times$), 3Y/5Y alpha generation, and 🚀 Growth Investor Mood presets. Text on light cards uses `#00875A` to ensure WCAG AA compliant $\ge 4.5:1$ contrast.
+- **Coral Risk Loss** (`#FF5630` for graphics/badges, `#DE350B` for text): Flags severe underperformance, high annual volatility ($\sigma > 18\%$), and bottom-tier scores ($< 5.0$).
+- **Amber Concentration Warning** (`#FF9F0A` for graphics/badges, `#B76E00` for text): Used for 💰 Income Mood accents, single-sector concentration risk badges (`⚠️ Sector Risk`), and track record warnings (<1Y/3Y schemes).
+
+### SimSim™ Time Machine Sub-Palette
+- **SimSim Neon Core** (`#00F090`): Primary energy accent for simulation projections, portfolio time-machine triggers, and active model basket chips.
+- **SimSim Deep Canvas** (`#0B0F19`): Base dark container for simulation modals and goal-projection drawers.
+- **SimSim Obsidian Header** (`#070A12`): Header surface for simulation dialogs.
 
 ### Neutral
 - **Observatory Cool Surface** (`#f8f9fb`): Base canvas background.
