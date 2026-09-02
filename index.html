@@ -25,55 +25,58 @@
         extend: {
           colors: {
             "on-primary-container": "#c4d2ff",
-            "background": "#f8f9fb",
+            "background": "var(--color-background)",
             "secondary-fixed-dim": "#b1c6ff",
-            "surface-container": "#edeef0",
-            "error": "#ba1a1a",
+            "surface-container": "var(--color-surface-container)",
+            "error": "var(--color-loss-text)",
             "tertiary-container": "#595b5b",
             "tertiary-fixed-dim": "#c6c6c7",
             "inverse-on-surface": "#f0f1f3",
-            "secondary-container": "#709bfe",
-            "surface-dim": "#d9dadc",
-            "on-surface-variant": "#434654",
+            "secondary-container": "var(--color-secondary-container)",
+            "surface-dim": "var(--color-surface-dim, #d9dadc)",
+            "on-surface-variant": "var(--color-on-surface-variant)",
             "primary-fixed": "#dae2ff",
             "on-secondary-fixed": "#001946",
             "error-container": "#ffdad6",
-            "surface-container-low": "#f3f4f6",
+            "surface-container-low": "var(--color-surface-container-low)",
             "on-secondary-fixed-variant": "#00419d",
             "on-primary-fixed-variant": "#0040a2",
-            "surface-bright": "#f8f9fb",
-            "outline-variant": "#c3c6d6",
+            "surface-bright": "var(--color-surface)",
+            "outline-variant": "var(--color-outline-variant)",
             "inverse-primary": "#b2c5ff",
-            "primary-container": "#0052cc",
+            "primary-container": "var(--color-primary-container)",
             "on-tertiary-fixed": "#1a1c1c",
             "surface-tint": "#0c56d0",
-            "surface": "#f8f9fb",
-            "on-primary": "#ffffff",
-            "secondary": "#285ab9",
+            "surface": "var(--color-surface)",
+            "on-primary": "var(--color-on-primary)",
+            "secondary": "var(--color-secondary)",
             "secondary-fixed": "#d9e2ff",
             "on-tertiary": "#ffffff",
             "on-error": "#ffffff",
-            "surface-container-lowest": "#ffffff",
+            "surface-container-lowest": "var(--color-surface-container-lowest)",
             "inverse-surface": "#2e3132",
             "on-error-container": "#93000a",
             "primary-fixed-dim": "#b2c5ff",
-            "surface-container-highest": "#e1e2e4",
-            "surface-container-high": "#e7e8ea",
-            "on-surface": "#191c1e",
+            "surface-container-highest": "var(--color-surface-container-highest)",
+            "surface-container-high": "var(--color-surface-container-high)",
+            "on-surface": "var(--color-on-surface)",
             "tertiary-fixed": "#e2e2e2",
-            "primary": "#003d9b",
+            "primary": "var(--color-primary)",
             "on-secondary-container": "#003179",
             "on-tertiary-fixed-variant": "#454747",
             "on-secondary": "#ffffff",
-            "on-background": "#191c1e",
-            "surface-variant": "#e1e2e4",
+            "on-background": "var(--color-on-surface)",
+            "surface-variant": "var(--color-surface-container-highest)",
             "on-tertiary-container": "#d2d3d3",
             "on-primary-fixed": "#001848",
-            "outline": "#737685",
+            "outline": "var(--color-outline)",
             "tertiary": "#424444",
-            "gain": "#36B37E",
-            "loss": "#FF5630",
-            "warning": "#FF9F0A"
+            "gain": "var(--color-gain)",
+            "gain-text": "var(--color-gain-text)",
+            "loss": "var(--color-loss)",
+            "loss-text": "var(--color-loss-text)",
+            "warning": "var(--color-warning)",
+            "warning-text": "var(--color-warning-text)"
           },
           borderRadius: {
             "DEFAULT": "0.25rem",
@@ -136,11 +139,11 @@
     };
   </script>
 
-  <!-- Custom Stylesheets (Cache-Busted for Impeccable Design System) -->
+  <!-- Custom Stylesheets (Cache-Busted for Impeccable & UX Laws) -->
   <link rel="icon" type="image/png" href="assets/favicon.png"/>
-  <link href="css/styles.css?v=impeccable_v2" rel="stylesheet"/>
-  <link href="css/components.css?v=impeccable_v2" rel="stylesheet"/>
-  <link href="css/simsim.css?v=impeccable_v2" rel="stylesheet"/>
+  <link href="css/styles.css?v=uxlaws_v1" rel="stylesheet"/>
+  <link href="css/components.css?v=uxlaws_v1" rel="stylesheet"/>
+  <link href="css/simsim.css?v=uxlaws_v1" rel="stylesheet"/>
 </head>
 
 <body class="bg-background text-on-background font-body-md antialiased overflow-hidden">
@@ -173,9 +176,23 @@
         </div>
 
         <!-- Sidebar Collapse Toggle Button -->
-        <button id="sidebar-collapse-btn" class="p-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors touch-spring" title="Collapse sidebar">
+        <button id="sidebar-collapse-btn" class="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors touch-spring cursor-pointer" title="Collapse sidebar" aria-label="Collapse sidebar">
           <span class="material-symbols-outlined text-lg">menu_open</span>
         </button>
+      </div>
+
+      <!-- Persistent Sidebar Mode Switcher (Always visible in both Screener and SimSim modes) -->
+      <div class="px-md py-2 bg-surface border-b border-surface-container flex-shrink-0">
+        <div class="p-1 bg-surface-container rounded-xl border border-surface-container flex items-center justify-between text-xs font-label-bold" id="sidebar-mode-segmented-switch">
+          <button type="button" class="flex-1 py-2 rounded-lg bg-primary-container text-on-primary font-bold transition-all shadow-xs flex items-center justify-center gap-1 cursor-pointer touch-spring min-h-[44px]" data-mode="screener">
+            <span class="material-symbols-outlined text-sm">analytics</span>
+            <span>Screener</span>
+          </button>
+          <button type="button" class="flex-1 py-2 rounded-lg text-on-surface-variant hover:text-primary transition-all flex items-center justify-center gap-1 cursor-pointer touch-spring min-h-[44px]" data-mode="simsim">
+            <span class="material-symbols-outlined text-sm text-[#00F090]">auto_fix_high</span>
+            <span>SimSim™ Time Machine</span>
+          </button>
+        </div>
       </div>
 
       <!-- Scrollable Filters Container (Smooth Touchpad & Wheel Scroll) -->
@@ -183,13 +200,13 @@
         
         <!-- Portal 1: Screener Filters Sidebar Content -->
         <div id="screener-sidebar-content" class="space-y-lg">
-        
+
         <!-- Filter Header & Reset -->
         <div class="flex items-center justify-between pt-1">
           <div class="flex items-center gap-1.5 text-primary font-label-bold text-xs">
             <span class="material-symbols-outlined text-base">tune</span> Screener Filters
           </div>
-          <button id="reset-filters-btn" class="text-xs text-primary hover:underline font-label-bold cursor-pointer touch-spring">
+          <button id="reset-filters-btn" class="min-h-[44px] px-2 py-1 text-xs text-primary hover:underline font-label-bold cursor-pointer touch-spring flex items-center">
             Reset All
           </button>
         </div>
@@ -212,29 +229,29 @@
                 </span>
               </span>
             </div>
-            <span id="active-mood-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase mood-tag-growth">Growth</span>
+            <span id="active-mood-badge" class="text-[11px] px-2.5 py-0.5 rounded-full font-bold uppercase mood-tag-growth">Growth</span>
           </div>
 
           <!-- 3-Way Segmented Controller -->
           <div class="grid grid-cols-3 p-1 bg-surface-container rounded-xl gap-1" id="mood-toggle-group">
-            <button type="button" class="mood-btn active flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="growth" title="Growth: Wealth Long Term">
+            <button type="button" class="mood-btn active min-h-[44px] flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="growth" title="Growth: Wealth Long Term">
               <span class="material-symbols-outlined text-sm mb-0.5">rocket_launch</span>
-              <span class="text-[11px] leading-none">Growth</span>
-              <span class="text-[9px] font-normal text-on-surface-variant mt-0.5">Alpha</span>
+              <span class="text-xs leading-none font-bold">Growth</span>
+              <span class="text-[11px] font-medium text-on-surface-variant mt-0.5">Alpha</span>
             </button>
-            <button type="button" class="mood-btn flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="safety" title="Safety: Low Risk & Downside Protection">
+            <button type="button" class="mood-btn min-h-[44px] flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="safety" title="Safety: Low Risk & Downside Protection">
               <span class="material-symbols-outlined text-sm mb-0.5">shield</span>
-              <span class="text-[11px] leading-none">Safety</span>
-              <span class="text-[9px] font-normal text-on-surface-variant mt-0.5">Low Risk</span>
+              <span class="text-xs leading-none font-bold">Safety</span>
+              <span class="text-[11px] font-medium text-on-surface-variant mt-0.5">Low Risk</span>
             </button>
-            <button type="button" class="mood-btn flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="income" title="Income: Low Direct Fees & Efficiency">
+            <button type="button" class="mood-btn min-h-[44px] flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="income" title="Income: Low Direct Fees & Efficiency">
               <span class="material-symbols-outlined text-sm mb-0.5">savings</span>
-              <span class="text-[11px] leading-none">Income</span>
-              <span class="text-[9px] font-normal text-on-surface-variant mt-0.5">Low Cost</span>
+              <span class="text-xs leading-none font-bold">Income</span>
+              <span class="text-[11px] font-medium text-on-surface-variant mt-0.5">Low Cost</span>
             </button>
           </div>
 
-          <p id="mood-target-desc" class="text-[10px] text-on-surface-variant text-center pt-0.5 font-medium">
+          <p id="mood-target-desc" class="text-[11px] text-on-surface-variant text-center pt-0.5 font-medium">
             Wealth Long Term: Prioritizes high alpha & category outperformance
           </p>
         </div>
@@ -250,9 +267,9 @@
               <div class="flex-grow">
                 <div class="flex items-center gap-1">
                   <span>SmartScore™ Elite</span>
-                  <span class="smartscore-tag tag-purple text-[10px] py-0 px-1.5">7.5+</span>
+                  <span class="smartscore-tag tag-purple text-[11px] font-bold py-0 px-1.5">7.5+</span>
                 </div>
-                <div class="text-[10px] font-normal text-on-surface-variant">Top quintile across all 5 pillars</div>
+                <div class="text-[11px] font-normal text-on-surface-variant">Top quintile across all 5 pillars</div>
               </div>
             </button>
 
@@ -260,7 +277,7 @@
               <span class="chip-emblem chip-emblem-gold"><span class="material-symbols-outlined text-sm">emoji_events</span></span>
               <div class="flex-grow">
                 <div>Prashant's 10-Step Formula</div>
-                <div class="text-[10px] font-normal text-on-surface-variant">Rolling 3Y > Avg, Low Vol, Sharpe > 0.7</div>
+                <div class="text-[11px] font-normal text-on-surface-variant">Rolling 3Y > Avg, Low Vol, Sharpe > 0.7</div>
               </div>
             </button>
             
@@ -268,7 +285,7 @@
               <span class="chip-emblem chip-emblem-emerald"><span class="material-symbols-outlined text-sm">rocket_launch</span></span>
               <div class="flex-grow">
                 <div>Consistent Compounders</div>
-                <div class="text-[10px] font-normal text-on-surface-variant">Top 3Y rolling returns across cycles</div>
+                <div class="text-[11px] font-normal text-on-surface-variant">Top 3Y rolling returns across cycles</div>
               </div>
             </button>
 
@@ -276,7 +293,7 @@
               <span class="chip-emblem chip-emblem-blue"><span class="material-symbols-outlined text-sm">shield</span></span>
               <div class="flex-grow">
                 <div>Low Volatility Titans</div>
-                <div class="text-[10px] font-normal text-on-surface-variant">Lower risk than category average</div>
+                <div class="text-[11px] font-normal text-on-surface-variant">Lower risk than category average</div>
               </div>
             </button>
 
@@ -284,7 +301,7 @@
               <span class="chip-emblem chip-emblem-coral"><span class="material-symbols-outlined text-sm">bolt</span></span>
               <div class="flex-grow">
                 <div>High Alpha Champions</div>
-                <div class="text-[10px] font-normal text-on-surface-variant">High Sharpe + Category Outperformance</div>
+                <div class="text-[11px] font-normal text-on-surface-variant">High Sharpe + Category Outperformance</div>
               </div>
             </button>
 
@@ -292,7 +309,7 @@
               <span class="chip-emblem chip-emblem-teal"><span class="material-symbols-outlined text-sm">savings</span></span>
               <div class="flex-grow">
                 <div>ELSS Wealth Savers</div>
-                <div class="text-[10px] font-normal text-on-surface-variant">Tax-saving 80C top performers</div>
+                <div class="text-[11px] font-normal text-on-surface-variant">Tax-saving 80C top performers</div>
               </div>
             </button>
           </div>
@@ -304,57 +321,57 @@
             Equity Categories
           </label>
           <div id="sidebar-categories-list" class="space-y-1">
-            <button class="category-pill active w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="All Funds">
+            <button class="category-pill active w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="All Funds">
               <span>All Equity Funds</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">620</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">620</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Flexi Cap">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Flexi Cap">
               <span>Flexi Cap</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">45</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">45</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Large Cap">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Large Cap">
               <span>Large Cap</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">34</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">34</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Mid Cap">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Mid Cap">
               <span>Mid Cap</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">34</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">34</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Small Cap">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Small Cap">
               <span>Small Cap</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">36</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">36</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Large & Mid Cap">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Large & Mid Cap">
               <span>Large & Mid Cap</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">34</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">34</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="ELSS Tax Saver">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="ELSS Tax Saver">
               <span>ELSS Tax Saver</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">38</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">38</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Multi Cap">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Multi Cap">
               <span>Multi Cap</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">32</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">32</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Focused Fund">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Focused Fund">
               <span>Focused Fund</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">28</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">28</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Value / Contra">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Value / Contra">
               <span>Value / Contra</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">23</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">23</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Sectoral / Thematic">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Sectoral / Thematic">
               <span>Sectoral / Thematic</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">246</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">246</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Index Funds">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Index Funds">
               <span>Index Funds</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">59</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">59</span>
             </button>
-            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring" data-category="Dividend Yield">
+            <button class="category-pill w-full text-left px-3 py-1.5 rounded-lg text-xs font-label-bold flex items-center justify-between bg-surface-container-lowest text-on-surface-variant border border-transparent touch-spring min-h-[38px]" data-category="Dividend Yield">
               <span>Dividend Yield</span>
-              <span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded font-bold text-primary">11</span>
+              <span class="text-[11px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-primary">11</span>
             </button>
           </div>
         </div>
@@ -445,21 +462,34 @@
         <!-- Left: Sidebar Toggle + Title / Brand Mode Switcher -->
         <div class="flex items-center gap-sm md:gap-md">
           <!-- Sidebar Expand Toggle (visible when desktop sidebar collapsed or on mobile) -->
-          <button id="sidebar-expand-btn" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-surface-container-lowest card-shadow font-label-bold text-xs text-primary touch-spring" title="Toggle Filters Sidebar">
+          <button id="sidebar-expand-btn" class="flex items-center gap-1 min-h-[44px] px-3 py-2 rounded-xl bg-surface-container-lowest card-shadow font-label-bold text-xs text-primary touch-spring cursor-pointer" title="Toggle Filters Sidebar">
             <span class="material-symbols-outlined text-base">tune</span>
             <span class="hidden sm:inline">Filters</span>
           </button>
 
-          <div id="header-logo-switch" class="logo-mode-switch cursor-pointer touch-spring flex items-center gap-2" title="Click to toggle SimSim™ Time Machine">
+          <div id="header-logo-switch" class="logo-mode-switch flex items-center gap-2">
             <div class="logo-aura"></div>
             <div class="logo-content">
               <div class="flex items-center gap-2">
                 <h2 id="header-platform-title" class="font-headline-md text-base md:text-lg text-on-surface leading-tight font-bold">Indian Equity Screener</h2>
                 <span id="header-mood-indicator" class="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full mood-tag-growth flex items-center gap-1">Mood: Growth <span class="material-symbols-outlined" style="font-size:12px">rocket_launch</span></span>
               </div>
-              <p id="funds-count" class="font-label-sm text-[11px] text-on-surface-variant">Loading 620 funds...</p>
+              <p id="funds-count" class="font-label-sm text-[11px] text-on-surface-variant" aria-live="polite" aria-atomic="true">Loading 620 funds...</p>
             </div>
           </div>
+        </div>
+
+        <!-- Center: Explicit Segmented Mode Switcher (Jakob's Law) -->
+        <div class="flex items-center p-1 bg-surface-container rounded-2xl border border-surface-container shadow-xs text-xs font-label-bold" id="mode-segmented-switch">
+          <button type="button" id="mode-switch-screener-btn" class="px-2.5 sm:px-4 py-1.5 min-h-[44px] rounded-xl bg-primary-container text-on-primary font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer touch-spring" data-mode="screener">
+            <span class="material-symbols-outlined text-sm">analytics</span>
+            <span>Screener</span>
+          </button>
+          <button type="button" id="mode-switch-simsim-btn" class="px-2.5 sm:px-4 py-1.5 min-h-[44px] rounded-xl text-on-surface-variant hover:text-primary transition-all flex items-center gap-1.5 cursor-pointer touch-spring" data-mode="simsim">
+            <span class="material-symbols-outlined text-sm text-[#00F090]">auto_fix_high</span>
+            <span class="hidden sm:inline">SimSim™ Time Machine</span>
+            <span class="sm:hidden">SimSim™</span>
+          </button>
         </div>
 
         <!-- Right: Screener Header Controls (Search, Compare, View Switcher) -->
@@ -467,22 +497,22 @@
           <!-- Search Bar -->
           <div class="relative flex-grow max-w-md hidden sm:block">
             <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
-            <input id="search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-1.5 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC, or category..." type="text" aria-label="Search mutual funds by scheme, AMC, or category"/>
+            <input id="search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-2 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container min-h-[40px]" placeholder="Search by scheme, AMC, or category..." type="text" aria-label="Search mutual funds by scheme, AMC, or category"/>
           </div>
 
           <!-- Compare Tray Toggle & View Switcher (Cards vs Table) -->
           <div class="flex items-center gap-2 flex-shrink-0">
-            <button id="compare-tray-toggle-btn" class="hidden items-center gap-1.5 px-3.5 py-2 min-h-[38px] rounded-xl border border-surface-container bg-surface-container-lowest font-label-bold text-xs text-on-surface hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Toggle Comparison Bar" aria-label="Toggle Comparison Bar">
+            <button id="compare-tray-toggle-btn" class="hidden items-center gap-1.5 px-3.5 py-2 min-h-[44px] rounded-xl border border-surface-container bg-surface-container-lowest font-label-bold text-xs text-on-surface hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Toggle Comparison Bar" aria-label="Toggle Comparison Bar">
               <span class="material-symbols-outlined text-sm text-primary">compare_arrows</span>
               <span>Compare (<span id="tray-toggle-count">0</span>)</span>
             </button>
 
             <div class="flex items-center p-0.5 bg-surface-container rounded-xl card-shadow">
-              <button id="view-cards-btn" class="view-toggle-btn active flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-label-bold touch-spring" title="Card View">
+              <button id="view-cards-btn" class="view-toggle-btn active flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-lg text-xs font-label-bold touch-spring cursor-pointer" title="Card View">
                 <span class="material-symbols-outlined text-sm">grid_view</span>
                 <span class="hidden sm:inline">Cards</span>
               </button>
-              <button id="view-table-btn" class="view-toggle-btn flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-label-bold touch-spring" title="Table View">
+              <button id="view-table-btn" class="view-toggle-btn flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-lg text-xs font-label-bold touch-spring cursor-pointer" title="Table View">
                 <span class="material-symbols-outlined text-sm">table_rows</span>
                 <span class="hidden sm:inline">Table</span>
               </button>
@@ -498,10 +528,32 @@
         <!-- Screener Views Wrapper (Cards & Table) -->
         <div id="screener-views-wrapper" class="space-y-6">
 
-          <!-- Mobile Search Input (Visible on small screens) -->
-          <div class="relative w-full sm:hidden">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
-            <input id="mobile-search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-2 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC..." type="text" aria-label="Search mutual funds by scheme or AMC"/>
+          <!-- Active Filters Summary Bar (Zeigarnik Effect & Postel's Law) -->
+          <div id="active-filters-bar" class="hidden p-3 rounded-2xl bg-surface-container-lowest card-shadow border border-surface-container flex items-center justify-between flex-wrap gap-2 text-xs">
+            <div class="flex items-center gap-2 flex-wrap" id="active-filter-chips-container">
+              <!-- Filter chips rendered dynamically -->
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="active-filters-count-tag" class="text-[11px] font-bold text-on-surface-variant" aria-live="polite" aria-atomic="true">0 Active Filters</span>
+              <button id="clear-active-filters-btn" type="button" class="text-xs text-primary font-label-bold hover:underline cursor-pointer">Clear All</button>
+            </div>
+          </div>
+
+          <!-- Zero-Results Recovery Card (Postel's Law) -->
+          <div id="zero-results-card" class="hidden p-6 rounded-2xl bg-surface-container-lowest card-shadow border border-surface-container text-center space-y-3 max-w-lg mx-auto my-8">
+            <div class="w-12 h-12 rounded-full bg-error-container/30 text-error flex items-center justify-center mx-auto text-2xl">
+              <span class="material-symbols-outlined">filter_alt_off</span>
+            </div>
+            <h3 class="font-headline-md text-base font-bold text-on-surface">No Mutual Funds Match These Strict Filters</h3>
+            <p id="zero-results-reason" class="text-xs text-on-surface-variant leading-relaxed">Your current slider parameters (e.g. SmartScore or Volatility limits) excluded all 620 funds in the dataset.</p>
+            <div class="pt-2 flex items-center justify-center gap-3">
+              <button id="relax-filters-btn" type="button" class="px-4 py-2 rounded-xl bg-primary-container text-on-primary font-label-bold text-xs hover:bg-primary transition-colors cursor-pointer touch-spring shadow-sm">
+                Relax Filter Constraints
+              </button>
+              <button id="reset-all-zero-btn" type="button" class="px-4 py-2 rounded-xl border border-surface-container bg-surface text-xs font-label-bold text-on-surface hover:bg-surface-container cursor-pointer touch-spring">
+                Reset All Filters
+              </button>
+            </div>
           </div>
 
         <!-- View 1: Featured Funds Grid -->
@@ -529,13 +581,13 @@
           </div>
 
           <div class="overflow-x-auto w-full">
-            <table class="screener-table text-left w-full">
+            <table class="screener-table text-left w-full" aria-label="Indian Equity Mutual Funds Screener Table">
               <thead id="screener-table-header">
                 <tr class="font-label-bold text-xs text-on-surface-variant uppercase tracking-wider">
-                  <th class="py-2.5 px-3 cursor-pointer select-none" data-sort="name">
+                  <th scope="col" class="py-2.5 px-3 cursor-pointer select-none" data-sort="name">
                     <div class="flex items-center gap-1">Scheme & Category <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span></div>
                   </th>
-                  <th class="py-2.5 px-2.5 text-center cursor-pointer select-none" data-sort="smart_score">
+                  <th scope="col" class="py-2.5 px-2.5 text-center cursor-pointer select-none" data-sort="smart_score">
                     <div class="flex items-center justify-center gap-1">
                       <span>SmartScore™</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
@@ -548,7 +600,7 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="cagr_3y">
+                  <th scope="col" class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="cagr_3y">
                     <div class="flex items-center justify-end gap-1">
                       <span>3Y Ret & Ratio</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
@@ -561,7 +613,7 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="cagr_5y">
+                  <th scope="col" class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="cagr_5y">
                     <div class="flex items-center justify-end gap-1">
                       <span>5Y Ret & Ratio</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
@@ -574,7 +626,7 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="cagr_10y">
+                  <th scope="col" class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="cagr_10y">
                     <div class="flex items-center justify-end gap-1">
                       <span>10Y CAGR</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
@@ -587,7 +639,7 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="rolling_3y_avg">
+                  <th scope="col" class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="rolling_3y_avg">
                     <div class="flex items-center justify-end gap-1">
                       <span>3Y Rolling Avg</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
@@ -600,7 +652,7 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="sharpe_ratio">
+                  <th scope="col" class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="sharpe_ratio">
                     <div class="flex items-center justify-end gap-1">
                       <span>Sharpe</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
@@ -613,7 +665,7 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="volatility">
+                  <th scope="col" class="py-2.5 px-2.5 text-right cursor-pointer select-none" data-sort="volatility">
                     <div class="flex items-center justify-end gap-1">
                       <span>Volatility (σ)</span>
                       <span class="info-wrapper" onclick="event.stopPropagation()">
@@ -626,7 +678,7 @@
                       <span class="material-symbols-outlined text-sm sort-icon">unfold_more</span>
                     </div>
                   </th>
-                  <th class="py-2.5 px-3 text-center">Actions</th>
+                  <th scope="col" class="py-2.5 px-3 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody id="screener-table-body" class="divide-y divide-surface-container font-body-md text-sm">
@@ -681,14 +733,14 @@
     </div>
 
     <div class="flex items-center gap-1.5 flex-shrink-0">
-      <button id="open-compare-btn" class="px-3.5 py-2 rounded-xl bg-primary-container text-on-primary font-label-bold text-xs touch-spring hover:bg-primary transition-colors shadow-sm flex items-center gap-1 cursor-pointer">
+      <button id="open-compare-btn" class="px-3.5 py-2 min-h-[44px] rounded-xl bg-primary-container text-on-primary font-label-bold text-xs touch-spring hover:bg-primary transition-colors shadow-sm flex items-center gap-1 cursor-pointer" aria-label="Open multi-fund comparison modal">
         <span>Compare</span>
         <span class="material-symbols-outlined text-sm">arrow_forward</span>
       </button>
-      <button id="minimize-compare-btn" class="p-1.5 text-on-surface-variant hover:text-primary rounded-lg hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Minimize Tray">
+      <button id="minimize-compare-btn" class="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center text-on-surface-variant hover:text-primary rounded-lg hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Minimize Tray" aria-label="Minimize compare tray">
         <span class="material-symbols-outlined text-base">expand_more</span>
       </button>
-      <button id="clear-compare-btn" class="p-1.5 text-on-surface-variant hover:text-error rounded-lg hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Clear All Selected">
+      <button id="clear-compare-btn" class="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center text-on-surface-variant hover:text-error rounded-lg hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Clear All Selected" aria-label="Clear all compared funds">
         <span class="material-symbols-outlined text-base">delete_sweep</span>
       </button>
     </div>
@@ -698,10 +750,10 @@
        FLOATING SIMSIM PORTFOLIO BUCKET TRAY
        ==================================================================== -->
   <div id="simsim-floating-tray" class="simsim-tray" role="region" aria-label="SimSim Portfolio Bucket" title="SimSim Portfolio Bucket (Hover or click to expand)">
-    <div class="flex items-center gap-2.5 simsim-tray-peek-tab cursor-pointer touch-spring" id="simsim-tray-peek-handle" title="Click to launch SimSim™ Time Machine">
+    <div class="flex items-center gap-2.5 simsim-tray-peek-tab cursor-pointer touch-spring min-h-[44px]" id="simsim-tray-peek-handle" title="Click to launch SimSim™ Time Machine" aria-label="Click to launch SimSim Time Machine">
       <div class="relative w-8 h-8 rounded-xl bg-[#00F090]/20 border border-[#00F090]/40 flex items-center justify-center text-[#00F090] flex-shrink-0">
         <span class="material-symbols-outlined text-lg simsim-pulse-icon">hourglass_top</span>
-        <span id="simsim-tray-badge-pill" class="absolute -top-1.5 -left-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00F090] text-black font-extrabold text-[10px] flex items-center justify-center shadow-md">0</span>
+        <span id="simsim-tray-badge-pill" class="absolute -top-1.5 -left-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00F090] text-black font-extrabold text-[11px] flex items-center justify-center shadow-md">0</span>
       </div>
       <div class="min-w-[85px] simsim-tray-label">
         <p class="text-xs font-bold text-white leading-tight">SimSim™ Bucket</p>
@@ -710,18 +762,18 @@
     </div>
     
     <div class="flex items-center gap-1.5 flex-shrink-0 simsim-tray-actions">
-      <button id="simsim-tray-launch-btn" type="button" class="px-3.5 py-1.5 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5 shadow-md">
+      <button id="simsim-tray-launch-btn" type="button" class="px-3.5 py-2 min-h-[44px] rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5 shadow-md" aria-label="Simulate selected portfolio in SimSim Time Machine">
         <span class="material-symbols-outlined text-sm">rocket_launch</span>
         <span>Simulate</span>
       </button>
 
       <!-- Clear bucket button -->
-      <button id="simsim-tray-clear-btn" type="button" class="p-1.5 rounded-xl bg-white/5 hover:bg-[#FF4D4D]/20 text-[#94A3B8] hover:text-[#FF4D4D] transition-colors cursor-pointer touch-spring flex items-center justify-center" title="Clear SimSim Bucket">
+      <button id="simsim-tray-clear-btn" type="button" class="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center rounded-xl bg-white/5 hover:bg-[#FF4D4D]/20 text-[#94A3B8] hover:text-[#FF4D4D] transition-colors cursor-pointer touch-spring" title="Clear SimSim Bucket" aria-label="Clear SimSim bucket">
         <span class="material-symbols-outlined text-base">delete_sweep</span>
       </button>
 
       <!-- Dismiss/Remove floating bar button with small close icon -->
-      <button id="simsim-tray-dismiss-btn" type="button" class="p-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-[#94A3B8] hover:text-white transition-colors cursor-pointer touch-spring flex items-center justify-center" title="Hide floating bar">
+      <button id="simsim-tray-dismiss-btn" type="button" class="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/15 text-[#94A3B8] hover:text-white transition-colors cursor-pointer touch-spring" title="Hide floating bar" aria-label="Hide SimSim floating bar">
         <span class="material-symbols-outlined text-base">close</span>
       </button>
     </div>
@@ -748,266 +800,313 @@
         <p class="text-xs text-on-surface-variant mt-0.5">Fund Manager: <strong id="drawer-manager" class="text-on-surface">Rajeev Thakkar</strong></p>
       </div>
 
-      <button id="drawer-close-btn" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors touch-spring cursor-pointer">
-        <span class="material-symbols-outlined text-sm">close</span>
+      <button id="drawer-close-btn" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors touch-spring cursor-pointer" title="Close drawer" aria-label="Close drawer">
+        <span class="material-symbols-outlined text-base">close</span>
+      </button>
+    </div>
+
+    <!-- Drawer Navigation Tabs (Miller's Law - Chunking Information) -->
+    <div class="px-md md:px-lg py-2 border-b border-surface-container bg-surface-container-low flex items-center gap-1 overflow-x-auto hide-scrollbar flex-shrink-0" id="drawer-tabs-header">
+      <button type="button" class="drawer-tab-btn active px-3 py-2 rounded-lg text-xs font-label-bold transition-all cursor-pointer flex items-center gap-1 min-h-[44px] text-primary bg-surface-container-lowest shadow-xs" data-tab="scorecard">
+        <span class="material-symbols-outlined text-sm">score</span>
+        <span>Scorecard & Overview</span>
+      </button>
+      <button type="button" class="drawer-tab-btn px-3 py-2 rounded-lg text-xs font-label-bold transition-all cursor-pointer flex items-center gap-1 min-h-[44px] text-on-surface-variant hover:text-primary" data-tab="charts">
+        <span class="material-symbols-outlined text-sm">show_chart</span>
+        <span>Returns & Charts</span>
+      </button>
+      <button type="button" class="drawer-tab-btn px-3 py-2 rounded-lg text-xs font-label-bold transition-all cursor-pointer flex items-center gap-1 min-h-[44px] text-on-surface-variant hover:text-primary" data-tab="risk">
+        <span class="material-symbols-outlined text-sm">pie_chart</span>
+        <span>Risk & Portfolio</span>
+      </button>
+      <button type="button" class="drawer-tab-btn px-3 py-2 rounded-lg text-xs font-label-bold transition-all cursor-pointer flex items-center gap-1 min-h-[44px] text-on-surface-variant hover:text-primary" data-tab="checklist">
+        <span class="material-symbols-outlined text-sm">fact_check</span>
+        <span>10-Step Verdict</span>
       </button>
     </div>
 
     <!-- Drawer Scrollable Content (Smooth Touchpad & Wheel Scroll) -->
     <div id="drawer-scroll-container" class="flex-grow min-h-0 overflow-y-auto px-md md:px-lg py-md space-y-lg hide-scrollbar">
       
-      <!-- Key Metric Cards Grid (Expanded to 6 Core Pillars with Standardized Alignment) -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-sm">
-        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="drawer-metric-header">
-            <span class="drawer-metric-header-title">Latest NAV</span>
-            <span class="info-wrapper">
-              <button type="button" class="info-btn" title="About Latest NAV">i</button>
-              <span class="info-popup">
-                <strong class="block font-bold text-white mb-0.5">Net Asset Value (NAV)</strong>
-                <span>The current per-unit price of the fund, along with short-term 3-month growth momentum.</span>
+      <!-- TAB PANE 1: SCORECARD & OVERVIEW -->
+      <div id="drawer-pane-scorecard" class="drawer-tab-pane space-y-lg">
+        <!-- Key Metric Cards Grid (Expanded to 6 Core Pillars with Standardized Alignment) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-sm">
+          <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+            <div class="drawer-metric-header">
+              <span class="drawer-metric-header-title">Latest NAV</span>
+              <span class="info-wrapper">
+                <button type="button" class="info-btn" title="About Latest NAV">i</button>
+                <span class="info-popup">
+                  <strong class="block font-bold text-white mb-0.5">Net Asset Value (NAV)</strong>
+                  <span>The current per-unit price of the fund, along with short-term 3-month growth momentum.</span>
+                </span>
               </span>
-            </span>
-          </div>
-          <div class="drawer-metric-body">
-            <p id="drawer-nav-price" class="drawer-metric-value text-primary">₹90.78</p>
-            <p id="drawer-3m-growth" class="drawer-metric-sub text-[#36B37E]">+4.8% past 3M</p>
-          </div>
-        </div>
-
-        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="drawer-metric-header">
-            <span class="drawer-metric-header-title">3Y Ret & Ratio</span>
-            <span class="info-wrapper">
-              <button type="button" class="info-btn" title="About 3Y Return & Ratio">i</button>
-              <span class="info-popup">
-                <strong class="block font-bold text-white mb-0.5">3Y Return & Ratio vs Category</strong>
-                <span>Shows how much better or worse this fund performed compared to category peers. 1.45x means 45% more return than category average.</span>
-              </span>
-            </span>
-          </div>
-          <div class="drawer-metric-body">
-            <p id="drawer-3y-return" class="drawer-metric-value text-[#36B37E]">+18.4%</p>
-            <p id="drawer-3y-ratio" class="drawer-metric-sub text-primary">1.48x vs Cat Avg</p>
-          </div>
-        </div>
-
-        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="drawer-metric-header">
-            <span class="drawer-metric-header-title">5Y & 10Y Ratios</span>
-            <span class="info-wrapper">
-              <button type="button" class="info-btn" title="About 5Y & 10Y Ratios">i</button>
-              <span class="info-popup">
-                <strong class="block font-bold text-white mb-0.5">Multi-Cycle Outperformance Ratios</strong>
-                <span>Compares 5-year and 10-year growth against peers. Ratios above 1.15x indicate durable fund manager skill across cycles.</span>
-              </span>
-            </span>
-          </div>
-          <div class="drawer-metric-body">
-            <p id="drawer-5y-ratio" class="drawer-metric-value text-on-surface">1.22x (5Y)</p>
-            <p id="drawer-10y-ratio" class="drawer-metric-sub text-on-surface-variant font-medium">1.18x (10Y CAGR)</p>
-          </div>
-        </div>
-
-        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="drawer-metric-header">
-            <span class="drawer-metric-header-title">3Y Rolling Avg</span>
-            <span class="info-wrapper">
-              <button type="button" class="info-btn" title="About 3Y Rolling Average">i</button>
-              <span class="info-popup">
-                <strong class="block font-bold text-white mb-0.5">3-Year Rolling Average</strong>
-                <span>The average return you would have earned investing on ANY random day in history and holding for 3 years. Removes entry timing luck.</span>
-              </span>
-            </span>
-          </div>
-          <div class="drawer-metric-body">
-            <p id="drawer-3y-rolling" class="drawer-metric-value text-primary">21.2%</p>
-            <p class="drawer-metric-sub text-[#36B37E]">Consistent Compounding</p>
-          </div>
-        </div>
-
-        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="drawer-metric-header">
-            <span class="drawer-metric-header-title">Sharpe / Vol</span>
-            <span class="info-wrapper">
-              <button type="button" class="info-btn" title="About Sharpe & Volatility">i</button>
-              <span class="info-popup align-right">
-                <strong class="block font-bold text-white mb-0.5">Sharpe Ratio & Volatility</strong>
-                <span>Sharpe measures excess return per unit of risk above safe T-Bills (6.8%). Volatility measures price swings. High Sharpe (> 1.0) and low volatility (< 14%) indicate steady, high-quality growth.</span>
-              </span>
-            </span>
-          </div>
-          <div class="drawer-metric-body">
-            <div class="drawer-metric-value flex items-baseline gap-1 text-on-surface">
-              <span id="drawer-sharpe">1.24</span>
-              <span class="text-xs font-normal text-on-surface-variant">/ <span id="drawer-volatility">13.2%</span></span>
             </div>
-            <p class="drawer-metric-sub text-on-surface-variant">Rf = 6.8% (T-Bill)</p>
+            <div class="drawer-metric-body">
+              <p id="drawer-nav-price" class="drawer-metric-value text-primary">₹90.78</p>
+              <p id="drawer-3m-growth" class="drawer-metric-sub text-gain font-bold">+4.8% past 3M</p>
+            </div>
+          </div>
+
+          <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+            <div class="drawer-metric-header">
+              <span class="drawer-metric-header-title">3Y Ret & Ratio</span>
+              <span class="info-wrapper">
+                <button type="button" class="info-btn" title="About 3Y Return & Ratio">i</button>
+                <span class="info-popup">
+                  <strong class="block font-bold text-white mb-0.5">3Y Return & Ratio vs Category</strong>
+                  <span>Shows how much better or worse this fund performed compared to category peers. 1.45x means 45% more return than category average.</span>
+                </span>
+              </span>
+            </div>
+            <div class="drawer-metric-body">
+              <p id="drawer-3y-return" class="drawer-metric-value text-gain font-bold">+18.4%</p>
+              <p id="drawer-3y-ratio" class="drawer-metric-sub text-primary">1.48x vs Cat Avg</p>
+            </div>
+          </div>
+
+          <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+            <div class="drawer-metric-header">
+              <span class="drawer-metric-header-title">5Y & 10Y Ratios</span>
+              <span class="info-wrapper">
+                <button type="button" class="info-btn" title="About 5Y & 10Y Ratios">i</button>
+                <span class="info-popup">
+                  <strong class="block font-bold text-white mb-0.5">Multi-Cycle Outperformance Ratios</strong>
+                  <span>Compares 5-year and 10-year growth against peers. Ratios above 1.15x indicate durable fund manager skill across cycles.</span>
+                </span>
+              </span>
+            </div>
+            <div class="drawer-metric-body">
+              <p id="drawer-5y-ratio" class="drawer-metric-value text-on-surface">1.22x (5Y)</p>
+              <p id="drawer-10y-ratio" class="drawer-metric-sub text-on-surface-variant font-medium">1.18x (10Y CAGR)</p>
+            </div>
+          </div>
+
+          <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+            <div class="drawer-metric-header">
+              <span class="drawer-metric-header-title">3Y Rolling Avg</span>
+              <span class="info-wrapper">
+                <button type="button" class="info-btn" title="About 3Y Rolling Average">i</button>
+                <span class="info-popup">
+                  <strong class="block font-bold text-white mb-0.5">3-Year Rolling Average</strong>
+                  <span>The average return you would have earned investing on ANY random day in history and holding for 3 years. Removes entry timing luck.</span>
+                </span>
+              </span>
+            </div>
+            <div class="drawer-metric-body">
+              <p id="drawer-3y-rolling" class="drawer-metric-value text-primary">21.2%</p>
+              <p class="drawer-metric-sub text-gain font-bold">Consistent Compounding</p>
+            </div>
+          </div>
+
+          <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+            <div class="drawer-metric-header">
+              <span class="drawer-metric-header-title">Sharpe / Vol</span>
+              <span class="info-wrapper">
+                <button type="button" class="info-btn" title="About Sharpe & Volatility">i</button>
+                <span class="info-popup align-right">
+                  <strong class="block font-bold text-white mb-0.5">Sharpe Ratio & Volatility</strong>
+                  <span>Sharpe measures excess return per unit of risk above safe T-Bills (6.8%). Volatility measures price swings. High Sharpe (> 1.0) and low volatility (< 14%) indicate steady, high-quality growth.</span>
+                </span>
+              </span>
+            </div>
+            <div class="drawer-metric-body">
+              <div class="drawer-metric-value flex items-baseline gap-1 text-on-surface">
+                <span id="drawer-sharpe">1.24</span>
+                <span class="text-xs font-normal text-on-surface-variant">/ <span id="drawer-volatility">13.2%</span></span>
+              </div>
+              <p class="drawer-metric-sub text-on-surface-variant">Rf = 6.8% (T-Bill)</p>
+            </div>
+          </div>
+
+          <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
+            <div class="drawer-metric-header">
+              <span class="drawer-metric-header-title">Sortino / Beta</span>
+              <span class="info-wrapper">
+                <button type="button" class="info-btn" title="About Sortino & Beta">i</button>
+                <span class="info-popup align-right">
+                  <strong class="block font-bold text-white mb-0.5">Sortino Ratio & Beta</strong>
+                  <span>Sortino only penalizes downside drops, ignoring upside jumps. Beta measures market sensitivity (1.0 = moves with market).</span>
+                </span>
+              </span>
+            </div>
+            <div class="drawer-metric-body">
+              <div class="drawer-metric-value flex items-baseline gap-1 text-on-surface">
+                <span id="drawer-sortino">1.64</span>
+                <span class="text-xs font-normal text-on-surface-variant">/ β <span id="drawer-beta">0.94</span></span>
+              </div>
+              <p id="drawer-mdd-stat" class="drawer-metric-sub text-error font-medium">Max DD: -18.5%</p>
+            </div>
           </div>
         </div>
 
-        <div class="drawer-metric-card p-md rounded-xl bg-surface-container-low border border-surface-container">
-          <div class="drawer-metric-header">
-            <span class="drawer-metric-header-title">Sortino / Beta</span>
-            <span class="info-wrapper">
-              <button type="button" class="info-btn" title="About Sortino & Beta">i</button>
-              <span class="info-popup align-right">
-                <strong class="block font-bold text-white mb-0.5">Sortino Ratio & Beta</strong>
-                <span>Sortino only penalizes downside drops, ignoring upside jumps. Beta measures market sensitivity (1.0 = moves with market).</span>
+        <!-- Qualitative Info: AUM, Expense Ratio, P/E, Turnover (Clean Responsive 2x2 Grid) -->
+        <div class="drawer-qualitative-grid rounded-xl bg-surface-container-low text-xs text-on-surface-variant border border-surface-container">
+          <div class="drawer-qualitative-item">
+            <span>AUM:</span>
+            <strong id="drawer-aum" class="text-on-surface font-label-bold ml-1">₹72,450 Cr</strong>
+          </div>
+          <div class="drawer-qualitative-item">
+            <span>TER:</span>
+            <span class="info-wrapper ml-0.5">
+              <button type="button" class="info-btn" title="About Expense Ratio">i</button>
+              <span class="info-popup">
+                <strong class="block font-bold text-white mb-0.5">Direct Expense Ratio (TER)</strong>
+                <span>The annual fee deducted by the fund house to manage the fund. Direct plans charge up to 1% less than regular plans, saving you lakhs over 15+ years.</span>
               </span>
             </span>
+            <strong id="drawer-expense-ratio" class="text-on-surface font-label-bold ml-1">0.63%</strong>
           </div>
-          <div class="drawer-metric-body">
-            <div class="drawer-metric-value flex items-baseline gap-1 text-on-surface">
-              <span id="drawer-sortino">1.64</span>
-              <span class="text-xs font-normal text-on-surface-variant">/ β <span id="drawer-beta">0.94</span></span>
+          <div class="drawer-qualitative-item">
+            <span>P/E:</span>
+            <span class="info-wrapper ml-0.5">
+              <button type="button" class="info-btn" title="About P/E Ratio">i</button>
+              <span class="info-popup">
+                <strong class="block font-bold text-white mb-0.5">Portfolio P/E Ratio</strong>
+                <span>Price-to-Earnings ratio of the underlying stocks. Lower P/E indicates value bargains; higher P/E indicates high-growth premium companies.</span>
+              </span>
+            </span>
+            <strong id="drawer-pe" class="text-on-surface font-label-bold ml-1">24.1</strong>
+          </div>
+          <div class="drawer-qualitative-item">
+            <span>Turnover:</span>
+            <span class="info-wrapper ml-0.5">
+              <button type="button" class="info-btn" title="About Turnover Ratio">i</button>
+              <span class="info-popup align-right">
+                <strong class="block font-bold text-white mb-0.5">Portfolio Turnover Ratio</strong>
+                <span>How frequently the manager buys and sells stocks. 20% means patient buy-and-hold; 100%+ means frequent short-term trading.</span>
+              </span>
+            </span>
+            <strong id="drawer-turnover" class="text-on-surface font-label-bold ml-1">32%</strong>
+          </div>
+        </div>
+
+        <!-- SMARTSCORE PROPRIETARY SCORECARD WIDGET -->
+        <div class="p-md md:p-lg rounded-2xl bg-surface-container-lowest card-shadow border border-surface-container">
+          <div class="flex items-center justify-between pb-sm mb-xs border-b border-surface-container">
+            <div class="flex items-center gap-2">
+              <h4 class="font-headline-md text-base text-on-surface">Scorecard</h4>
+              <span class="smartscore-tag tag-purple flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#403294]"></span> Pro
+              </span>
             </div>
-            <p id="drawer-mdd-stat" class="drawer-metric-sub text-error font-medium">Max DD: -18.5%</p>
+            <div id="drawer-scorecard-overall" class="text-xs font-label-bold text-primary">
+              <!-- Overall Score & Category Rank -->
+            </div>
+          </div>
+
+          <div id="drawer-scorecard-pillars" class="divide-y divide-surface-container">
+            <!-- Dynamically populated by app.js -->
           </div>
         </div>
       </div>
 
-      <!-- Qualitative Info: AUM, Expense Ratio, P/E, Turnover (Clean Responsive 2x2 Grid) -->
-      <div class="drawer-qualitative-grid rounded-xl bg-surface-container-low text-xs text-on-surface-variant border border-surface-container">
-        <div class="drawer-qualitative-item">
-          <span>AUM:</span>
-          <strong id="drawer-aum" class="text-on-surface font-label-bold ml-1">₹72,450 Cr</strong>
-        </div>
-        <div class="drawer-qualitative-item">
-          <span>TER:</span>
-          <span class="info-wrapper ml-0.5">
-            <button type="button" class="info-btn" title="About Expense Ratio">i</button>
-            <span class="info-popup">
-              <strong class="block font-bold text-white mb-0.5">Direct Expense Ratio (TER)</strong>
-              <span>The annual fee deducted by the fund house to manage the fund. Direct plans charge up to 1% less than regular plans, saving you lakhs over 15+ years.</span>
-            </span>
-          </span>
-          <strong id="drawer-expense-ratio" class="text-on-surface font-label-bold ml-1">0.63%</strong>
-        </div>
-        <div class="drawer-qualitative-item">
-          <span>P/E:</span>
-          <span class="info-wrapper ml-0.5">
-            <button type="button" class="info-btn" title="About P/E Ratio">i</button>
-            <span class="info-popup">
-              <strong class="block font-bold text-white mb-0.5">Portfolio P/E Ratio</strong>
-              <span>Price-to-Earnings ratio of the underlying stocks. Lower P/E indicates value bargains; higher P/E indicates high-growth premium companies.</span>
-            </span>
-          </span>
-          <strong id="drawer-pe" class="text-on-surface font-label-bold ml-1">24.1</strong>
-        </div>
-        <div class="drawer-qualitative-item">
-          <span>Turnover:</span>
-          <span class="info-wrapper ml-0.5">
-            <button type="button" class="info-btn" title="About Turnover Ratio">i</button>
-            <span class="info-popup align-right">
-              <strong class="block font-bold text-white mb-0.5">Portfolio Turnover Ratio</strong>
-              <span>How frequently the manager buys and sells stocks. 20% means patient buy-and-hold; 100%+ means frequent short-term trading.</span>
-            </span>
-          </span>
-          <strong id="drawer-turnover" class="text-on-surface font-label-bold ml-1">32%</strong>
-        </div>
-      </div>
-
-      <!-- ====================================================================
-           SMARTSCORE (TM) PROPRIETARY SCORECARD WIDGET (Matching Reference UI)
-           ==================================================================== -->
-      <div class="p-md md:p-lg rounded-2xl bg-surface-container-lowest card-shadow border border-surface-container">
-        <div class="flex items-center justify-between pb-sm mb-xs border-b border-surface-container">
-          <div class="flex items-center gap-2">
-            <h4 class="font-headline-md text-base text-on-surface">Scorecard</h4>
-            <span class="smartscore-tag tag-purple flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#403294]"></span> Pro
-            </span>
+      <!-- TAB PANE 2: RETURNS & CHARTS -->
+      <div id="drawer-pane-charts" class="drawer-tab-pane hidden space-y-lg">
+        <!-- VISUALIZATION 1: Interactive Historical NAV Growth Chart -->
+        <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+          <div class="flex items-center justify-between mb-sm flex-wrap gap-2">
+            <div>
+              <h4 class="font-label-bold text-sm text-on-surface">Historical NAV Growth</h4>
+              <p id="drawer-growth-headline" class="text-xs text-on-surface-variant">Interactive performance timeline</p>
+            </div>
+            <div class="flex items-center gap-1 bg-surface-container p-0.5 rounded-lg text-xs font-label-bold">
+              <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="3M">3M</button>
+              <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="1Y">1Y</button>
+              <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="3Y">3Y</button>
+              <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="5Y">5Y</button>
+              <button class="horizon-tab active px-2 py-0.5 rounded text-[11px] bg-primary-container text-on-primary touch-spring cursor-pointer" data-horizon="ALL">All</button>
+            </div>
           </div>
-          <div id="drawer-scorecard-overall" class="text-xs font-label-bold text-primary">
-            <!-- Overall Score & Category Rank -->
+          <div class="h-56 w-full">
+            <canvas id="chart-nav-history"></canvas>
           </div>
         </div>
 
-        <!-- The 5 Accordion Rows matching reference screenshots -->
-        <div id="drawer-scorecard-pillars" class="divide-y divide-surface-container">
-          <!-- Dynamically populated by app.js: Performance, Risk, Cost, Composition, Red flags -->
-        </div>
-      </div>
-
-      <!-- VISUALIZATION 1: Interactive Historical NAV Growth Chart (with 3M tab) -->
-      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
-        <div class="flex items-center justify-between mb-sm flex-wrap gap-2">
-          <div>
-            <h4 class="font-label-bold text-sm text-on-surface">Historical NAV Growth</h4>
-            <p id="drawer-growth-headline" class="text-xs text-on-surface-variant">Interactive performance timeline</p>
+        <!-- VISUALIZATION 2: 3-Year Rolling Return Curve -->
+        <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+          <div class="flex items-center justify-between mb-1">
+            <div>
+              <h4 class="font-label-bold text-sm text-on-surface">3-Year Rolling Returns Timeline</h4>
+              <p class="text-xs text-on-surface-variant">Measures true consistency across full bull and bear market cycles</p>
+            </div>
           </div>
-          <div class="flex items-center gap-1 bg-surface-container p-0.5 rounded-lg text-xs font-label-bold">
-            <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="3M">3M</button>
-            <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="1Y">1Y</button>
-            <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="3Y">3Y</button>
-            <button class="horizon-tab px-2 py-0.5 rounded text-[11px] touch-spring cursor-pointer" data-horizon="5Y">5Y</button>
-            <button class="horizon-tab active px-2 py-0.5 rounded text-[11px] bg-primary-container text-on-primary touch-spring cursor-pointer" data-horizon="ALL">All</button>
+          <div class="h-60 w-full mt-sm">
+            <canvas id="chart-rolling-returns"></canvas>
           </div>
-        </div>
-        <div class="h-56 w-full">
-          <canvas id="chart-nav-history"></canvas>
-        </div>
-      </div>
-
-      <!-- VISUALIZATION 2: 3-Year Rolling Return Curve vs Category Benchmark -->
-      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
-        <div class="flex items-center justify-between mb-1">
-          <div>
-            <h4 class="font-label-bold text-sm text-on-surface">3-Year Rolling Returns Timeline</h4>
-            <p class="text-xs text-on-surface-variant">Measures true consistency across full bull and bear market cycles</p>
-          </div>
-        </div>
-        <div class="h-60 w-full mt-sm">
-          <canvas id="chart-rolling-returns"></canvas>
-        </div>
-        <div class="mt-sm p-sm rounded-lg bg-surface-container-low text-xs text-on-surface-variant flex items-center gap-2">
-          <span class="material-symbols-outlined text-[#36B37E] text-sm">check_circle</span>
-          <span><strong>Prashant's Rule:</strong> Evaluate 3-year rolling returns instead of CAGR to ensure steady, reliable compounding without hit-or-miss entry timing.</span>
-        </div>
-      </div>
-
-      <!-- VISUALIZATION 3: Returns vs Sub-Category & Nifty 50 Bar Chart -->
-      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
-        <h4 class="font-label-bold text-sm text-on-surface mb-1">Returns vs. Sub-Category & Nifty 50</h4>
-        <p class="text-xs text-on-surface-variant mb-sm">CAGR benchmarked against category peers & benchmark index</p>
-        <div class="h-60 w-full">
-          <canvas id="chart-category-comparison"></canvas>
-        </div>
-      </div>
-
-      <!-- VISUALIZATION 4: Risk-Reward Scatter Quadrant -->
-      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
-        <h4 class="font-label-bold text-sm text-on-surface mb-1">Risk-Reward Quadrant (Sharpe vs Volatility)</h4>
-        <p class="text-xs text-on-surface-variant mb-sm">Top-left quadrant indicates higher risk-adjusted return with lower volatility</p>
-        <div class="h-64 w-full">
-          <canvas id="chart-risk-reward"></canvas>
-        </div>
-      </div>
-
-      <!-- Top Holdings Chips -->
-      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
-        <h4 class="font-label-bold text-sm text-on-surface mb-xs">Top Portfolio Holdings</h4>
-        <div id="drawer-holdings" class="flex flex-wrap gap-xs mt-sm">
-          <!-- Populated dynamically -->
-        </div>
-      </div>
-
-      <!-- 10-STEP QUALITY CHECKLIST (Prashant's Framework) -->
-      <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
-        <div class="flex items-center gap-2 mb-sm">
-          <span class="material-symbols-outlined text-primary">fact_check</span>
-          <div>
-            <h4 class="font-label-bold text-sm text-on-surface">10-Step Checklist</h4>
-            <p class="text-xs text-on-surface-variant">Screening verdict based on Prashant's strategy</p>
+          <div class="mt-sm p-sm rounded-lg bg-surface-container-low text-xs text-on-surface-variant flex items-center gap-2">
+            <span class="material-symbols-outlined text-gain text-sm">check_circle</span>
+            <span><strong>Prashant's Rule:</strong> Evaluate 3-year rolling returns instead of CAGR to ensure steady compounding.</span>
           </div>
         </div>
 
-        <div id="drawer-checklist" class="space-y-xs">
-          <!-- Dynamically populated checklist items -->
+        <!-- VISUALIZATION 3: Returns vs Sub-Category & Nifty 50 -->
+        <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+          <h4 class="font-label-bold text-sm text-on-surface mb-1">Returns vs. Sub-Category & Nifty 50</h4>
+          <p class="text-xs text-on-surface-variant mb-sm">CAGR benchmarked against category peers & benchmark index</p>
+          <div class="h-60 w-full">
+            <canvas id="chart-category-comparison"></canvas>
+          </div>
         </div>
       </div>
 
+      <!-- TAB PANE 3: RISK & PORTFOLIO -->
+      <div id="drawer-pane-risk" class="drawer-tab-pane hidden space-y-lg">
+        <!-- VISUALIZATION 4: Risk-Reward Scatter Quadrant -->
+        <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+          <h4 class="font-label-bold text-sm text-on-surface mb-1">Risk-Reward Quadrant (Sharpe vs Volatility)</h4>
+          <p class="text-xs text-on-surface-variant mb-sm">Top-left quadrant indicates higher risk-adjusted return with lower volatility</p>
+          <div class="h-64 w-full">
+            <canvas id="chart-risk-reward"></canvas>
+          </div>
+        </div>
+
+        <!-- Top Holdings Chips -->
+        <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+          <h4 class="font-label-bold text-sm text-on-surface mb-xs">Top Portfolio Holdings</h4>
+          <div id="drawer-holdings" class="flex flex-wrap gap-xs mt-sm">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB PANE 4: 10-STEP VERDICT CHECKLIST -->
+      <div id="drawer-pane-checklist" class="drawer-tab-pane hidden space-y-lg">
+        <div class="p-md rounded-xl bg-surface-container-lowest card-shadow border border-surface-container">
+          <div class="flex items-center gap-2 mb-sm">
+            <span class="material-symbols-outlined text-primary">fact_check</span>
+            <div>
+              <h4 class="font-label-bold text-sm text-on-surface">10-Step Quality Checklist</h4>
+              <p class="text-xs text-on-surface-variant">Screening verdict based on Prashant's strategy</p>
+            </div>
+          </div>
+
+          <div id="drawer-checklist" class="space-y-xs">
+            <!-- Dynamically populated checklist items -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Sticky Drawer Bottom Action Bar (Fitts's Law - Nearby Contextual Actions) -->
+    <div id="drawer-footer-actions" class="p-md border-t border-surface-container bg-surface-container-lowest flex items-center justify-between gap-2 flex-shrink-0">
+      <button id="drawer-quick-compare-cat-btn" type="button" class="px-3 py-2 rounded-xl border border-surface-container bg-surface text-xs font-label-bold text-on-surface hover:bg-surface-container flex items-center gap-1.5 cursor-pointer touch-spring min-h-[44px]">
+        <span class="material-symbols-outlined text-sm text-primary">compare_arrows</span>
+        <span class="hidden sm:inline">Compare vs Cat Avg</span>
+        <span class="sm:hidden">Vs Cat</span>
+      </button>
+      <div class="flex items-center gap-2">
+        <button id="drawer-toggle-compare-btn" type="button" class="px-3.5 py-2 rounded-xl border border-primary text-primary font-label-bold text-xs hover:bg-primary/10 flex items-center gap-1 cursor-pointer touch-spring min-h-[44px]">
+          <span class="material-symbols-outlined text-sm">add</span>
+          <span>Add Compare</span>
+        </button>
+        <button id="drawer-add-simsim-btn" type="button" class="px-3.5 py-2 rounded-xl bg-primary-container text-on-primary font-label-bold text-xs hover:bg-primary flex items-center gap-1 cursor-pointer touch-spring shadow-sm min-h-[44px]">
+          <span class="material-symbols-outlined text-sm">hourglass_top</span>
+          <span>Simulate</span>
+        </button>
+      </div>
     </div>
   </aside>
 
@@ -1022,8 +1121,8 @@
           <span class="material-symbols-outlined text-primary font-bold">compare_arrows</span>
           <h3 class="font-headline-md text-base md:text-lg text-on-surface">Multi-Fund Side-by-Side Comparison</h3>
         </div>
-        <button id="compare-close-btn" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high touch-spring cursor-pointer">
-          <span class="material-symbols-outlined text-sm">close</span>
+        <button id="compare-close-btn" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high touch-spring cursor-pointer" title="Close comparison" aria-label="Close comparison">
+          <span class="material-symbols-outlined text-base">close</span>
         </button>
       </div>
 
@@ -1056,8 +1155,8 @@
           </div>
           <p id="kpi-picker-subtitle" class="text-xs text-on-surface-variant mt-0.5">Select multiple metrics to include in your screener table. Check or uncheck to build your view.</p>
         </div>
-        <button id="kpi-picker-close-btn" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer" title="Close">
-          <span class="material-symbols-outlined text-sm">close</span>
+        <button id="kpi-picker-close-btn" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer" title="Close column customizer" aria-label="Close column customizer">
+          <span class="material-symbols-outlined text-base">close</span>
         </button>
       </div>
 
@@ -1101,8 +1200,8 @@
   <div id="simsim-basket-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-3 md:p-6 bg-black/75 backdrop-blur-md">
     <div class="bg-[#0B0F19] rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-[#00F090]/35 shadow-2xl" role="dialog" aria-modal="true">
       
-      <!-- Modal Header -->
-      <div class="p-4 md:p-5 border-b border-white/10 flex items-center justify-between bg-[#070A12]">
+      <!-- Modal Header with Step Progress Bar (Goal-Gradient Effect) -->
+      <div class="p-4 md:p-5 border-b border-white/10 flex items-center justify-between bg-[#070A12] relative">
         <div class="flex items-center gap-3">
           <div id="basket-modal-emblem" class="w-10 h-10 rounded-xl bg-[#00F090]/15 border border-[#00F090]/30 flex items-center justify-center text-xl flex-shrink-0">
             <span class="material-symbols-outlined text-xl text-[#00F090]">shield</span>
@@ -1110,14 +1209,19 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 id="basket-modal-title" class="font-headline-md text-base md:text-lg text-white font-bold">Customize Model Basket: The Titan</h3>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#00F090]/15 text-[#00F090] border border-[#00F090]/30 uppercase font-mono">100% Core</span>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#00F090]/15 text-[#00F090] border border-[#00F090]/30 uppercase font-mono">100% Core</span>
             </div>
             <p id="basket-modal-desc" class="text-xs text-[#94A3B8] mt-0.5">Select which fund to use for each suggested category below.</p>
           </div>
         </div>
-        <button id="basket-modal-close-btn" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#94A3B8] hover:text-white transition-colors cursor-pointer touch-spring" title="Close dialog">
+        <button id="basket-modal-close-btn" type="button" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#94A3B8] hover:text-white transition-colors cursor-pointer touch-spring" title="Close dialog" aria-label="Close dialog">
           <span class="material-symbols-outlined text-base">close</span>
         </button>
+
+        <!-- Progress Step Indicator Bar (Goal-Gradient Effect) -->
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-white/10 overflow-hidden">
+          <div id="basket-modal-progress-bar" class="h-full bg-[#00F090] transition-all duration-300 w-2/3"></div>
+        </div>
       </div>
 
       <!-- Category Selection Slots Body -->
@@ -1132,10 +1236,10 @@
           <span id="basket-modal-total-pill" class="font-mono font-bold text-[#00F090] px-2.5 py-1 rounded-md bg-[#00F090]/10 border border-[#00F090]/30">3 Funds • 100%</span>
         </div>
         <div class="flex items-center gap-2">
-          <button id="basket-modal-cancel-btn" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold text-[#94A3B8] hover:text-white hover:bg-white/5 transition-colors cursor-pointer touch-spring">
+          <button id="basket-modal-cancel-btn" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold text-[#94A3B8] hover:text-white hover:bg-white/5 transition-colors cursor-pointer touch-spring min-h-[44px]">
             Cancel
           </button>
-          <button id="basket-modal-apply-btn" type="button" class="px-5 py-2 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black font-headline-md font-bold text-xs tracking-wide transition-all cursor-pointer touch-spring shadow-lg flex items-center gap-1.5">
+          <button id="basket-modal-apply-btn" type="button" class="px-5 py-2 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black font-headline-md font-bold text-xs tracking-wide transition-all cursor-pointer touch-spring shadow-lg flex items-center gap-1.5 min-h-[44px]">
             <span class="material-symbols-outlined text-sm">rocket_launch</span>
             <span>Apply Basket & Simulate</span>
           </button>
@@ -1145,8 +1249,11 @@
     </div>
   </div>
 
+  <!-- Toast Notifications Container (Doherty Threshold - Instant Visual Feedback) -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-[150] flex flex-col gap-2 pointer-events-none"></div>
+
   <!-- Main ES6 Application Script -->
-  <script type="module" src="js/app.js?v=impeccable_v2"></script>
+  <script type="module" src="js/app.js?v=uxlaws_v1"></script>
 
 </body>
 </html>

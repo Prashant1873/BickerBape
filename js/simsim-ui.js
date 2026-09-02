@@ -204,6 +204,11 @@ export class SimSimUI {
       this.saveBucketToStorage();
       this.updateTray();
       this.updateScreenerButtons();
+      if (this.app && this.app.showToast) {
+        const fund = this.app.allFunds.find(f => Number(f.code) === code);
+        const name = fund ? (fund.short_name || fund.name) : 'Fund';
+        this.app.showToast(`Added ${name} to SimSim Bucket`, 'success');
+      }
       if (this.isSimSimMode) {
         this.renderSimSimSidebar();
         this.renderSimSimStage();
@@ -268,9 +273,27 @@ export class SimSimUI {
     }
   }
 
+  enterSimSimMode() {
+    this.enableSimSimMode();
+  }
+
+  exitSimSimMode() {
+    this.disableSimSimMode();
+  }
+
   enableSimSimMode() {
     this.isSimSimMode = true;
     document.body.classList.add('simsim-mode');
+
+    // Update all segmented mode buttons across header and sidebar
+    document.querySelectorAll('[data-mode="simsim"]').forEach(btn => {
+      btn.classList.add('bg-[#00F090]', 'text-black', 'shadow-xs');
+      btn.classList.remove('text-on-surface-variant', 'bg-primary-container', 'text-on-primary');
+    });
+    document.querySelectorAll('[data-mode="screener"]').forEach(btn => {
+      btn.classList.remove('bg-primary-container', 'text-on-primary', 'shadow-xs', 'bg-[#00F090]', 'text-black');
+      btn.classList.add('text-on-surface-variant');
+    });
 
     // 1. Hide screener view elements, show SimSim container
     const screenerViews = document.getElementById('screener-views-wrapper');
@@ -341,6 +364,16 @@ export class SimSimUI {
   disableSimSimMode() {
     this.isSimSimMode = false;
     document.body.classList.remove('simsim-mode');
+
+    // Update all segmented mode buttons across header and sidebar
+    document.querySelectorAll('[data-mode="screener"]').forEach(btn => {
+      btn.classList.add('bg-primary-container', 'text-on-primary', 'shadow-xs');
+      btn.classList.remove('text-on-surface-variant', 'bg-[#00F090]', 'text-black');
+    });
+    document.querySelectorAll('[data-mode="simsim"]').forEach(btn => {
+      btn.classList.remove('bg-[#00F090]', 'text-black', 'shadow-xs');
+      btn.classList.add('text-on-surface-variant');
+    });
 
     // 1. Show screener views, hide SimSim container
     const screenerViews = document.getElementById('screener-views-wrapper');
@@ -642,6 +675,9 @@ export class SimSimUI {
     }
 
     modal.classList.remove('hidden');
+    if (this.app && typeof this.app.trapFocus === 'function') {
+      this.app.trapFocus(modal, '#basket-modal-close-btn');
+    }
   }
 
   /**
@@ -649,7 +685,12 @@ export class SimSimUI {
    */
   closeBasketModal() {
     const modal = document.getElementById('simsim-basket-modal');
-    if (modal) modal.classList.add('hidden');
+    if (modal) {
+      modal.classList.add('hidden');
+      if (this.app && typeof this.app.untrapFocus === 'function') {
+        this.app.untrapFocus(modal);
+      }
+    }
   }
 
   /**
