@@ -664,40 +664,6 @@ class BickerBapeApp {
     }
 
     // ------------------------------------------------------------------
-    // Theme Mode Toggle (☀️ Light / 🌙 Dark)
-    // ------------------------------------------------------------------
-    const themeToggleBtn = document.getElementById('theme-toggle-btn');
-    const themeToggleIcon = document.getElementById('theme-toggle-icon');
-    
-    const savedTheme = localStorage.getItem('bickerbape_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
-      if (themeToggleIcon) themeToggleIcon.textContent = 'light_mode';
-    } else {
-      document.documentElement.classList.add('light');
-      document.documentElement.classList.remove('dark');
-      if (themeToggleIcon) themeToggleIcon.textContent = 'dark_mode';
-    }
-
-    if (themeToggleBtn) {
-      themeToggleBtn.addEventListener('click', () => {
-        const isDark = document.documentElement.classList.contains('dark');
-        if (isDark) {
-          document.documentElement.classList.remove('dark');
-          document.documentElement.classList.add('light');
-          localStorage.setItem('bickerbape_theme', 'light');
-          if (themeToggleIcon) themeToggleIcon.textContent = 'dark_mode';
-        } else {
-          document.documentElement.classList.remove('light');
-          document.documentElement.classList.add('dark');
-          localStorage.setItem('bickerbape_theme', 'dark');
-          if (themeToggleIcon) themeToggleIcon.textContent = 'light_mode';
-        }
-      });
-    }
-
-    // ------------------------------------------------------------------
     // A. Collapsible Sidebar Logic
     // ------------------------------------------------------------------
     const sidebar = document.getElementById('sidebar');
