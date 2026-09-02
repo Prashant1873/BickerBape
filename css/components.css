@@ -611,14 +611,6 @@
   border: 1px solid #FDE68A;
 }
 
-.meta-tag-elite {
-  background: linear-gradient(135deg, #0052cc 0%, #003d9b 100%);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 2px 8px rgba(0, 82, 204, 0.35);
-  font-weight: 700;
-}
-
 /* ==========================================================================
    Featured Card Actions - Responsive Fluid Layout (Adapts to Sidebar Collapse/Expand)
    ========================================================================== */
