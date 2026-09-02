@@ -369,6 +369,17 @@ html, body {
   flex-direction: column;
 }
 
+/* Container Query Context & Stage Centering */
+#featured-funds-grid {
+  container-type: inline-size;
+}
+
+.screener-stage {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Card Stagger Entrance & Metric Recalibration Keyframes */
 @keyframes cardFadeIn {
   from {
