@@ -1516,7 +1516,7 @@ class BickerBapeApp {
       const scoreNum = parseFloat(smart.overall);
 
       return `
-        <div class="bg-surface-container-lowest rounded-2xl card-shadow p-md md:p-lg flex flex-col hover:shadow-md transition-all cursor-pointer relative overflow-hidden group card-interactive" data-code="${fund.code}">
+        <div class="bg-surface-container-lowest rounded-2xl card-shadow p-md md:p-lg flex flex-col hover:shadow-md transition-all cursor-pointer relative overflow-hidden group card-interactive animate-card-enter" data-code="${fund.code}">
           <div class="flex justify-between items-start mb-sm">
             <div class="min-w-0 pr-2">
               <div class="flex items-center gap-1.5 mb-1.5 flex-wrap">
