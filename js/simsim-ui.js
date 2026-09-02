@@ -10,7 +10,7 @@ import { SimSimEngine } from './simsim-engine.js';
 export const MODEL_BASKETS = {
   titan: {
     name: 'The Titan',
-    emoji: '🛡️',
+    icon: 'shield',
     description: 'All-weather balanced compounder combining resilient Flexi Cap core with high-growth Mid & Small Cap alpha.',
     slots: [
       {
@@ -35,7 +35,7 @@ export const MODEL_BASKETS = {
   },
   aggressive: {
     name: 'High-Alpha Rocket',
-    emoji: '🚀',
+    icon: 'rocket_launch',
     description: 'High-octane multi-cycle wealth creation prioritizing maximum alpha through proven Mid & Small Cap compounding champions.',
     slots: [
       {
@@ -60,7 +60,7 @@ export const MODEL_BASKETS = {
   },
   defensive: {
     name: 'Defensive Compounder',
-    emoji: '💰',
+    icon: 'savings',
     description: 'Downside-protected wealth preservation combining large-cap stability with value-oriented contra alpha.',
     slots: [
       {
@@ -98,6 +98,7 @@ export class SimSimUI {
     this.isTrayDismissed = false;
     this.activeBasketKey = 'titan';
     this.initBucketFromStorage();
+    setTimeout(() => this.updateTray(), 0);
 
     // Global delegated listener for exiting SimSim mode & floating tray interaction
     document.addEventListener('click', (e) => {
@@ -141,7 +142,15 @@ export class SimSimUI {
         return;
       }
 
-      // Click on floating tray (tab/handle) toggles full expansion from edge
+      // Click on floating tray peek handle or badge directly launches SimSim Time Machine
+      const peekHandle = e.target.closest('#simsim-tray-peek-handle') || e.target.closest('.simsim-tray-peek-tab');
+      if (peekHandle && !e.target.closest('button')) {
+        e.stopPropagation();
+        this.enableSimSimMode();
+        return;
+      }
+
+      // Click on floating tray body toggles full expansion from edge
       const tray = document.getElementById('simsim-floating-tray');
       const trayTarget = e.target.closest('#simsim-floating-tray');
       if (trayTarget && !e.target.closest('button')) {
@@ -272,21 +281,34 @@ export class SimSimUI {
     if (screenerHeader) screenerHeader.classList.add('hidden');
     if (simsimContainer) simsimContainer.classList.remove('hidden');
 
+    // Close mobile sidebar drawer & backdrop if open
+    const sidebar = document.getElementById('sidebar');
+    const mobileBackdrop = document.getElementById('sidebar-mobile-backdrop');
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    if (mobileBackdrop) mobileBackdrop.classList.add('hidden');
+
     // 2. Toggle Sidebar Portal Content
     const screenerSidebar = document.getElementById('screener-sidebar-content');
     const simsimSidebar = document.getElementById('simsim-sidebar-content');
     if (screenerSidebar) screenerSidebar.classList.add('hidden');
     if (simsimSidebar) simsimSidebar.classList.remove('hidden');
 
-    // 3. Update Sticky Header Brand
+    // 3. Update Sticky Header Brand & Sidebar Toggle Button
     const headerTitle = document.getElementById('header-platform-title');
     const headerSub = document.getElementById('funds-count');
     const headerMood = document.getElementById('header-mood-indicator');
     const modeBadge = document.getElementById('platform-mode-badge');
+    const sidebarSubtitle = document.getElementById('sidebar-subtitle');
+    const expandBtn = document.getElementById('sidebar-expand-btn');
 
     if (headerTitle) headerTitle.textContent = `SimSim™ Time Machine`;
     if (headerSub) headerSub.textContent = `Institutional Portfolio Simulation & Backtesting`;
     if (headerMood) headerMood.classList.add('hidden');
+    if (sidebarSubtitle) sidebarSubtitle.innerHTML = `Click to exit to Screener <span class="material-symbols-outlined" style="font-size:12px;vertical-align:-2px">light_mode</span>`;
+    if (expandBtn) {
+      expandBtn.innerHTML = `<span class="material-symbols-outlined text-base">tune</span><span class="hidden sm:inline">Manage</span>`;
+      expandBtn.title = "Manage Portfolio & Presets";
+    }
     if (modeBadge) {
       modeBadge.className = 'mode-switch-badge simsim-badge';
       modeBadge.innerHTML = `<span class="material-symbols-outlined text-[12px] simsim-pulse-icon">hourglass_top</span> SimSim™`;
@@ -304,9 +326,9 @@ export class SimSimUI {
     // 5. Hide floating tray in SimSim mode
     this.hideTray();
 
-    // 6. If bucket empty, populate with default Titan portfolio
+    // 6. If bucket empty, show welcome builder; otherwise render workspace
     if (this.bucket.length === 0) {
-      this.loadTemplate('titan');
+      this.renderWelcomeBuilder();
     } else {
       this.renderSimSimSidebar();
       this.renderSimSimStage();
@@ -335,15 +357,22 @@ export class SimSimUI {
     if (screenerSidebar) screenerSidebar.classList.remove('hidden');
     if (simsimSidebar) simsimSidebar.classList.add('hidden');
 
-    // 3. Restore Sticky Header Brand
+    // 3. Restore Sticky Header Brand & Sidebar Toggle Button
     const headerTitle = document.getElementById('header-platform-title');
     const headerSub = document.getElementById('funds-count');
     const headerMood = document.getElementById('header-mood-indicator');
     const modeBadge = document.getElementById('platform-mode-badge');
+    const sidebarSubtitle = document.getElementById('sidebar-subtitle');
+    const expandBtn = document.getElementById('sidebar-expand-btn');
 
     if (headerTitle) headerTitle.textContent = `Indian Equity Screener`;
     if (headerSub) headerSub.textContent = `Tracking ${this.app.allFunds ? this.app.allFunds.length : 620} verified direct equity funds`;
     if (headerMood) headerMood.classList.remove('hidden');
+    if (sidebarSubtitle) sidebarSubtitle.innerHTML = `Click to launch SimSim™ <span class="material-symbols-outlined" style="font-size:12px;vertical-align:-2px">auto_fix_high</span>`;
+    if (expandBtn) {
+      expandBtn.innerHTML = `<span class="material-symbols-outlined text-base">tune</span><span class="hidden sm:inline">Filters</span>`;
+      expandBtn.title = "Toggle Filters Sidebar";
+    }
     if (modeBadge) {
       modeBadge.className = 'mode-switch-badge screener-badge';
       modeBadge.innerHTML = `<span class="material-symbols-outlined text-[12px]">analytics</span> Screener`;
@@ -360,6 +389,114 @@ export class SimSimUI {
 
     this.updateTray();
     this.updateScreenerButtons();
+  }
+
+  /**
+   * Renders a welcome/builder page when SimSim is launched with an empty bucket.
+   * Shows model portfolio cards to pick from, or option to build from scratch.
+   */
+  renderWelcomeBuilder() {
+    const container = document.getElementById('simsim-container');
+    if (!container) return;
+
+    const baskets = Object.entries(MODEL_BASKETS);
+    const basketColors = {
+      titan: { accent: '#00F090', bg: 'rgba(0, 240, 144, 0.08)', border: 'rgba(0, 240, 144, 0.25)', icon: 'shield' },
+      aggressive: { accent: '#FF5630', bg: 'rgba(255, 86, 48, 0.08)', border: 'rgba(255, 86, 48, 0.25)', icon: 'rocket_launch' },
+      defensive: { accent: '#FFB800', bg: 'rgba(255, 184, 0, 0.08)', border: 'rgba(255, 184, 0, 0.25)', icon: 'savings' }
+    };
+
+    container.innerHTML = `
+      <div class="max-w-4xl mx-auto py-12 px-4 space-y-10 simsim-welcome-builder" style="animation: simsimFadeInUp 600ms cubic-bezier(0.16, 1, 0.3, 1) both">
+
+        <!-- Hero Section -->
+        <div class="text-center space-y-3" style="animation: simsimFadeInUp 500ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#00F090]/10 border border-[#00F090]/25 mb-2">
+            <span class="material-symbols-outlined text-4xl text-[#00F090] simsim-pulse-icon">hourglass_top</span>
+          </div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Welcome to SimSim<span class="text-[#00F090]">™</span> Time Machine</h1>
+          <p class="text-sm text-[#94A3B8] max-w-lg mx-auto leading-relaxed">
+            Build a portfolio and backtest it against real historical NAV data. Start with a curated model basket or build your own from scratch.
+          </p>
+        </div>
+
+        <!-- Model Portfolio Cards -->
+        <div class="space-y-3" style="animation: simsimFadeInUp 500ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-[#CBD5E1] flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm text-[#00F090]">auto_awesome</span>
+            Choose a Curated Model Portfolio
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${baskets.map(([key, basket], idx) => {
+              const colors = basketColors[key] || basketColors.titan;
+              return `
+                <button type="button" class="welcome-basket-card simsim-card p-5 text-left space-y-3 cursor-pointer touch-spring group relative overflow-hidden" data-welcome-basket="${key}" style="animation: simsimFadeInUp 500ms cubic-bezier(0.16, 1, 0.3, 1) ${300 + idx * 100}ms both">
+                  <!-- Accent glow -->
+                  <div class="absolute top-0 right-0 w-32 h-32 rounded-full opacity-30 blur-3xl pointer-events-none" style="background: ${colors.accent}"></div>
+
+                  <div class="flex items-center gap-3 relative z-10">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center border" style="background: ${colors.bg}; border-color: ${colors.border}; color: ${colors.accent}">
+                      <span class="material-symbols-outlined text-xl">${colors.icon}</span>
+                    </div>
+                    <div>
+                      <span class="text-sm font-extrabold text-white block group-hover:text-[${colors.accent}] transition-colors">${basket.name}</span>
+                      <span class="text-[10px] font-bold uppercase tracking-wider" style="color: ${colors.accent}">${basket.slots.map(s => s.suggestedWeight + '%').join(' / ')}</span>
+                    </div>
+                  </div>
+
+                  <p class="text-[11px] text-[#94A3B8] leading-relaxed relative z-10">${basket.description}</p>
+
+                  <div class="flex flex-wrap gap-1.5 relative z-10">
+                    ${basket.slots.map(s => `
+                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border" style="background: ${colors.bg}; border-color: ${colors.border}; color: ${colors.accent}">${s.category} ${s.suggestedWeight}%</span>
+                    `).join('')}
+                  </div>
+
+                  <div class="flex items-center gap-1.5 text-[11px] font-bold opacity-0 group-hover:opacity-100 transition-opacity relative z-10" style="color: ${colors.accent}">
+                    <span class="material-symbols-outlined text-sm">play_arrow</span>
+                    Load & Simulate
+                  </div>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-4" style="animation: simsimFadeInUp 500ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both">
+          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">or</span>
+          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+        </div>
+
+        <!-- Build from Scratch -->
+        <div class="text-center space-y-4" style="animation: simsimFadeInUp 500ms cubic-bezier(0.16, 1, 0.3, 1) 700ms both">
+          <button type="button" id="welcome-build-scratch-btn" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#0D1424] border border-white/15 hover:border-[#00F090]/40 text-white font-bold text-sm transition-all cursor-pointer touch-spring group">
+            <span class="material-symbols-outlined text-lg text-[#00F090] group-hover:rotate-90 transition-transform">add_circle</span>
+            Build from Scratch
+          </button>
+          <p class="text-[11px] text-[#64748B]">Go back to the Screener and add funds manually using the <span class="text-[#00F090] font-bold">+ SimSim</span> button on each card.</p>
+        </div>
+
+      </div>
+    `;
+
+    // Wire click handlers
+    container.querySelectorAll('.welcome-basket-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const key = card.getAttribute('data-welcome-basket');
+        if (key && MODEL_BASKETS[key]) {
+          this.loadTemplate(key);
+        }
+      });
+    });
+
+    const scratchBtn = document.getElementById('welcome-build-scratch-btn');
+    if (scratchBtn) {
+      scratchBtn.addEventListener('click', () => {
+        this.disableSimSimMode();
+      });
+    }
   }
 
   updateTray() {
@@ -457,7 +594,7 @@ export class SimSimUI {
                 <span class="cat-badge ${catBadgeClass}">${slot.category}</span>
                 <span class="text-xs font-bold text-white">${slot.category} Scheme</span>
               </div>
-              <span class="font-mono text-xs font-bold text-[#00F090] px-2 py-0.5 rounded bg-[#00F090]/10 border border-[#00F090]/30">
+              <span class="tabular-nums text-xs font-bold text-[#00F090] px-2 py-0.5 rounded-lg bg-[#00F090]/10 border border-[#00F090]/30">
                 ${slot.suggestedWeight}% Allocation
               </span>
             </div>
@@ -479,7 +616,7 @@ export class SimSimUI {
             <!-- Live Mini Preview Line -->
             <div class="slot-fund-preview text-[11px] text-[#94A3B8] flex items-center justify-between px-1 pt-0.5" id="slot-preview-${idx}">
               <span class="preview-amc">${defaultFund.fund_house}</span>
-              <span class="preview-metrics text-[#00F090] font-mono font-medium">3Y: +${defaultFund.cagr_3y || defaultFund.cagr_1y || 20}% • SmartScore™ ${defaultFund.smart_score ? defaultFund.smart_score.overall : '8.0'}</span>
+              <span class="preview-metrics text-[#00F090] tabular-nums font-medium">3Y: +${defaultFund.cagr_3y || defaultFund.cagr_1y || 20}% • SmartScore™ ${defaultFund.smart_score ? defaultFund.smart_score.overall : '8.0'}</span>
             </div>
           </div>
         `;
@@ -662,9 +799,8 @@ export class SimSimUI {
         <div class="flex items-center justify-between text-xs">
           <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] flex items-center gap-1.5">
             <span class="material-symbols-outlined text-sm text-[#00F090]">tune</span>
-            Interactive 100% Split Bar (Drag Dividers to Reallocate)
+            Interactive Split Bar (Drag Dividers to Reallocate)
           </span>
-          <span class="text-[11px] font-mono text-[#00F090] font-bold" id="split-bar-sum-badge">100% Allocated</span>
         </div>
 
         <div id="simsim-split-bar" class="simsim-split-bar">
@@ -894,7 +1030,7 @@ export class SimSimUI {
             </div>
             <button id="simsim-sidebar-exit-btn" type="button" class="simsim-exit-trigger text-[11px] font-bold text-[#94A3B8] hover:text-white transition-colors cursor-pointer flex items-center gap-1" title="Return to Screener">
               <span class="material-symbols-outlined text-xs">arrow_back</span>
-              <span>Exit ☀️</span>
+              <span>Exit <span class="material-symbols-outlined" style="font-size:12px;vertical-align:-2px">light_mode</span></span>
             </button>
           </div>
           <p class="text-[11px] text-[#94A3B8] leading-tight">
@@ -908,33 +1044,33 @@ export class SimSimUI {
           <div class="space-y-1.5">
             <button type="button" class="model-preset-btn w-full text-left p-2.5 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="titan">
               <div class="flex items-center gap-2.5">
-                <div class="preset-emblem-emerald text-sm">🛡️</div>
+                <div class="preset-emblem-emerald text-sm flex items-center justify-center"><span class="material-symbols-outlined text-sm">shield</span></div>
                 <div>
                   <span class="text-xs font-bold text-white block">The Titan</span>
                   <span class="text-[10px] text-[#94A3B8]">Flexi + Mid + Small (Core)</span>
                 </div>
               </div>
-              <span class="text-[10px] font-mono text-[#00F090] font-bold px-2 py-0.5 rounded-full bg-[#00F090]/10 border border-[#00F090]/30">40/35/25</span>
+              <span class="text-[10px] tabular-nums text-[#00F090] font-bold px-2 py-0.5 rounded-full bg-[#00F090]/10 border border-[#00F090]/30">40/35/25</span>
             </button>
             <button type="button" class="model-preset-btn w-full text-left p-2.5 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="aggressive">
               <div class="flex items-center gap-2.5">
-                <div class="preset-emblem-coral text-sm">🚀</div>
+                <div class="preset-emblem-coral text-sm flex items-center justify-center"><span class="material-symbols-outlined text-sm">rocket_launch</span></div>
                 <div>
                   <span class="text-xs font-bold text-white block">High-Alpha Rocket</span>
                   <span class="text-[10px] text-[#94A3B8]">Mid & Small Cap Alpha</span>
                 </div>
               </div>
-              <span class="text-[10px] font-mono text-[#FF5630] font-bold px-2 py-0.5 rounded-full bg-[#FF5630]/10 border border-[#FF5630]/30">40/30/30</span>
+              <span class="text-[10px] tabular-nums text-[#FF5630] font-bold px-2 py-0.5 rounded-full bg-[#FF5630]/10 border border-[#FF5630]/30">40/30/30</span>
             </button>
             <button type="button" class="model-preset-btn w-full text-left p-2.5 rounded-xl transition-all cursor-pointer touch-spring flex items-center justify-between" data-preset="defensive">
               <div class="flex items-center gap-2.5">
-                <div class="preset-emblem-gold text-sm">💰</div>
+                <div class="preset-emblem-gold text-sm flex items-center justify-center"><span class="material-symbols-outlined text-sm">savings</span></div>
                 <div>
                   <span class="text-xs font-bold text-white block">Defensive Compounder</span>
                   <span class="text-[10px] text-[#94A3B8]">Bluechip + Large-Mid + Contra</span>
                 </div>
               </div>
-              <span class="text-[10px] font-mono text-[#FFB800] font-bold px-2 py-0.5 rounded-full bg-[#FFB800]/10 border border-[#FFB800]/30">40/30/30</span>
+              <span class="text-[10px] tabular-nums text-[#FFB800] font-bold px-2 py-0.5 rounded-full bg-[#FFB800]/10 border border-[#FFB800]/30">40/30/30</span>
             </button>
           </div>
         </div>
@@ -943,11 +1079,11 @@ export class SimSimUI {
         <div class="p-3.5 rounded-2xl bg-[#0D1322] border border-white/10 space-y-2">
           <span class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] block">Investment Style:</span>
           <div class="grid grid-cols-2 gap-1.5 p-1 bg-[#07090E] rounded-full border border-white/10">
-            <button id="simsim-mode-lumpsum" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'lumpsum' ? 'bg-[#00F090] bg-gradient-to-r from-[#00FF9D] to-[#00D880] text-[#06150D] shadow-md font-extrabold' : 'text-[#94A3B8] hover:text-white'}">
-              💎 Lumpsum
+            <button id="simsim-mode-lumpsum" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring flex items-center justify-center gap-1 ${this.investmentMode === 'lumpsum' ? 'bg-[#00F090] bg-gradient-to-r from-[#00FF9D] to-[#00D880] text-[#06150D] shadow-md font-extrabold' : 'text-[#94A3B8] hover:text-white'}">
+              <span class="material-symbols-outlined text-sm">diamond</span> Lumpsum
             </button>
-            <button id="simsim-mode-sip" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring ${this.investmentMode === 'sip' ? 'bg-[#00F090] bg-gradient-to-r from-[#00FF9D] to-[#00D880] text-[#06150D] shadow-md font-extrabold' : 'text-[#94A3B8] hover:text-white'}">
-              🗓️ Monthly SIP
+            <button id="simsim-mode-sip" type="button" class="py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-center touch-spring flex items-center justify-center gap-1 ${this.investmentMode === 'sip' ? 'bg-[#00F090] bg-gradient-to-r from-[#00FF9D] to-[#00D880] text-[#06150D] shadow-md font-extrabold' : 'text-[#94A3B8] hover:text-white'}">
+              <span class="material-symbols-outlined text-sm">calendar_month</span> Monthly SIP
             </button>
           </div>
         </div>
@@ -957,11 +1093,11 @@ export class SimSimUI {
           <div>
             <div class="flex items-center justify-between mb-1.5">
               <label class="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">${this.investmentMode === 'lumpsum' ? 'Lumpsum Principal:' : 'Monthly Installment:'}</label>
-              <span id="capital-display-pill" class="text-xs font-mono font-bold text-[#00F090]">₹${this.capital.toLocaleString('en-IN')}</span>
+              <span id="capital-display-pill" class="text-xs tabular-nums font-bold text-[#00F090]">₹${this.capital.toLocaleString('en-IN')}</span>
             </div>
             <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white font-mono text-sm font-bold">₹</span>
-              <input id="simsim-capital-input" type="number" min="1000" step="5000" value="${this.capital}" class="w-full bg-[#07090E] border border-white/10 rounded-xl py-2 pl-7 pr-3 text-sm text-white font-mono outline-none focus:border-[#00F090] transition-colors"/>
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white tabular-nums text-sm font-bold">₹</span>
+              <input id="simsim-capital-input" type="number" min="1000" step="5000" value="${this.capital}" class="w-full bg-[#07090E] border border-white/10 rounded-xl py-2 pl-7 pr-3 text-sm text-white tabular-nums outline-none focus:border-[#00F090] transition-colors"/>
             </div>
             <!-- Quick Chips with Pill Curvature -->
             <div class="flex items-center gap-1.5 flex-wrap mt-2">
@@ -1037,10 +1173,6 @@ export class SimSimUI {
               </div>
               <div class="flex items-center gap-2 text-xs text-[#94A3B8] mt-0.5">
                 <span>Active Basket: <strong class="text-white">${funds.length} Scheme${funds.length === 1 ? '' : 's'}</strong></span>
-                <span>•</span>
-                <div id="simsim-weight-sum-badge" class="text-xs font-mono font-bold px-2 py-0.5 rounded-md ${weightSum === 100 ? 'bg-[#00F090]/10 text-[#00F090] border border-[#00F090]/30' : 'bg-[#FFB800]/10 text-[#FFB800] border border-[#FFB800]/30'}">
-                  Total: ${weightSum}%
-                </div>
               </div>
             </div>
           </div>
@@ -1049,7 +1181,7 @@ export class SimSimUI {
           <div class="flex items-center gap-2 flex-wrap">
             <button id="simsim-equal-weight-btn" type="button" class="simsim-btn-indigo px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer touch-spring" title="Split weights equally across funds">
               <span class="material-symbols-outlined text-sm">balance</span>
-              <span>Equal Weight ⚖️</span>
+              <span>Equal Weight</span>
             </button>
             <button id="simsim-clear-btn" type="button" class="simsim-btn-ruby px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer touch-spring" title="Remove all funds from bucket">
               <span class="material-symbols-outlined text-sm">delete_sweep</span>
@@ -1057,7 +1189,7 @@ export class SimSimUI {
             </button>
             <button id="simsim-exit-btn" type="button" class="simsim-exit-trigger simsim-btn-pearl px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer touch-spring" title="Return to Mutual Fund Screener">
               <span class="material-symbols-outlined text-sm">arrow_back</span>
-              <span>Exit to Screener ☀️</span>
+              <span>Exit to Screener</span>
             </button>
           </div>
         </div>
@@ -1079,7 +1211,7 @@ export class SimSimUI {
             </div>
             <button id="simsim-recalc-btn" type="button" class="simsim-recalc-pill px-4 py-2 rounded-full text-[#06150D] font-extrabold text-xs transition-all flex items-center gap-1.5 cursor-pointer touch-spring">
               <span class="material-symbols-outlined text-sm">rocket_launch</span>
-              <span>Re-Simulate ⚡</span>
+              <span>Re-Simulate</span>
             </button>
           </div>
 
@@ -1410,7 +1542,7 @@ export class SimSimUI {
       <div class="space-y-6">
         
         <!-- 4 Key KPI Metrics Cards (Full Width Grid with Obsidian Depth & Zero Colored Border Lines) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           
           <!-- Card 1: Present Value -->
           <div class="simsim-card simsim-kpi-card simsim-kpi-emerald p-4">
@@ -1459,18 +1591,49 @@ export class SimSimUI {
             <p class="text-[11px] text-[#64748B] mt-1">Worst peak-to-trough drop</p>
           </div>
 
-          <!-- Card 4: Total Invested Capital -->
-          <div class="simsim-card simsim-kpi-card simsim-kpi-amber p-4">
+          <!-- Card 4: Total Invested Capital (Interactive Click-to-Edit) -->
+          <div id="simsim-invested-kpi-card" class="simsim-card simsim-kpi-card simsim-kpi-amber p-4 cursor-pointer touch-spring group relative select-none" title="Click to edit total invested capital">
             <div class="flex items-center justify-between text-[#94A3B8] mb-1.5">
-              <span class="text-[10px] font-bold uppercase tracking-wider">Total Invested</span>
-              <div class="w-7 h-7 rounded-lg bg-[#FFB800]/10 border border-[#FFB800]/25 flex items-center justify-center text-[#FFB800]">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[#FFB800]">Total Invested</span>
+                <span class="material-symbols-outlined text-xs text-[#FFB800] opacity-0 group-hover:opacity-100 transition-opacity">edit</span>
+              </div>
+              <div class="w-7 h-7 rounded-lg bg-[#FFB800]/10 border border-[#FFB800]/25 flex items-center justify-center text-[#FFB800] group-hover:border-[#FFB800]/50 transition-colors">
                 <span class="material-symbols-outlined text-sm">savings</span>
               </div>
             </div>
-            <p class="font-display-financial text-2xl font-black text-white">
-              ₹${Math.round(res.totalCapital).toLocaleString('en-IN')}
-            </p>
-            <p class="text-[11px] text-[#64748B] mt-1">${res.type === 'lumpsum' ? 'One-time principal' : `${res.installmentsCount || 0} installments`}</p>
+
+            <!-- Normal Display Mode -->
+            <div id="invested-kpi-display-mode" class="transition-all">
+              <div class="flex items-baseline gap-2">
+                <p class="font-display-financial text-2xl font-black text-white tabular-nums">
+                  ₹${Math.round(res.totalCapital).toLocaleString('en-IN')}
+                </p>
+                <span class="text-[10px] text-[#FFB800] opacity-0 group-hover:opacity-100 transition-opacity font-bold bg-[#FFB800]/10 px-1.5 py-0.5 rounded border border-[#FFB800]/30 flex items-center gap-0.5"><span class="material-symbols-outlined" style="font-size:11px">edit</span> Edit</span>
+              </div>
+              <p class="text-[11px] text-[#94A3B8] mt-1">${res.type === 'lumpsum' ? 'One-time principal • Click to edit' : `${res.installmentsCount || 0} installments • Click to edit`}</p>
+            </div>
+
+            <!-- Inline Edit Mode -->
+            <div id="invested-kpi-edit-mode" class="hidden space-y-2 mt-1" onclick="event.stopPropagation()">
+              <div class="flex items-center gap-1.5">
+                <span class="text-white font-bold text-sm">₹</span>
+                <input id="invested-kpi-input" type="number" min="1000" step="5000" value="${this.capital}" class="w-full bg-[#080C14] border border-[#FFB800]/60 rounded-lg py-1 px-2 text-sm text-white font-bold tabular-nums outline-none focus:border-[#FFB800] focus:ring-1 focus:ring-[#FFB800] transition-colors" />
+                <button id="invested-kpi-save-btn" type="button" class="px-2.5 py-1 rounded-lg bg-[#FFB800] text-black font-extrabold text-xs hover:bg-[#ffc629] transition-all flex items-center gap-1 cursor-pointer flex-shrink-0 touch-spring">
+                  <span>Save</span>
+                </button>
+                <button id="invested-kpi-cancel-btn" type="button" class="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer flex-shrink-0 touch-spring" title="Cancel">
+                  <span class="material-symbols-outlined text-xs">close</span>
+                </button>
+              </div>
+              <div class="flex items-center gap-1 flex-wrap">
+                ${(this.investmentMode === 'lumpsum' ? [25000, 50000, 100000, 250000, 500000] : [2000, 5000, 10000, 20000, 25000]).map(val => `
+                  <button type="button" class="invested-kpi-chip px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#141B2D] border border-white/15 text-[#CBD5E1] hover:text-[#FFB800] hover:border-[#FFB800] transition-colors cursor-pointer touch-spring" data-val="${val}">
+                    ₹${val >= 100000 ? `${val/100000}L` : `${val/1000}k`}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
           </div>
 
         </div>
@@ -1535,16 +1698,16 @@ export class SimSimUI {
                       <p class="font-bold text-white text-xs truncate max-w-xs" title="${c.name}">${c.name}</p>
                       <p class="text-[10px] text-[#94A3B8]">${c.category} • ${c.fund_house}</p>
                     </td>
-                    <td class="text-right font-mono text-[#00F090] font-bold">${c.weightPct}%</td>
-                    <td class="text-right font-mono text-[#94A3B8]">₹${Math.round(c.allocatedCap).toLocaleString('en-IN')}</td>
-                    <td class="text-right font-mono font-bold text-white">₹${Math.round(c.presentValue).toLocaleString('en-IN')}</td>
-                    <td class="text-right font-mono font-bold ${c.gain >= 0 ? 'text-[#00F090]' : 'text-[#FF4D4D]'}">
+                    <td class="text-right tabular-nums text-[#00F090] font-bold">${c.weightPct}%</td>
+                    <td class="text-right tabular-nums text-[#94A3B8]">₹${Math.round(c.allocatedCap).toLocaleString('en-IN')}</td>
+                    <td class="text-right tabular-nums font-bold text-white">₹${Math.round(c.presentValue).toLocaleString('en-IN')}</td>
+                    <td class="text-right tabular-nums font-bold ${c.gain >= 0 ? 'text-[#00F090]' : 'text-[#FF4D4D]'}">
                       ${c.gain >= 0 ? '+' : ''}₹${Math.round(c.gain).toLocaleString('en-IN')} (${c.gainPct >= 0 ? '+' : ''}${c.gainPct.toFixed(1)}%)
                     </td>
-                    <td class="text-right font-mono font-bold ${c.cagr >= 0 ? 'text-[#00D2FF]' : 'text-[#FF4D4D]'}">
+                    <td class="text-right tabular-nums font-bold ${c.cagr >= 0 ? 'text-[#00D2FF]' : 'text-[#FF4D4D]'}">
                       ${c.cagr >= 0 ? '+' : ''}${c.cagr.toFixed(2)}%
                     </td>
-                    <td class="text-right font-mono text-xs text-[#64748B]">${c.units.toLocaleString('en-IN')}</td>
+                    <td class="text-right tabular-nums text-xs text-[#64748B]">${c.units.toLocaleString('en-IN')}</td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -1552,6 +1715,87 @@ export class SimSimUI {
           </div>
         </div>
       `;
+    }
+
+    // Attach interactive editing event listeners for Card 4 (Total Invested)
+    const card4 = document.getElementById('simsim-invested-kpi-card');
+    const dispMode = document.getElementById('invested-kpi-display-mode');
+    const editMode = document.getElementById('invested-kpi-edit-mode');
+    const inputEl = document.getElementById('invested-kpi-input');
+    const saveBtn = document.getElementById('invested-kpi-save-btn');
+    const cancelBtn = document.getElementById('invested-kpi-cancel-btn');
+
+    if (card4 && dispMode && editMode) {
+      const openEdit = () => {
+        dispMode.classList.add('hidden');
+        editMode.classList.remove('hidden');
+        if (inputEl) {
+          inputEl.focus();
+          inputEl.select();
+        }
+      };
+
+      const closeEdit = () => {
+        editMode.classList.add('hidden');
+        dispMode.classList.remove('hidden');
+      };
+
+      const applyNewCapital = (newVal) => {
+        const parsed = parseInt(newVal, 10);
+        if (!isNaN(parsed) && parsed >= 1000) {
+          this.capital = parsed;
+          // Sync sidebar capital input & pill
+          const sideInput = document.getElementById('simsim-capital-input');
+          if (sideInput) sideInput.value = this.capital;
+          const sidePill = document.getElementById('capital-display-pill');
+          if (sidePill) sidePill.textContent = `₹${this.capital.toLocaleString('en-IN')}`;
+          // Update split bar rupee values
+          this.updateSplitBarVisuals();
+          // Re-run simulation
+          this.runSimulation();
+        } else {
+          closeEdit();
+        }
+      };
+
+      card4.addEventListener('click', (e) => {
+        if (!e.target.closest('#invested-kpi-edit-mode')) {
+          openEdit();
+        }
+      });
+
+      if (saveBtn) {
+        saveBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          applyNewCapital(inputEl ? inputEl.value : this.capital);
+        });
+      }
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeEdit();
+        });
+      }
+
+      if (inputEl) {
+        inputEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            applyNewCapital(inputEl.value);
+          } else if (e.key === 'Escape') {
+            closeEdit();
+          }
+        });
+      }
+
+      card4.querySelectorAll('.invested-kpi-chip').forEach(chip => {
+        chip.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const chipVal = chip.getAttribute('data-val');
+          applyNewCapital(chipVal);
+        });
+      });
     }
 
     // Render interactive chart

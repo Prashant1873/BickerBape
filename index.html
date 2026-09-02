@@ -160,7 +160,7 @@
       
       <!-- Sidebar Header & Collapse Button -->
       <div class="p-md border-b border-surface-container flex items-center justify-between bg-surface">
-        <div id="sidebar-logo-switch" class="logo-mode-switch flex items-center gap-sm cursor-pointer touch-spring" title="Click to toggle SimSim™ Time Machine 🔮">
+        <div id="sidebar-logo-switch" class="logo-mode-switch flex items-center gap-sm cursor-pointer touch-spring" title="Click to toggle SimSim™ Time Machine">
           <div class="logo-aura"></div>
           <div class="logo-content flex items-center gap-sm">
             <img src="assets/logo.png" alt="BickerBape Logo" class="w-9 h-9 rounded-xl object-contain shadow-sm border border-surface-container"/>
@@ -169,7 +169,7 @@
                 <h1 class="font-headline-md text-base text-primary tracking-tight leading-tight">BickerBape</h1>
                 <span id="platform-mode-badge" class="mode-switch-badge screener-badge"><span class="material-symbols-outlined text-[12px]">analytics</span> Screener</span>
               </div>
-              <p class="font-label-sm text-[11px] text-on-surface-variant">Click to launch SimSim™ 🔮</p>
+              <p id="sidebar-subtitle" class="font-label-sm text-[11px] text-on-surface-variant">Click to launch SimSim™ <span class="material-symbols-outlined" style="font-size:12px;vertical-align:-2px">auto_fix_high</span></p>
             </div>
           </div>
         </div>
@@ -220,17 +220,17 @@
           <!-- 3-Way Segmented Controller -->
           <div class="grid grid-cols-3 p-1 bg-surface-container rounded-xl gap-1" id="mood-toggle-group">
             <button type="button" class="mood-btn active flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="growth" title="Growth: Wealth Long Term">
-              <span class="text-sm mb-0.5">🚀</span>
+              <span class="material-symbols-outlined text-sm mb-0.5">rocket_launch</span>
               <span class="text-[11px] leading-none">Growth</span>
               <span class="text-[9px] font-normal text-on-surface-variant mt-0.5">Alpha</span>
             </button>
             <button type="button" class="mood-btn flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="safety" title="Safety: Low Risk & Downside Protection">
-              <span class="text-sm mb-0.5">🛡️</span>
+              <span class="material-symbols-outlined text-sm mb-0.5">shield</span>
               <span class="text-[11px] leading-none">Safety</span>
               <span class="text-[9px] font-normal text-on-surface-variant mt-0.5">Low Risk</span>
             </button>
             <button type="button" class="mood-btn flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-label-bold transition-all cursor-pointer touch-spring" data-mood="income" title="Income: Low Direct Fees & Efficiency">
-              <span class="text-sm mb-0.5">💰</span>
+              <span class="material-symbols-outlined text-sm mb-0.5">savings</span>
               <span class="text-[11px] leading-none">Income</span>
               <span class="text-[9px] font-normal text-on-surface-variant mt-0.5">Low Cost</span>
             </button>
@@ -248,7 +248,7 @@
           </label>
           <div class="space-y-1.5">
             <button class="strategy-chip w-full text-left p-2.5 rounded-xl font-label-bold text-xs flex items-center gap-2.5 touch-spring" data-preset="smartscore_elite">
-              <span class="chip-emblem chip-emblem-purple">💎</span>
+              <span class="chip-emblem chip-emblem-purple"><span class="material-symbols-outlined text-sm">diamond</span></span>
               <div class="flex-grow">
                 <div class="flex items-center gap-1">
                   <span>SmartScore™ Elite</span>
@@ -259,7 +259,7 @@
             </button>
 
             <button class="strategy-chip w-full text-left p-2.5 rounded-xl font-label-bold text-xs flex items-center gap-2.5 touch-spring" data-preset="prashant">
-              <span class="chip-emblem chip-emblem-gold">🏆</span>
+              <span class="chip-emblem chip-emblem-gold"><span class="material-symbols-outlined text-sm">emoji_events</span></span>
               <div class="flex-grow">
                 <div>Prashant's 10-Step Formula</div>
                 <div class="text-[10px] font-normal text-on-surface-variant">Rolling 3Y > Avg, Low Vol, Sharpe > 0.7</div>
@@ -267,7 +267,7 @@
             </button>
             
             <button class="strategy-chip w-full text-left p-2.5 rounded-xl font-label-bold text-xs flex items-center gap-2.5 touch-spring" data-preset="compounders">
-              <span class="chip-emblem chip-emblem-emerald">🚀</span>
+              <span class="chip-emblem chip-emblem-emerald"><span class="material-symbols-outlined text-sm">rocket_launch</span></span>
               <div class="flex-grow">
                 <div>Consistent Compounders</div>
                 <div class="text-[10px] font-normal text-on-surface-variant">Top 3Y rolling returns across cycles</div>
@@ -275,7 +275,7 @@
             </button>
 
             <button class="strategy-chip w-full text-left p-2.5 rounded-xl font-label-bold text-xs flex items-center gap-2.5 touch-spring" data-preset="low_vol">
-              <span class="chip-emblem chip-emblem-blue">🛡️</span>
+              <span class="chip-emblem chip-emblem-blue"><span class="material-symbols-outlined text-sm">shield</span></span>
               <div class="flex-grow">
                 <div>Low Volatility Titans</div>
                 <div class="text-[10px] font-normal text-on-surface-variant">Lower risk than category average</div>
@@ -283,7 +283,7 @@
             </button>
 
             <button class="strategy-chip w-full text-left p-2.5 rounded-xl font-label-bold text-xs flex items-center gap-2.5 touch-spring" data-preset="alpha">
-              <span class="chip-emblem chip-emblem-coral">⚡</span>
+              <span class="chip-emblem chip-emblem-coral"><span class="material-symbols-outlined text-sm">bolt</span></span>
               <div class="flex-grow">
                 <div>High Alpha Champions</div>
                 <div class="text-[10px] font-normal text-on-surface-variant">High Sharpe + Category Outperformance</div>
@@ -291,7 +291,7 @@
             </button>
 
             <button class="strategy-chip w-full text-left p-2.5 rounded-xl font-label-bold text-xs flex items-center gap-2.5 touch-spring" data-preset="elss">
-              <span class="chip-emblem chip-emblem-teal">💰</span>
+              <span class="chip-emblem chip-emblem-teal"><span class="material-symbols-outlined text-sm">savings</span></span>
               <div class="flex-grow">
                 <div>ELSS Wealth Savers</div>
                 <div class="text-[10px] font-normal text-on-surface-variant">Tax-saving 80C top performers</div>
@@ -447,12 +447,12 @@
             <span class="hidden sm:inline">Filters</span>
           </button>
 
-          <div id="header-logo-switch" class="logo-mode-switch cursor-pointer touch-spring flex items-center gap-2" title="Click to toggle SimSim™ Time Machine 🔮">
+          <div id="header-logo-switch" class="logo-mode-switch cursor-pointer touch-spring flex items-center gap-2" title="Click to toggle SimSim™ Time Machine">
             <div class="logo-aura"></div>
             <div class="logo-content">
               <div class="flex items-center gap-2">
                 <h2 id="header-platform-title" class="font-headline-md text-base md:text-lg text-on-surface leading-tight font-bold">Indian Equity Screener</h2>
-                <span id="header-mood-indicator" class="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full mood-tag-growth">Mood: Growth 🚀</span>
+                <span id="header-mood-indicator" class="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full mood-tag-growth flex items-center gap-1">Mood: Growth <span class="material-symbols-outlined" style="font-size:12px">rocket_launch</span></span>
               </div>
               <p id="funds-count" class="font-label-sm text-[11px] text-on-surface-variant">Loading 620 funds...</p>
             </div>
@@ -695,21 +695,21 @@
        FLOATING SIMSIM PORTFOLIO BUCKET TRAY
        ==================================================================== -->
   <div id="simsim-floating-tray" class="simsim-tray" role="region" aria-label="SimSim Portfolio Bucket" title="SimSim Portfolio Bucket (Hover or click to expand)">
-    <div class="flex items-center gap-2.5 simsim-tray-peek-tab">
-      <div class="relative w-8 h-8 rounded-xl bg-[#00F090]/15 border border-[#00F090]/35 flex items-center justify-center text-[#00F090] flex-shrink-0">
+    <div class="flex items-center gap-2.5 simsim-tray-peek-tab cursor-pointer touch-spring" id="simsim-tray-peek-handle" title="Click to launch SimSim™ Time Machine">
+      <div class="relative w-8 h-8 rounded-xl bg-[#00F090]/20 border border-[#00F090]/40 flex items-center justify-center text-[#00F090] flex-shrink-0">
         <span class="material-symbols-outlined text-lg simsim-pulse-icon">hourglass_top</span>
-        <span id="simsim-tray-badge-pill" class="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-[#00F090] text-black font-mono font-bold text-[9px] flex items-center justify-center shadow-xs">0</span>
+        <span id="simsim-tray-badge-pill" class="absolute -top-1.5 -left-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00F090] text-black font-extrabold text-[10px] flex items-center justify-center shadow-md">0</span>
       </div>
       <div class="min-w-[85px] simsim-tray-label">
         <p class="text-xs font-bold text-white leading-tight">SimSim™ Bucket</p>
-        <p id="simsim-tray-count" class="text-[11px] text-[#00F090] font-mono">0 Funds</p>
+        <p id="simsim-tray-count" class="text-[11px] text-[#00F090] font-bold">0 Funds</p>
       </div>
     </div>
     
     <div class="flex items-center gap-1.5 flex-shrink-0 simsim-tray-actions">
       <button id="simsim-tray-launch-btn" type="button" class="px-3.5 py-1.5 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black text-xs font-bold transition-all cursor-pointer touch-spring flex items-center gap-1.5 shadow-md">
         <span class="material-symbols-outlined text-sm">rocket_launch</span>
-        <span>Simulate ⚡</span>
+        <span>Simulate</span>
       </button>
 
       <!-- Clear bucket button -->
@@ -1075,7 +1075,7 @@
       <div class="p-4 md:p-5 border-b border-white/10 flex items-center justify-between bg-[#070A12]">
         <div class="flex items-center gap-3">
           <div id="basket-modal-emblem" class="w-10 h-10 rounded-xl bg-[#00F090]/15 border border-[#00F090]/30 flex items-center justify-center text-xl flex-shrink-0">
-            🛡️
+            <span class="material-symbols-outlined text-xl text-[#00F090]">shield</span>
           </div>
           <div>
             <div class="flex items-center gap-2">
@@ -1107,7 +1107,7 @@
           </button>
           <button id="basket-modal-apply-btn" type="button" class="px-5 py-2 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black font-headline-md font-bold text-xs tracking-wide transition-all cursor-pointer touch-spring shadow-lg flex items-center gap-1.5">
             <span class="material-symbols-outlined text-sm">rocket_launch</span>
-            <span>Apply Basket & Simulate ⚡</span>
+            <span>Apply Basket & Simulate</span>
           </button>
         </div>
       </div>

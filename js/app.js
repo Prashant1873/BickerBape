@@ -528,19 +528,19 @@ class BickerBapeApp {
       growth: {
         label: 'Growth',
         tagClass: 'mood-tag-growth',
-        headerText: 'Mood: Growth 🚀 (Focus: Alpha & Outperformance)',
+        headerText: 'Mood: Growth <span class="material-symbols-outlined" style="font-size:12px;vertical-align:-1px">rocket_launch</span> (Focus: Alpha & Outperformance)',
         desc: 'Wealth Long Term: Prioritizes high alpha & category outperformance'
       },
       safety: {
         label: 'Safety',
         tagClass: 'mood-tag-safety',
-        headerText: 'Mood: Safety 🛡️ (Focus: Capital Protection)',
+        headerText: 'Mood: Safety <span class="material-symbols-outlined" style="font-size:12px;vertical-align:-1px">shield</span> (Focus: Capital Protection)',
         desc: 'Low Risk: Prioritizes downside resilience & low volatility'
       },
       income: {
         label: 'Income',
         tagClass: 'mood-tag-income',
-        headerText: 'Mood: Income 💰 (Focus: Cost Efficiency)',
+        headerText: 'Mood: Income <span class="material-symbols-outlined" style="font-size:12px;vertical-align:-1px">savings</span> (Focus: Cost Efficiency)',
         desc: 'Cost Efficiency: Prioritizes low direct fees (TER) & capital stability'
       }
     };
@@ -553,8 +553,8 @@ class BickerBapeApp {
     }
 
     if (headerIndicator) {
-      headerIndicator.textContent = cfg.headerText;
-      headerIndicator.className = `hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full ${cfg.tagClass}`;
+      headerIndicator.innerHTML = cfg.headerText;
+      headerIndicator.className = `hidden sm:inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full ${cfg.tagClass}`;
     }
 
     if (descEl) {
@@ -2039,9 +2039,9 @@ class BickerBapeApp {
 
     let catSub = `${fund.category} • ${fund.fund_house}`;
     if (fund.history_years < 1.0) {
-      catSub += ` • <span class="text-amber-800 font-bold bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded text-[11px]">⚠️ New Scheme (< 1Y)</span>`;
+      catSub += ` • <span class="text-amber-800 font-bold bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded text-[11px] inline-flex items-center gap-0.5"><span class="material-symbols-outlined" style="font-size:12px">warning</span> New Scheme (< 1Y)</span>`;
     } else if (fund.category === 'Sectoral / Thematic') {
-      catSub += ` • <span class="text-red-700 font-semibold bg-red-50 border border-red-200 px-1.5 py-0.5 rounded text-[11px]">⚠️ High Sector Concentration</span>`;
+      catSub += ` • <span class="text-red-700 font-semibold bg-red-50 border border-red-200 px-1.5 py-0.5 rounded text-[11px] inline-flex items-center gap-0.5"><span class="material-symbols-outlined" style="font-size:12px">warning</span> High Sector Concentration</span>`;
     }
     document.getElementById('drawer-fund-cat').innerHTML = catSub;
     

@@ -162,7 +162,8 @@ html, body {
   position: relative;
 }
 
-/* Collapsible Filters Sidebar */
+/* Collapsible Filters Sidebar - Apple-Grade Fluid Motion */
+#sidebar.app-sidebar,
 .app-sidebar {
   width: 320px;
   min-width: 320px;
@@ -173,17 +174,34 @@ html, body {
   flex-direction: column;
   background-color: var(--color-surface);
   border-right: 1px solid var(--color-surface-container);
-  transition: width 280ms cubic-bezier(0.2, 0.8, 0.2, 1), min-width 280ms cubic-bezier(0.2, 0.8, 0.2, 1), max-width 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: width;
+  overflow: hidden !important;
+  transition: width 340ms cubic-bezier(0.16, 1, 0.3, 1), 
+              min-width 340ms cubic-bezier(0.16, 1, 0.3, 1), 
+              max-width 340ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 280ms ease !important;
+  will-change: width, min-width, max-width;
   z-index: 35;
 }
 
+#sidebar.app-sidebar.collapsed,
 .app-sidebar.collapsed {
   width: 0 !important;
   min-width: 0 !important;
   max-width: 0 !important;
   overflow: hidden !important;
-  border-right: none !important;
+  border-right-width: 0px !important;
+  border-right-color: transparent !important;
+}
+
+/* Prevent inner sidebar components from wrapping or jittering during width collapse */
+#sidebar.app-sidebar > div,
+#sidebar.app-sidebar > #screener-sidebar-content,
+#sidebar.app-sidebar > #simsim-sidebar-content,
+#sidebar.app-sidebar > #sidebar-footer {
+  width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important;
+  flex-shrink: 0 !important;
 }
 
 /* Mobile Sidebar Drawer */
@@ -192,19 +210,22 @@ html, body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 320px;
+    width: 300px;
+    max-width: 85vw;
     height: 100%;
     transform: translateX(-100%);
     margin-left: 0 !important;
     box-shadow: var(--shadow-level-3);
+    z-index: 50;
+    transition: transform 340ms cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
   .app-sidebar.mobile-open {
     transform: translateX(0%);
   }
   .app-sidebar.collapsed {
     transform: translateX(-100%);
-    width: 320px !important;
-    min-width: 320px !important;
+    width: 300px !important;
+    min-width: 300px !important;
     margin-left: 0;
   }
 }
@@ -390,5 +411,139 @@ html, body {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     background: #ffffff !important;
+  }
+}
+
+/* ==========================================================================
+   Mobile Responsiveness: Screener & Platform-Wide
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* App shell: stack vertically */
+  .app-shell {
+    flex-direction: column;
+  }
+
+  /* Main content: full width, allow scroll */
+  .app-main {
+    height: calc(100vh - 0px);
+    width: 100% !important;
+  }
+
+  /* Content padding on mobile */
+  .app-main > .flex-grow {
+    padding: 12px !important;
+  }
+
+  /* Sticky header: compact for mobile */
+  header.sticky {
+    padding: 8px 12px !important;
+    gap: 8px !important;
+  }
+
+  /* Hide header logo text on very small screens; show just the expand button */
+  #header-logo-switch .logo-content > div:first-child h2 {
+    font-size: 14px !important;
+  }
+
+  /* Header search: full width on mobile */
+  header.sticky .relative.hidden.sm\\:block {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    order: 10;
+  }
+
+  /* Hide mood indicator on mobile (visible via sidebar) */
+  #header-mood-indicator {
+    display: none !important;
+  }
+
+  /* Card grid: single column */
+  #featured-funds-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Card interactive: no cropping */
+  .card-interactive {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Screener table: horizontal scroll */
+  #screener-table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #screener-table-container table {
+    min-width: 800px;
+  }
+
+  /* Bottom sheet drawer */
+  .drawer-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 85vh !important;
+    max-height: 85vh !important;
+    border-radius: 1.5rem 1.5rem 0 0 !important;
+    bottom: 0;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  /* Touch targets: minimum 44px */
+  button, .touch-spring, [role="button"] {
+    min-height: 36px;
+  }
+
+  /* Sidebar expand button: more prominent on mobile */
+  #sidebar-expand-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 12px !important;
+  }
+
+  /* Strategy chips: stack full width */
+  .strategy-chip {
+    padding: 10px 12px !important;
+  }
+
+  /* Column customizer: full width modal on mobile */
+  #column-customizer-dialog > div {
+    width: 95vw !important;
+    max-width: none !important;
+    max-height: 85vh !important;
+    border-radius: 16px !important;
+  }
+
+  /* View toggle buttons: tighter */
+  #view-toggle-group button {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* Very small screens (< 480px) */
+@media (max-width: 480px) {
+  /* Card grid gap */
+  #featured-funds-grid {
+    gap: 10px !important;
+  }
+
+  /* Header title: shorter */
+  #header-platform-title {
+    font-size: 13px !important;
+  }
+
+  /* Reduce card padding */
+  .card-interactive {
+    padding: 12px !important;
+  }
+
+  /* Sidebar expand button: icon only */
+  #sidebar-expand-btn span:not(.material-symbols-outlined) {
+    display: none !important;
   }
 }
