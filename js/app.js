@@ -1189,11 +1189,23 @@ class BickerBapeApp {
     const tableContainer = document.getElementById('screener-table-container');
 
     if (this.state.currentView === 'cards') {
-      cardsContainer.classList.remove('hidden');
-      tableContainer.classList.add('hidden');
+      if (cardsContainer) {
+        cardsContainer.classList.remove('hidden');
+        cardsContainer.style.setProperty('display', 'grid', 'important');
+      }
+      if (tableContainer) {
+        tableContainer.classList.add('hidden');
+        tableContainer.style.setProperty('display', 'none', 'important');
+      }
     } else {
-      cardsContainer.classList.add('hidden');
-      tableContainer.classList.remove('hidden');
+      if (cardsContainer) {
+        cardsContainer.classList.add('hidden');
+        cardsContainer.style.setProperty('display', 'none', 'important');
+      }
+      if (tableContainer) {
+        tableContainer.classList.remove('hidden');
+        tableContainer.style.setProperty('display', 'block', 'important');
+      }
     }
   }
 

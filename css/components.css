@@ -545,10 +545,14 @@
    ========================================================================== */
 
 #featured-funds-grid {
-  display: grid !important;
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)) !important;
   gap: 16px !important;
   width: 100% !important;
+}
+
+#featured-funds-grid.hidden {
+  display: none !important;
 }
 
 @media (min-width: 768px) {

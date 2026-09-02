@@ -147,8 +147,8 @@
 
 <body class="bg-background text-on-background font-body-md antialiased overflow-hidden">
 
-  <!-- Mobile Sidebar Backdrop Overlay -->
-  <div id="sidebar-mobile-backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden md:hidden"></div>
+  <!-- Mobile Sidebar Backdrop Overlay (z-50, sits below z-100 sidebar drawer) -->
+  <div id="sidebar-mobile-backdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden md:hidden"></div>
 
   <!-- App Shell (Fits 100% inside viewport with ZERO horizontal scroll) -->
   <div id="app-shell" class="app-shell">
@@ -180,8 +180,8 @@
         </button>
       </div>
 
-      <!-- Scrollable Filters Container -->
-      <div class="flex-grow overflow-y-auto p-md hide-scrollbar">
+      <!-- Scrollable Filters Container (Smooth Touchpad & Wheel Scroll) -->
+      <div id="sidebar-scroll-container" class="flex-grow min-h-0 overflow-y-auto p-md hide-scrollbar">
         
         <!-- Portal 1: Screener Filters Sidebar Content -->
         <div id="screener-sidebar-content" class="space-y-lg">
@@ -727,9 +727,9 @@
   <!-- ====================================================================
        SLIDE-OVER DEEP-DIVE DRAWER (APPLE FLUID MOTION)
        ==================================================================== -->
-  <div id="drawer-backdrop" class="drawer-backdrop fixed inset-0 bg-black/40 backdrop-blur-sm z-50"></div>
+  <div id="drawer-backdrop" class="drawer-backdrop fixed inset-0 bg-black/50 backdrop-blur-sm z-[105]"></div>
 
-  <aside id="fund-drawer" class="drawer-panel fixed top-0 right-0 h-full w-full md:w-[680px] lg:w-[720px] bg-surface-container-lowest shadow-2xl z-50 flex flex-col overflow-hidden">
+  <aside id="fund-drawer" class="drawer-panel fixed top-0 right-0 h-full w-full md:w-[680px] lg:w-[720px] bg-surface-container-lowest shadow-2xl z-[110] flex flex-col overflow-hidden">
     
     <!-- Grab Handle for Drag-to-Dismiss Gesture -->
     <div class="grab-handle" id="drawer-grab-handle" title="Drag to dismiss"></div>
@@ -750,8 +750,8 @@
       </button>
     </div>
 
-    <!-- Drawer Scrollable Content -->
-    <div class="flex-grow overflow-y-auto px-md md:px-lg py-md space-y-lg hide-scrollbar">
+    <!-- Drawer Scrollable Content (Smooth Touchpad & Wheel Scroll) -->
+    <div id="drawer-scroll-container" class="flex-grow min-h-0 overflow-y-auto px-md md:px-lg py-md space-y-lg hide-scrollbar">
       
       <!-- Key Metric Cards Grid (Expanded to 6 Core Pillars) -->
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-sm">
@@ -984,7 +984,7 @@
   <!-- ====================================================================
        MULTI-FUND SIDE-BY-SIDE COMPARISON MODAL
        ==================================================================== -->
-  <div id="comparison-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/60 backdrop-blur-sm">
+  <div id="comparison-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-3 md:p-6 bg-black/60 backdrop-blur-sm">
     <div class="bg-surface-container-lowest rounded-2xl card-shadow max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-surface-container shadow-2xl">
       
       <div class="p-md md:p-lg border-b border-surface-container flex items-center justify-between bg-surface-container-lowest">
@@ -1068,7 +1068,7 @@
   <!-- ====================================================================
        SIMSIM™ MODEL BASKET CUSTOMIZER MODAL (DIALOGUE BOX)
        ==================================================================== -->
-  <div id="simsim-basket-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/75 backdrop-blur-md">
+  <div id="simsim-basket-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-3 md:p-6 bg-black/75 backdrop-blur-md">
     <div class="bg-[#0B0F19] rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-[#00F090]/35 shadow-2xl" role="dialog" aria-modal="true">
       
       <!-- Modal Header -->

@@ -2,6 +2,10 @@
    BickerBape Design System - Fiscal Clarity & Apple Fluid Motion
    ========================================================================== */
 
+.hidden {
+  display: none !important;
+}
+
 :root {
   /* Surface & Background */
   --color-background: #f8f9fb;
@@ -194,39 +198,75 @@ html, body {
 }
 
 /* Prevent inner sidebar components from wrapping or jittering during width collapse */
-#sidebar.app-sidebar > div,
-#sidebar.app-sidebar > #screener-sidebar-content,
-#sidebar.app-sidebar > #simsim-sidebar-content,
-#sidebar.app-sidebar > #sidebar-footer {
+#sidebar.app-sidebar > div {
   width: 320px !important;
   min-width: 320px !important;
   max-width: 320px !important;
+}
+
+#sidebar.app-sidebar > div:first-child,
+#sidebar.app-sidebar > #sidebar-footer {
   flex-shrink: 0 !important;
+}
+
+/* Sidebar Scroll Container: Enable smooth touchpad, wheel, and touch scrolling */
+#sidebar.app-sidebar > #sidebar-scroll-container,
+#sidebar.app-sidebar > .overflow-y-auto {
+  flex: 1 1 0px !important;
+  min-height: 0 !important;
+  height: 0 !important;
+  flex-shrink: 1 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Drawer Scroll Container: Enable smooth touchpad and wheel scrolling in deep-dive panel */
+.drawer-panel > #drawer-scroll-container,
+.drawer-panel > .overflow-y-auto {
+  flex: 1 1 0px !important;
+  min-height: 0 !important;
+  height: 0 !important;
+  flex-shrink: 1 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 /* Mobile Sidebar Drawer */
 @media (max-width: 768px) {
+  #sidebar.app-sidebar,
   .app-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 300px;
-    max-width: 85vw;
-    height: 100%;
-    transform: translateX(-100%);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 300px !important;
+    max-width: 85vw !important;
+    height: 100% !important;
+    transform: translateX(-100%) !important;
     margin-left: 0 !important;
-    box-shadow: var(--shadow-level-3);
-    z-index: 50;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.65) !important;
+    z-index: 100 !important;
+    background-color: var(--color-surface) !important;
     transition: transform 340ms cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
+  #sidebar.app-sidebar.mobile-open,
   .app-sidebar.mobile-open {
-    transform: translateX(0%);
+    transform: translateX(0%) !important;
+    z-index: 100 !important;
   }
+  #sidebar.app-sidebar.collapsed,
   .app-sidebar.collapsed {
-    transform: translateX(-100%);
+    transform: translateX(-100%) !important;
     width: 300px !important;
     min-width: 300px !important;
-    margin-left: 0;
+    margin-left: 0 !important;
+  }
+  #sidebar.app-sidebar > div {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
   }
 }
 
@@ -445,14 +485,6 @@ html, body {
     font-size: 14px !important;
   }
 
-  /* Header search: full width on mobile */
-  header.sticky .relative.hidden.sm\\:block {
-    display: block !important;
-    width: 100% !important;
-    max-width: none !important;
-    order: 10;
-  }
-
   /* Hide mood indicator on mobile (visible via sidebar) */
   #header-mood-indicator {
     display: none !important;
@@ -470,14 +502,42 @@ html, body {
     min-width: 0 !important;
   }
 
-  /* Screener table: horizontal scroll */
+  /* Screener table: horizontal scroll & sticky first column */
   #screener-table-container {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden !important;
+    width: 100% !important;
+    border-radius: 16px !important;
   }
 
-  #screener-table-container table {
-    min-width: 800px;
+  #screener-table-container .overflow-x-auto {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    width: 100% !important;
+  }
+
+  .screener-table {
+    min-width: 760px;
+    width: max-content;
+  }
+
+  .screener-table th:first-child {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 25 !important;
+    background: #f8f9fb !important;
+    box-shadow: 3px 0 8px -2px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .screener-table td:first-child {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 15 !important;
+    background: #ffffff !important;
+    box-shadow: 3px 0 8px -2px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .screener-table tbody tr:hover td:first-child {
+    background-color: var(--color-surface-container-low) !important;
   }
 
   /* Bottom sheet drawer */
@@ -518,10 +578,11 @@ html, body {
     border-radius: 16px !important;
   }
 
-  /* View toggle buttons: tighter */
-  #view-toggle-group button {
+  /* View toggle buttons: touch-friendly */
+  .view-toggle-btn {
     padding: 6px 10px !important;
     font-size: 11px !important;
+    min-height: 34px !important;
   }
 }
 

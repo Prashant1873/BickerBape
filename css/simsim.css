@@ -272,19 +272,7 @@ body.simsim-mode .mode-switch-badge.simsim-badge {
   box-shadow: -10px 14px 40px rgba(0, 0, 0, 0.75), 0 0 28px rgba(0, 240, 144, 0.35);
 }
 
-@media (max-width: 768px) {
-  .simsim-tray {
-    bottom: 84px;
-    padding: 8px 12px 8px 10px;
-  }
-  .simsim-tray.visible {
-    transform: translateX(calc(100% - 46px));
-  }
-  .simsim-tray.visible:hover,
-  .simsim-tray.visible.is-expanded {
-    transform: translateX(-8px);
-  }
-}
+
 
 .simsim-tray button:active {
   transform: scale(0.96);
@@ -1033,10 +1021,17 @@ body.simsim-mode #simsim-sidebar-content > div {
     top: auto !important;
     width: 100% !important;
     border-radius: 16px 16px 0 0 !important;
+    border-right: 1px solid rgba(0, 240, 144, 0.4) !important;
+    border-bottom: none !important;
     transform: translateY(100%) !important;
+    justify-content: space-between !important;
+    padding: 10px 16px !important;
+    z-index: 45 !important;
   }
 
-  .simsim-tray.visible {
+  .simsim-tray.visible,
+  .simsim-tray.visible:hover,
+  .simsim-tray.visible.is-expanded {
     transform: translateY(0) !important;
   }
 
