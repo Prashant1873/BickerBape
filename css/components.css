@@ -50,17 +50,29 @@
   transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, color 180ms ease;
   border: 1px solid rgba(9, 30, 66, 0.08);
   border-radius: 14px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px -1px rgba(9, 30, 66, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+  background: var(--color-surface-container-lowest);
+  color: var(--color-on-surface);
+  box-shadow: 0 2px 6px -1px rgba(9, 30, 66, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
+.dark .strategy-chip, html.dark .strategy-chip {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.strategy-chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+}
+
 .strategy-chip:hover {
-  border-color: rgba(0, 82, 204, 0.25);
-  background: #ffffff;
-  box-shadow: 0 6px 16px -2px rgba(9, 30, 66, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-color: rgba(59, 130, 246, 0.35);
+  background: var(--color-surface-container-lowest);
+  box-shadow: 0 6px 16px -2px rgba(9, 30, 66, 0.08);
   transform: translateY(-2px);
 }
 
@@ -148,6 +160,11 @@
   user-select: none;
 }
 
+.category-pill:focus-visible {
+  outline: 2px solid #0052cc;
+  outline-offset: 1px;
+}
+
 .category-pill:hover {
   background-color: #f1f5f9;
   transform: translateX(2px);
@@ -167,9 +184,23 @@
 /* View Switcher Toggle - Smooth Pill Track with Floating Thumb */
 .view-toggle-btn {
   border-radius: 9999px; /* Smooth pill curvature */
-  padding: 6px 14px;
+  padding: 8px 14px;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 700;
   transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 140ms ease;
+}
+
+@media (pointer: coarse) {
+  .view-toggle-btn,
+  .mood-btn,
+  .category-pill,
+  .strategy-chip,
+  #compare-tray-toggle-btn {
+    min-height: 44px;
+  }
 }
 
 .view-toggle-btn:active {
@@ -177,9 +208,9 @@
 }
 
 .view-toggle-btn.active {
-  background: #ffffff;
-  color: #003d9b;
-  box-shadow: 0 2px 8px rgba(9, 30, 66, 0.12), inset 0 1px 0 #ffffff;
+  background: var(--color-surface-container-lowest);
+  color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(9, 30, 66, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* ==========================================================================
@@ -191,6 +222,10 @@
   background: transparent;
   border-radius: 10px;
   color: #475569;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   user-select: none;
 }

@@ -372,7 +372,7 @@
               </span>
               <span id="val-smartscore" class="text-primary tabular-nums font-bold">0.0</span>
             </div>
-            <input id="slider-smartscore" class="apple-slider" type="range" min="0" max="8.5" step="0.5" value="0"/>
+            <input id="slider-smartscore" class="apple-slider" type="range" min="0" max="8.5" step="0.5" value="0" aria-label="Minimum SmartScore filter"/>
           </div>
 
           <!-- Slider 1: 3Y Rolling Return -->
@@ -381,7 +381,7 @@
               <span class="text-on-surface-variant">Min 3Y Rolling Return:</span>
               <span id="val-rolling" class="text-primary tabular-nums font-bold">0%</span>
             </div>
-            <input id="slider-rolling" class="apple-slider" type="range" min="0" max="25" step="1" value="0"/>
+            <input id="slider-rolling" class="apple-slider" type="range" min="0" max="25" step="1" value="0" aria-label="Minimum 3Y rolling return filter"/>
           </div>
 
           <!-- Slider 2: Sharpe Ratio -->
@@ -390,7 +390,7 @@
               <span class="text-on-surface-variant">Min Sharpe (Rf=6.8%):</span>
               <span id="val-sharpe" class="text-primary tabular-nums font-bold">0</span>
             </div>
-            <input id="slider-sharpe" class="apple-slider" type="range" min="0" max="1.5" step="0.1" value="0"/>
+            <input id="slider-sharpe" class="apple-slider" type="range" min="0" max="1.5" step="0.1" value="0" aria-label="Minimum Sharpe ratio filter"/>
           </div>
 
           <!-- Slider 3: Max Volatility -->
@@ -399,7 +399,7 @@
               <span class="text-on-surface-variant">Max Volatility (Std Dev):</span>
               <span id="val-vol" class="text-primary tabular-nums font-bold">25%</span>
             </div>
-            <input id="slider-vol" class="apple-slider" type="range" min="8" max="25" step="1" value="25"/>
+            <input id="slider-vol" class="apple-slider" type="range" min="8" max="25" step="1" value="25" aria-label="Maximum volatility filter"/>
           </div>
         </div>
 
@@ -464,12 +464,12 @@
           <!-- Search Bar -->
           <div class="relative flex-grow max-w-md hidden sm:block">
             <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
-            <input id="search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-1.5 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC, or category..." type="text"/>
+            <input id="search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-1.5 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC, or category..." type="text" aria-label="Search mutual funds by scheme, AMC, or category"/>
           </div>
 
           <!-- Compare Tray Toggle & View Switcher (Cards vs Table) -->
           <div class="flex items-center gap-2 flex-shrink-0">
-            <button id="compare-tray-toggle-btn" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl border border-surface-container bg-surface-container-lowest font-label-bold text-xs text-on-surface hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Toggle Comparison Bar">
+            <button id="compare-tray-toggle-btn" class="hidden items-center gap-1.5 px-3.5 py-2 min-h-[38px] rounded-xl border border-surface-container bg-surface-container-lowest font-label-bold text-xs text-on-surface hover:bg-surface-container transition-colors touch-spring cursor-pointer" title="Toggle Comparison Bar" aria-label="Toggle Comparison Bar">
               <span class="material-symbols-outlined text-sm text-primary">compare_arrows</span>
               <span>Compare (<span id="tray-toggle-count">0</span>)</span>
             </button>
@@ -498,7 +498,7 @@
           <!-- Mobile Search Input (Visible on small screens) -->
           <div class="relative w-full sm:hidden">
             <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-base">search</span>
-            <input id="mobile-search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-2 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC..." type="text"/>
+            <input id="mobile-search-input" class="w-full bg-surface-container-lowest border border-surface-container rounded-full py-2 pl-9 pr-3 text-xs font-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary-container" placeholder="Search by scheme, AMC..." type="text" aria-label="Search mutual funds by scheme or AMC"/>
           </div>
 
         <!-- View 1: Featured Funds Grid -->
@@ -1062,7 +1062,7 @@
       <div class="p-3 border-b border-surface-container bg-surface-container-low flex flex-col gap-2">
         <div class="relative w-full">
           <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-base">search</span>
-          <input id="kpi-search-input" type="text" class="w-full bg-surface-container-lowest border border-surface-container rounded-lg py-1.5 pl-8 pr-3 text-xs outline-none focus:ring-2 focus:ring-primary" placeholder="Search metrics (e.g., TER, Sortino, Drawdown, P/E, 10Y)..."/>
+          <input id="kpi-search-input" type="text" class="w-full bg-surface-container-lowest border border-surface-container rounded-lg py-1.5 pl-8 pr-3 text-xs outline-none focus:ring-2 focus:ring-primary" placeholder="Search metrics (e.g., TER, Sortino, Drawdown, P/E, 10Y)..." aria-label="Search financial metrics"/>
         </div>
         <div class="flex items-center gap-1.5 flex-wrap text-xs">
           <span class="text-[10px] uppercase font-bold text-on-surface-variant mr-1">Quick Select:</span>

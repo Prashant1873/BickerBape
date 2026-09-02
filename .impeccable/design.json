@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-02T20:54:35Z",
+  "title": "Design System: BickerBape",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Institutional Navy", "canonical": "#003d9b", "tonalRamp": ["#001848", "#002a6c", "#003d9b", "#0052cc", "#407ee6", "#80aaef", "#c0d5f7", "#e6effc"] },
+      "primary-container": { "role": "primary", "displayName": "Royal Ultramarine", "canonical": "#0052cc", "tonalRamp": ["#002159", "#00368c", "#0052cc", "#3375e0", "#6698eb", "#99bcf5", "#cce0fa", "#e6f0fd"] },
+      "gain": { "role": "tertiary", "displayName": "Emerald Alpha Gain", "canonical": "#36B37E", "tonalRamp": ["#0b3623", "#16593a", "#288a59", "#36B37E", "#5ec298", "#8ad2b2", "#b7e3cc", "#dbf2e6"] },
+      "loss": { "role": "error", "displayName": "Coral Risk Loss", "canonical": "#FF5630", "tonalRamp": ["#4a0e03", "#7a1a09", "#bf3317", "#FF5630", "#ff7859", "#ff9b83", "#ffbead", "#ffe0d6"] },
+      "warning": { "role": "warning", "displayName": "Amber Concentration Warning", "canonical": "#FF9F0A", "tonalRamp": ["#472900", "#7a4800", "#b87000", "#FF9F0A", "#ffb23b", "#ffc66c", "#ffd99e", "#fff0d6"] },
+      "surface": { "role": "neutral", "displayName": "Observatory Cool Surface", "canonical": "#f8f9fb", "tonalRamp": ["#191c1e", "#3a3d40", "#5c5f62", "#808285", "#a5a7aa", "#c9cbce", "#edeef0", "#f8f9fb"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Financial", "purpose": "Hero metrics, SmartScore values, and section titles." },
+      "body": { "displayName": "Body Text", "purpose": "Fund descriptions, disclosures, and analytical copy." }
+    },
+    "shadows": [
+      { "name": "card-shadow", "value": "0px 4px 12px rgba(9, 30, 66, 0.08)", "purpose": "Resting depth for financial cards." },
+      { "name": "card-shadow-lg", "value": "0px 8px 24px rgba(9, 30, 66, 0.12)", "purpose": "Elevated hover state for interactive cards." }
+    ],
+    "motion": [
+      { "name": "spring-default", "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "purpose": "Apple-grade fluid spring for button press and drawer animations." },
+      { "name": "ease-out-apple", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Smooth deceleration for card hovers and sidebar toggles." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Strategy Chip",
+      "kind": "chip",
+      "refersTo": "strategy-chip",
+      "description": "Tactile squircle filter chip for fund categories.",
+      "html": "<button class=\"ds-strategy-chip\"><span class=\"ds-chip-icon\">🚀</span> Top Growth</button>",
+      "css": ".ds-strategy-chip { background: #ffffff; color: #191c1e; border: 1px solid rgba(9, 30, 66, 0.08); border-radius: 14px; padding: 10px 16px; font-family: 'Hanken Grotesk', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms ease; display: inline-flex; align-items: center; gap: 8px; } .ds-strategy-chip:hover { transform: translateY(-2px); border-color: rgba(0, 82, 204, 0.25); box-shadow: 0 6px 16px -2px rgba(9, 30, 66, 0.08); } .ds-strategy-chip:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Interactive Fund Card",
+      "kind": "card",
+      "refersTo": "card-interactive",
+      "description": "Glass-frosted interactive card displaying fund metrics.",
+      "html": "<div class=\"ds-card-interactive\"><div class=\"ds-card-header\"><h4 class=\"ds-card-title\">Parag Parikh Flexi Cap Fund</h4><span class=\"ds-score-badge\">9.4</span></div><p class=\"ds-card-sub\">3Y CAGR Ratio: 1.42x • Expense Ratio: 0.58%</p></div>",
+      "css": ".ds-card-interactive { background: #ffffff; border: 1px solid rgba(9, 30, 66, 0.08); border-radius: 20px; padding: 20px; box-shadow: 0 4px 18px -2px rgba(9, 30, 66, 0.06); transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Hanken Grotesk', sans-serif; } .ds-card-interactive:hover { transform: translateY(-3px); border-color: rgba(0, 82, 204, 0.22); box-shadow: 0 16px 36px -6px rgba(9, 30, 66, 0.12); } .ds-card-header { display: flex; justify-content: space-between; align-items: center; } .ds-card-title { font-size: 16px; font-weight: 700; color: #191c1e; margin: 0; } .ds-score-badge { background: #0052cc; color: #ffffff; padding: 4px 10px; border-radius: 9999px; font-weight: 800; font-size: 14px; } .ds-card-sub { font-size: 13px; color: #434654; margin-top: 8px; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "View Switcher Toggle",
+      "kind": "button",
+      "refersTo": "view-toggle-btn",
+      "description": "Segmented pill view toggle for switching screener layouts.",
+      "html": "<div class=\"ds-view-toggle-track\"><button class=\"ds-view-toggle-btn active\">Cards</button><button class=\"ds-view-toggle-btn\">Table</button></div>",
+      "css": ".ds-view-toggle-track { background: #edeef0; padding: 4px; border-radius: 9999px; display: inline-flex; gap: 4px; } .ds-view-toggle-btn { border: none; background: transparent; padding: 6px 14px; border-radius: 9999px; font-weight: 700; font-size: 13px; color: #434654; cursor: pointer; transition: all 180ms ease; } .ds-view-toggle-btn.active { background: #ffffff; color: #003d9b; box-shadow: 0 2px 8px rgba(9, 30, 66, 0.12); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quant Observatory",
+    "overview": "BickerBape's visual identity, 'Fiscal Clarity', is designed around 'The Quant Observatory' metaphor: a high-density, precision financial instrument interface engineered for institutional rigor. It combines translucent glass chrome, crisp tabular typography, and Apple-grade fluid spring mechanics to present complex multi-pillar financial data with effortless clarity.",
+    "keyCharacteristics": [
+      "Precision Tabular Financial Typography (Hanken Grotesk with tnum)",
+      "Translucent Frosted Glass Chrome (blur 20px with saturation boost)",
+      "Tactile Spring Micro-Interactions (scale 0.97 active state)",
+      "Institutional Ultramarine & Navy Palette with Vivid Gain/Loss Accents",
+      "Quiet Accordion Scorecards and Floating Dock Controls"
+    ],
+    "rules": [
+      { "name": "The Tabular Numbers Rule", "body": "All financial metrics, percentages, CAGRs, and scores must use tabular lining numbers (tnum) to prevent layout jitter during live updates.", "section": "typography" },
+      { "name": "The One Primary Voice Rule", "body": "Royal Ultramarine (#0052cc) is reserved exclusively for primary interactive affordances and active strategy states. Never use it for passive decoration.", "section": "colors" },
+      { "name": "The Tactile Spring Rule", "body": "Every interactive element must respond instantly to pointer down with scale(0.97) spring compression before expanding.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use tabular-nums (font-variant-numeric: tabular-nums) on all financial numbers, CAGRs, and ratios.",
+      "Do use translucent frosted glass (glass-chrome) for top navigation bars and persistent floating docks.",
+      "Do enforce strict squircle corner radii (14px to 20px) for strategy chips and interactive cards."
+    ],
+    "donts": [
+      "Don't use unformatted raw numbers or proportional fonts for numerical financial metrics.",
+      "Don't apply heavy opaque drop shadows that create visual clutter on high-density financial tables.",
+      "Don't use saturated primary blue on passive informational badges or static table rows."
+    ]
+  }
+}

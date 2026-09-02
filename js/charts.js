@@ -12,12 +12,34 @@ export class ChartEngine {
   static instances = {};
 
   /**
+   * Reads theme CSS custom property dynamically with fallback
+   */
+  static getColor(varName, fallback) {
+    try {
+      const val = getComputedStyle(document.body).getPropertyValue(varName).trim();
+      return val || fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  /**
    * Destroys existing chart instance on a canvas if present
    */
   static cleanup(canvasId) {
     if (this.instances[canvasId]) {
-      this.instances[canvasId].destroy();
+      try {
+        this.instances[canvasId].destroy();
+      } catch (e) {}
       delete this.instances[canvasId];
+    }
+    if (typeof Chart !== 'undefined' && Chart.getChart) {
+      const chartInstance = Chart.getChart(canvasId);
+      if (chartInstance) {
+        try {
+          chartInstance.destroy();
+        } catch (e) {}
+      }
     }
   }
 
@@ -60,7 +82,7 @@ export class ChartEngine {
       const endNav = points[points.length - 1].nav;
       const changePct = (((endNav - startNav) / startNav) * 100).toFixed(2);
       const isPositive = changePct >= 0;
-      growthHeadline.innerHTML = `Growth in ${horizon}: <strong class="${isPositive ? 'text-[#36B37E]' : 'text-[#FF5630]'}">${isPositive ? '+' : ''}${changePct}%</strong> (${points[0].date} to ${points[points.length - 1].date})`;
+      growthHeadline.innerHTML = `Growth in ${horizon}: <strong class="${isPositive ? 'text-gain' : 'text-loss'}">${isPositive ? '+' : ''}${changePct}%</strong> (${points[0].date} to ${points[points.length - 1].date})`;
     }
 
     const labels = points.map(p => p.date);
@@ -157,7 +179,7 @@ export class ChartEngine {
           {
             label: '3Y Rolling Return (%)',
             data: fundValues,
-            borderColor: '#36B37E',
+            borderColor: ChartEngine.getColor('--color-gain', '#36B37E'),
             borderWidth: 2.4,
             pointRadius: 0,
             pointHoverRadius: 5,
@@ -167,7 +189,7 @@ export class ChartEngine {
           {
             label: `Category Avg (${categoryAvgRolling}%)`,
             data: benchmarkValues,
-            borderColor: '#FF9F0A',
+            borderColor: ChartEngine.getColor('--color-warning', '#FF9F0A'),
             borderWidth: 1.8,
             borderDash: [5, 4],
             pointRadius: 0,
@@ -176,7 +198,7 @@ export class ChartEngine {
           {
             label: '12% Compounding Target',
             data: inflationLine,
-            borderColor: '#c3c6d6',
+            borderColor: ChartEngine.getColor('--color-outline-variant', '#c3c6d6'),
             borderWidth: 1.5,
             borderDash: [3, 3],
             pointRadius: 0,
@@ -197,7 +219,7 @@ export class ChartEngine {
             labels: {
               boxWidth: 12,
               font: { family: 'Hanken Grotesk', size: 11, weight: '600' },
-              color: '#434654'
+              color: ChartEngine.getColor('--color-on-surface-variant', '#434654')
             }
           },
           tooltip: {
