@@ -128,11 +128,12 @@ export class SimSimEngine {
     funds: any[],
     weights: Record<string | number, number>,
     totalCapital: number,
-    startDate: string
+    startDate: string,
+    endDate: string | null = null
   ): SimulationReport | null {
     if (!funds || funds.length === 0 || totalCapital <= 0) return null;
 
-    const { dates, fundNavMap } = this.alignNavHistories(funds, startDate);
+    const { dates, fundNavMap } = this.alignNavHistories(funds, startDate, endDate);
     if (dates.length < 2) return null;
 
     const nPoints = dates.length;
@@ -273,11 +274,12 @@ export class SimSimEngine {
     weights: Record<string | number, number>,
     monthlySip: number,
     startDate: string,
-    sipDay: number = 5
+    sipDay: number = 5,
+    endDate: string | null = null
   ): SimulationReport | null {
     if (!funds || funds.length === 0 || monthlySip <= 0) return null;
 
-    const { dates, fundNavMap } = this.alignNavHistories(funds, startDate);
+    const { dates, fundNavMap } = this.alignNavHistories(funds, startDate, endDate);
     if (dates.length < 2) return null;
 
     const nPoints = dates.length;

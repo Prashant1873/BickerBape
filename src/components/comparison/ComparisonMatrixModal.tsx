@@ -3,6 +3,7 @@
 import React from 'react';
 import { useScreener } from '@/context/ScreenerContext';
 import { getSuperScoreTheme } from '@/lib/smartscore';
+import { AmcBadge } from '@/components/common/AmcBadge';
 
 interface MetricDef {
   label: string;
@@ -186,6 +187,9 @@ export const ComparisonMatrixModal: React.FC = () => {
                         >
                           <span className="material-symbols-outlined text-xs">close</span>
                         </button>
+                      </div>
+                      <div className="mb-1">
+                        <AmcBadge fundHouse={fund!.fund_house} size="sm" />
                       </div>
                       <h4 className="font-bold text-on-surface text-xs leading-snug line-clamp-2">
                         {fund!.name}

@@ -22,6 +22,7 @@ export const ActiveFiltersBar: React.FC = () => {
     filters,
     updateFilter,
     resetFilters,
+    relaxFilters,
     activeFilterCount,
     viewMode,
     setViewMode,
@@ -243,14 +244,24 @@ export const ActiveFiltersBar: React.FC = () => {
           <p className="text-xs text-on-surface-variant max-w-md mx-auto">
             Your combined filter hurdles (such as minimum rolling returns or Sharpe ratio) eliminated all schemes in this category.
           </p>
-          <button
-            type="button"
-            onClick={resetFilters}
-            className="min-h-[44px] px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary-container touch-spring inline-flex items-center gap-2"
-          >
-            <span className="material-symbols-outlined text-base">restart_alt</span>
-            <span>Reset to Sensible Defaults</span>
-          </button>
+          <div className="pt-2 flex items-center justify-center gap-3 flex-wrap">
+            <button
+              type="button"
+              onClick={relaxFilters}
+              className="min-h-[44px] px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary-container touch-spring inline-flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-base">tune</span>
+              <span>Relax Filter Constraints</span>
+            </button>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="min-h-[44px] px-5 py-2 rounded-xl border border-surface-container bg-surface-container-low text-xs font-bold text-on-surface hover:text-primary touch-spring inline-flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-base">restart_alt</span>
+              <span>Reset All Filters</span>
+            </button>
+          </div>
         </div>
       )}
     </div>

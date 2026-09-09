@@ -9,12 +9,13 @@ export const ComparisonBar: React.FC = () => {
     funds,
     toggleComparison,
     clearComparison,
-    setIsComparisonMatrixOpen
+    setIsComparisonMatrixOpen,
+    appMode
   } = useScreener();
 
   const [isMinimized, setIsMinimized] = useState(false);
 
-  if (comparisonList.length === 0) return null;
+  if (comparisonList.length === 0 || appMode === 'simsim') return null;
 
   const comparedFunds = comparisonList
     .map(code => funds.find(f => f.code === code))
