@@ -20,3 +20,12 @@ desktop.ini
 # IDE files
 .vscode/
 .idea/
+
+# Node & Next.js
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
