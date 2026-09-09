@@ -4,6 +4,8 @@ import React from 'react';
 import { FundSummary } from '@/types/fund';
 import { useScreener } from '@/context/ScreenerContext';
 import { getSuperScoreTheme } from '@/lib/smartscore';
+import { AmcBadge } from '@/components/common/AmcBadge';
+import { InfoBadge, GLOSSARY } from '@/components/common/InfoBadge';
 
 interface FundCardProps {
   fund: FundSummary;
@@ -13,10 +15,14 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
   const {
     comparisonList,
     toggleComparison,
-    setSelectedFundCode
+    setSelectedFundCode,
+    isInBucket,
+    addToBucket,
+    removeFromBucket
   } = useScreener();
 
   const isCompared = comparisonList.includes(fund.code);
+  const inBucket = isInBucket(fund.code);
   const score = fund.smart_score?.overall ?? (fund.suggester_score ? fund.suggester_score / 10 : 6.0);
   const theme = getSuperScoreTheme(score);
 
@@ -27,6 +33,15 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
   const handleCompareClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     toggleComparison(fund.code);
+  };
+
+  const handleSimSimClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (inBucket) {
+      removeFromBucket(fund.code);
+    } else {
+      addToBucket(fund.code);
+    }
   };
 
   // Conic ring color based on score
@@ -75,29 +90,51 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             </div>
           </div>
 
-          {/* Quick Compare Button (Fitts's Law: 44x44px Touch Target) */}
-          <button
-            type="button"
-            onClick={handleCompareClick}
-            className={`min-h-[36px] px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 touch-spring border shadow-2xs ${
-              isCompared
-                ? 'bg-primary text-white border-primary shadow-xs'
-                : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-on-surface hover:border-primary/30 hover:bg-surface-container'
-            }`}
-            aria-label={isCompared ? `Remove ${fund.name} from comparison` : `Add ${fund.name} to comparison`}
-            title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
-          >
-            <span className="material-symbols-outlined text-base">
-              {isCompared ? 'check' : 'add'}
-            </span>
-            <span className="text-[11px]">{isCompared ? 'Added' : 'Compare'}</span>
-          </button>
+          {/* Action Buttons: SimSim & Compare */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Quick SimSim Bucket Toggle */}
+            <button
+              type="button"
+              onClick={handleSimSimClick}
+              className={`min-h-[34px] px-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 touch-spring border shadow-2xs ${
+                inBucket
+                  ? 'bg-[#00F090] text-black border-[#00F090] font-extrabold shadow-sm'
+                  : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-[#00F090] hover:border-[#00F090]/40 hover:bg-surface-container'
+              }`}
+              aria-label={inBucket ? `Remove ${fund.name} from SimSim` : `Add ${fund.name} to SimSim`}
+              title={inBucket ? 'Remove from SimSim portfolio bucket' : 'Add to SimSim portfolio bucket'}
+            >
+              <span className="material-symbols-outlined text-sm leading-none">
+                {inBucket ? 'check' : 'hourglass_top'}
+              </span>
+              <span className="text-[11px] hidden xs:inline">{inBucket ? 'In SimSim' : 'SimSim'}</span>
+            </button>
+
+            {/* Quick Compare Button */}
+            <button
+              type="button"
+              onClick={handleCompareClick}
+              className={`min-h-[34px] px-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 touch-spring border shadow-2xs ${
+                isCompared
+                  ? 'bg-primary text-white border-primary shadow-xs'
+                  : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-on-surface hover:border-primary/30 hover:bg-surface-container'
+              }`}
+              aria-label={isCompared ? `Remove ${fund.name} from comparison` : `Add ${fund.name} to comparison`}
+              title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
+            >
+              <span className="material-symbols-outlined text-sm leading-none">
+                {isCompared ? 'check' : 'add'}
+              </span>
+              <span className="text-[11px] hidden xs:inline">{isCompared ? 'Added' : 'Compare'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Fund Identity */}
         <div className="mb-3.5">
           <div className="flex items-center gap-1.5 flex-wrap mb-1">
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant font-mono">
+            <AmcBadge fundHouse={fund.fund_house} size="sm" />
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant">
               {fund.category}
             </span>
             {fund.is_young_fund && (
@@ -117,31 +154,40 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-surface-container-low/60 border border-surface-container mb-3 text-center">
           <div>
-            <span className="text-[10px] uppercase font-bold text-on-surface-variant block">1Y CAGR</span>
-            <span className={`font-mono font-bold text-xs ${fund.cagr_1y && fund.cagr_1y >= 0 ? 'text-gain' : 'text-loss'}`}>
+            <div className="flex items-center justify-center gap-1 mb-0.5">
+              <span className="text-[10px] uppercase font-bold text-on-surface-variant">1Y CAGR</span>
+              <InfoBadge term="1Y CAGR" definition={GLOSSARY['1Y CAGR']} />
+            </div>
+            <span className={`font-bold text-xs tabular-nums ${fund.cagr_1y && fund.cagr_1y >= 0 ? 'text-gain' : 'text-loss'}`}>
               {fund.cagr_1y !== null && fund.cagr_1y !== undefined ? `${fund.cagr_1y > 0 ? '+' : ''}${fund.cagr_1y.toFixed(1)}%` : 'N/A'}
             </span>
           </div>
 
           <div>
-            <span className="text-[10px] uppercase font-bold text-on-surface-variant block">3Y CAGR</span>
-            <span className={`font-mono font-bold text-xs ${fund.cagr_3y && fund.cagr_3y >= 0 ? 'text-gain' : 'text-loss'}`}>
+            <div className="flex items-center justify-center gap-1 mb-0.5">
+              <span className="text-[10px] uppercase font-bold text-on-surface-variant">3Y CAGR</span>
+              <InfoBadge term="3Y CAGR" definition={GLOSSARY['3Y CAGR']} />
+            </div>
+            <span className={`font-bold text-xs tabular-nums ${fund.cagr_3y && fund.cagr_3y >= 0 ? 'text-gain' : 'text-loss'}`}>
               {fund.cagr_3y !== null && fund.cagr_3y !== undefined ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y.toFixed(1)}%` : 'N/A'}
             </span>
             {fund.ratio_3y && (
-              <span className="block text-[9px] font-bold text-primary font-mono">
+              <span className="block text-[9px] font-bold text-primary tabular-nums">
                 {fund.ratio_3y}x cat
               </span>
             )}
           </div>
 
           <div>
-            <span className="text-[10px] uppercase font-bold text-on-surface-variant block">5Y CAGR</span>
-            <span className={`font-mono font-bold text-xs ${fund.cagr_5y && fund.cagr_5y >= 0 ? 'text-gain' : 'text-loss'}`}>
+            <div className="flex items-center justify-center gap-1 mb-0.5">
+              <span className="text-[10px] uppercase font-bold text-on-surface-variant">5Y CAGR</span>
+              <InfoBadge term="5Y CAGR" definition={GLOSSARY['5Y CAGR']} />
+            </div>
+            <span className={`font-bold text-xs tabular-nums ${fund.cagr_5y && fund.cagr_5y >= 0 ? 'text-gain' : 'text-loss'}`}>
               {fund.cagr_5y !== null && fund.cagr_5y !== undefined ? `${fund.cagr_5y > 0 ? '+' : ''}${fund.cagr_5y.toFixed(1)}%` : 'N/A'}
             </span>
             {fund.ratio_5y && (
-              <span className="block text-[9px] font-medium text-on-surface-variant font-mono">
+              <span className="block text-[9px] font-medium text-on-surface-variant tabular-nums">
                 {fund.ratio_5y}x cat
               </span>
             )}
@@ -157,21 +203,23 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             {fund.manager ? fund.manager.split(',')[0] : 'AMC Team'}
           </span>
           {fund.manager_tenure_years && (
-            <span className="font-mono text-[10px] px-1 py-0.2 rounded bg-surface-container">
+            <span className="text-[10px] px-1 py-0.2 rounded bg-surface-container tabular-nums font-semibold">
               {fund.manager_tenure_years.toFixed(0)}y
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-2 font-mono flex-shrink-0">
+        <div className="flex items-center gap-2 tabular-nums flex-shrink-0">
           {fund.expense_ratio !== null && fund.expense_ratio !== undefined && (
-            <span title="Direct Expense Ratio (TER)">
-              TER: <strong className="text-on-surface">{fund.expense_ratio.toFixed(2)}%</strong>
+            <span className="flex items-center gap-0.5">
+              <InfoBadge term="TER" definition={GLOSSARY['TER']} />
+              <span className="ml-0.5">TER: <strong className="text-on-surface font-bold">{fund.expense_ratio.toFixed(2)}%</strong></span>
             </span>
           )}
           {fund.sharpe_ratio !== null && fund.sharpe_ratio !== undefined && (
-            <span title="Sharpe Ratio">
-              Sh: <strong className="text-on-surface">{fund.sharpe_ratio.toFixed(2)}</strong>
+            <span className="flex items-center gap-0.5">
+              <InfoBadge term="Sharpe" definition={GLOSSARY['Sharpe']} />
+              <span className="ml-0.5">Sh: <strong className="text-on-surface font-bold">{fund.sharpe_ratio.toFixed(2)}</strong></span>
             </span>
           )}
         </div>

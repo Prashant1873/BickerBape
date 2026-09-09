@@ -5,6 +5,7 @@ import { FundSummary } from '@/types/fund';
 import { useScreener } from '@/context/ScreenerContext';
 import { KPI_CATALOG } from '@/lib/kpi-catalog';
 import { getSuperScoreTheme } from '@/lib/smartscore';
+import { InfoBadge, GLOSSARY } from '@/components/common/InfoBadge';
 
 interface FundTableProps {
   funds: FundSummary[];
@@ -19,7 +20,10 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
     toggleComparison,
     setSelectedFundCode,
     displayLimit,
-    loadMoreFunds
+    loadMoreFunds,
+    addToBucket,
+    removeFromBucket,
+    isInBucket
   } = useScreener();
 
   const displayedFunds = funds.slice(0, displayLimit);
@@ -232,10 +236,12 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
             <thead>
               <tr className="bg-surface-container-low/80 border-b border-surface-container text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
                 {/* Sticky Left Header: Compare & Fund Name */}
-                <th className="sticky left-0 z-20 bg-surface-container-low py-3 px-4 min-w-[240px] sm:min-w-[320px] shadow-[2px_0_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
+                <th className="sticky left-0 z-20 bg-surface-container-low py-3 px-4 min-w-[280px] sm:min-w-[360px] shadow-[2px_0_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-on-surface-variant/70">#</span>
-                    <span>Scheme &amp; Category</span>
+                    <span className="text-[10px] text-on-surface-variant/70 w-5">#</span>
+                    <span className="text-[10px] text-[#00A86B] dark:text-[#00F090] font-bold">SimSim</span>
+                    <span className="text-[10px] text-on-surface-variant/70">Compare</span>
+                    <span className="truncate">Scheme &amp; Category</span>
                   </div>
                 </th>
 
@@ -253,6 +259,9 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                     >
                       <div className={`inline-flex items-center gap-1 ${metric.align === 'text-right' ? 'justify-end' : metric.align === 'text-center' ? 'justify-center' : 'justify-start'}`}>
                         <span>{metric.label}</span>
+                        {GLOSSARY[metric.label] && (
+                          <InfoBadge term={metric.label} definition={GLOSSARY[metric.label]} />
+                        )}
                         {isSorted ? (
                           <span className="material-symbols-outlined text-xs text-primary font-black">
                             {filters.sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward'}
@@ -272,18 +281,44 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
             <tbody className="divide-y divide-surface-container/60">
               {displayedFunds.map((fund, idx) => {
                 const isCompared = comparisonList.includes(fund.code);
+                const inBucket = isInBucket(fund.code);
                 return (
                   <tr
                     key={String(fund.code)}
                     onClick={() => setSelectedFundCode(fund.code)}
                     className="hover:bg-surface-container-low/60 cursor-pointer transition-colors group"
                   >
-                    {/* Sticky Left Column: Compare Checkbox & Fund Identity */}
+                    {/* Sticky Left Column: Compare Checkbox, SimSim Button & Fund Identity */}
                     <td className="sticky left-0 z-10 bg-surface-container-lowest group-hover:bg-surface-container-low/90 py-3 px-4 shadow-[2px_0_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.2)] transition-colors">
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-[11px] text-on-surface-variant/60 w-5">
+                      <div className="flex items-center gap-2.5">
+                        <span className="font-mono text-[11px] text-on-surface-variant/60 w-5 flex-shrink-0">
                           {idx + 1}
                         </span>
+
+                        {/* Quick SimSim Bucket Toggle Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (inBucket) {
+                              removeFromBucket(fund.code);
+                            } else {
+                              addToBucket(fund.code);
+                            }
+                          }}
+                          className={`h-7 px-2 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 touch-spring border flex-shrink-0 select-none ${
+                            inBucket
+                              ? 'bg-[#00F090] text-black border-[#00F090] font-black shadow-2xs'
+                              : 'bg-surface-container-low/80 border-surface-container text-on-surface-variant hover:text-[#00A86B] dark:hover:text-[#00F090] hover:border-[#00F090]/50 hover:bg-surface-container'
+                          }`}
+                          aria-label={inBucket ? `Remove ${fund.name} from SimSim` : `Add ${fund.name} to SimSim`}
+                          title={inBucket ? 'Remove from SimSim portfolio' : 'Add to SimSim portfolio'}
+                        >
+                          <span className="material-symbols-outlined text-sm leading-none">
+                            {inBucket ? 'check' : 'hourglass_top'}
+                          </span>
+                          <span className="hidden sm:inline">{inBucket ? 'In SimSim' : '+ SimSim'}</span>
+                        </button>
 
                         {/* Compare Toggle Checkbox (Min 44x44px Click Target) */}
                         <div
@@ -291,26 +326,26 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                             e.stopPropagation();
                             toggleComparison(fund.code);
                           }}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container text-on-surface-variant touch-spring"
+                          className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-surface-container text-on-surface-variant touch-spring flex-shrink-0"
                           title={isCompared ? 'Remove from compare' : 'Add to compare'}
                         >
                           <input
                             type="checkbox"
                             checked={isCompared}
                             onChange={() => {}}
-                            className="w-4 h-4 rounded text-primary focus:ring-primary/40 cursor-pointer"
+                            className="w-3.5 h-3.5 rounded text-primary focus:ring-primary/40 cursor-pointer"
                           />
                         </div>
 
                         {/* Name & Subtitle */}
                         <div className="min-w-0 pr-2">
-                          <h4 className="font-bold text-on-surface text-xs truncate max-w-[190px] sm:max-w-[240px] group-hover:text-primary transition-colors">
+                          <h4 className="font-bold text-on-surface text-xs truncate max-w-[170px] sm:max-w-[220px] group-hover:text-primary transition-colors">
                             {fund.name}
                           </h4>
                           <div className="flex items-center gap-1.5 text-[10px] text-on-surface-variant mt-0.5">
                             <span className="font-semibold text-primary/90 font-mono">{fund.category}</span>
                             <span>•</span>
-                            <span className="truncate max-w-[120px]">{fund.fund_house}</span>
+                            <span className="truncate max-w-[110px]">{fund.fund_house}</span>
                           </div>
                         </div>
                       </div>
