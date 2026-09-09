@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useScreener } from '@/context/ScreenerContext';
 import { MODEL_BASKETS } from '@/lib/simsim-models';
 import { useToast } from '@/context/ToastContext';
@@ -33,7 +34,23 @@ export const SimSimBasketModal: React.FC = () => {
     });
   }, [basketDef, funds]);
 
-  if (!isBasketModalOpen) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scrolling when basket modal is open
+  useEffect(() => {
+    if (!isBasketModalOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isBasketModalOpen]);
+
+  if (!isBasketModalOpen || !mounted || typeof document === 'undefined') return null;
 
   const handleApplyBasket = () => {
     const chosenCodes: (string | number)[] = [];
@@ -63,8 +80,8 @@ export const SimSimBasketModal: React.FC = () => {
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
+  return createPortal(
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
       <div className="bg-surface-container-lowest dark:bg-[#0B0F19] text-on-surface dark:text-white border border-surface-container dark:border-white/15 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-surface-container dark:border-white/10 bg-surface-container-low dark:bg-[#0F1626] flex items-center justify-between flex-shrink-0">
@@ -151,7 +168,7 @@ export const SimSimBasketModal: React.FC = () => {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 border-t border-surface-container dark:border-white/10 bg-surface-container-low dark:bg-[#0F1626] flex items-center justify-end gap-3 flex-shrink-0">
+        <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] border-t border-surface-container dark:border-white/10 bg-surface-container-low dark:bg-[#0F1626] flex items-center justify-end gap-3 flex-shrink-0">
           <button
             type="button"
             onClick={() => setIsBasketModalOpen(false)}
@@ -169,6 +186,7 @@ export const SimSimBasketModal: React.FC = () => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

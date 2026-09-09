@@ -144,7 +144,8 @@ export const Navbar: React.FC = () => {
             <span className={`material-symbols-outlined text-base leading-none ${appMode === 'simsim' ? 'text-[#0A0E18]' : 'text-[#00A86B] dark:text-[#00F090] simsim-pulse-icon'}`}>
               hourglass_top
             </span>
-            <span className="tracking-tight font-extrabold">SimSim™ Time Machine</span>
+            <span className="tracking-tight font-extrabold hidden sm:inline">SimSim™ Time Machine</span>
+            <span className="tracking-tight font-extrabold sm:hidden">SimSim™</span>
             {simsimBucket.length > 0 && (
               <span className={`min-w-[20px] h-[20px] px-1.5 rounded-full font-black text-[11px] flex items-center justify-center transition-transform ${
                 appMode === 'simsim'

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useScreener } from '@/context/ScreenerContext';
 import { MARKET_REGIMES } from '@/lib/simsim-models';
 
@@ -31,6 +32,21 @@ export const SimSimSidebar: React.FC = () => {
   } = useScreener();
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scrolling when mobile controls drawer is open
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [sidebarOpen]);
 
   // Quick fund search results
   const searchResults = searchQuery.trim()
@@ -422,17 +438,22 @@ export const SimSimSidebar: React.FC = () => {
         </aside>
       )}
 
-      {/* Mobile Slide-Over Bottom Sheet / Drawer for SimSim */}
-      {sidebarOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex flex-col justify-end">
+      {/* Mobile Slide-Over Bottom Sheet / Drawer for SimSim rendered via Portal */}
+      {mounted && sidebarOpen && typeof document !== 'undefined' && createPortal(
+        <div className="md:hidden fixed inset-0 z-[60] flex flex-col justify-end">
           <div
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
             aria-hidden="true"
           />
 
-          <div className="relative bg-surface dark:bg-[#0A0E18] text-on-surface dark:text-white rounded-t-3xl border-t border-surface-container dark:border-white/15 shadow-2xl max-h-[85vh] flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-200">
-            <div className="p-4 border-b border-surface-container dark:border-white/10 bg-surface-container-low dark:bg-[#0D1322] flex items-center justify-between flex-shrink-0">
+          <div className="relative bg-surface dark:bg-[#0A0E18] text-on-surface dark:text-white rounded-t-[28px] border-t border-surface-container dark:border-white/15 shadow-2xl max-h-[88vh] flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300">
+            {/* Grab Handle */}
+            <div className="pt-2.5 pb-1 flex justify-center flex-shrink-0 bg-surface dark:bg-[#0A0E18]">
+              <div className="w-12 h-1.5 rounded-full bg-surface-container-highest dark:bg-white/20" />
+            </div>
+
+            <div className="px-4 py-3 border-b border-surface-container dark:border-white/10 bg-surface-container-low dark:bg-[#0D1322] flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#00A86B] dark:text-[#00F090] text-xl">tune</span>
                 <h3 className="font-headline-md font-bold text-base text-on-surface dark:text-white">SimSim™ Controls</h3>
@@ -451,7 +472,7 @@ export const SimSimSidebar: React.FC = () => {
               {controlsBody}
             </div>
 
-            <div className="p-4 border-t border-surface-container dark:border-white/10 bg-surface-container-low dark:bg-[#0D1322] flex items-center gap-3 flex-shrink-0">
+            <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] border-t border-surface-container dark:border-white/10 bg-surface-container-low dark:bg-[#0D1322] flex items-center gap-3 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setSidebarOpen(false)}
@@ -462,7 +483,8 @@ export const SimSimSidebar: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

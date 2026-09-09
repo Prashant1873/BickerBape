@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useScreener } from '@/context/ScreenerContext';
 
 const PRESETS = [
@@ -34,6 +35,21 @@ export const SidebarFilters: React.FC = () => {
   } = useScreener();
 
   const [insightIndex, setInsightIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scrolling when mobile filters drawer is open
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [sidebarOpen]);
 
   // Compute unique categories and scheme counts
   const categoryCounts = useMemo(() => {
@@ -345,17 +361,22 @@ export const SidebarFilters: React.FC = () => {
         </aside>
       )}
 
-      {/* Mobile Slide-Over Bottom Sheet / Drawer */}
-      {sidebarOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex flex-col justify-end">
+      {/* Mobile Slide-Over Bottom Sheet / Drawer rendered via Portal to escape transforms */}
+      {mounted && sidebarOpen && typeof document !== 'undefined' && createPortal(
+        <div className="md:hidden fixed inset-0 z-[60] flex flex-col justify-end">
           <div
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
             aria-hidden="true"
           />
 
-          <div className="relative bg-surface rounded-t-3xl border-t border-surface-container shadow-2xl max-h-[85vh] flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-200">
-            <div className="p-4 border-b border-surface-container flex items-center justify-between flex-shrink-0">
+          <div className="relative bg-surface rounded-t-[28px] border-t border-surface-container shadow-2xl max-h-[88vh] flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300">
+            {/* Grab Handle */}
+            <div className="pt-2.5 pb-1 flex justify-center flex-shrink-0 bg-surface">
+              <div className="w-12 h-1.5 rounded-full bg-surface-container-highest" />
+            </div>
+
+            <div className="px-4 py-3 border-b border-surface-container flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-xl">tune</span>
                 <h3 className="font-headline-md font-bold text-base text-on-surface">Filter Mutual Funds</h3>
@@ -363,35 +384,36 @@ export const SidebarFilters: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSidebarOpen(false)}
-                className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-surface-container-low text-on-surface-variant hover:text-on-surface flex items-center justify-center touch-spring"
+                className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-surface-container-low text-on-surface-variant hover:text-on-surface flex items-center justify-center touch-spring cursor-pointer"
                 aria-label="Close filters"
               >
                 <span className="material-symbols-outlined text-lg">close</span>
               </button>
             </div>
 
-            <div className="p-4 overflow-y-auto hide-scrollbar">
+            <div className="p-4 overflow-y-auto hide-scrollbar flex-1">
               {filterBody}
             </div>
 
-            <div className="p-4 border-t border-surface-container bg-surface-container-low flex items-center gap-3 flex-shrink-0">
+            <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] border-t border-surface-container bg-surface-container-low flex items-center gap-3 flex-shrink-0">
               <button
                 type="button"
                 onClick={resetFilters}
-                className="flex-1 min-h-[44px] py-2.5 rounded-xl border border-surface-container bg-surface text-xs font-bold text-on-surface-variant hover:text-on-surface touch-spring"
+                className="flex-1 min-h-[44px] py-2.5 rounded-xl border border-surface-container bg-surface text-xs font-bold text-on-surface-variant hover:text-on-surface touch-spring cursor-pointer"
               >
                 Reset
               </button>
               <button
                 type="button"
                 onClick={() => setSidebarOpen(false)}
-                className="flex-2 min-h-[44px] py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary-container touch-spring flex items-center justify-center gap-1.5"
+                className="flex-2 min-h-[44px] py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary-container touch-spring flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <span>View Results ({funds.length})</span>
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

@@ -96,7 +96,7 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             <button
               type="button"
               onClick={handleSimSimClick}
-              className={`min-h-[34px] px-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 touch-spring border shadow-2xs ${
+              className={`min-h-[36px] px-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 touch-spring border shadow-2xs cursor-pointer ${
                 inBucket
                   ? 'bg-[#00F090] text-black border-[#00F090] font-extrabold shadow-sm'
                   : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-[#00F090] hover:border-[#00F090]/40 hover:bg-surface-container'
@@ -107,14 +107,14 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               <span className="material-symbols-outlined text-sm leading-none">
                 {inBucket ? 'check' : 'hourglass_top'}
               </span>
-              <span className="text-[11px] hidden xs:inline">{inBucket ? 'In SimSim' : 'SimSim'}</span>
+              <span className="text-[11px] hidden sm:inline">{inBucket ? 'In SimSim' : 'SimSim'}</span>
             </button>
 
             {/* Quick Compare Button */}
             <button
               type="button"
               onClick={handleCompareClick}
-              className={`min-h-[34px] px-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 touch-spring border shadow-2xs ${
+              className={`min-h-[36px] px-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 touch-spring border shadow-2xs cursor-pointer ${
                 isCompared
                   ? 'bg-primary text-white border-primary shadow-xs'
                   : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-on-surface hover:border-primary/30 hover:bg-surface-container'
@@ -125,7 +125,7 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               <span className="material-symbols-outlined text-sm leading-none">
                 {isCompared ? 'check' : 'add'}
               </span>
-              <span className="text-[11px] hidden xs:inline">{isCompared ? 'Added' : 'Compare'}</span>
+              <span className="text-[11px] hidden sm:inline">{isCompared ? 'Added' : 'Compare'}</span>
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useScreener } from '@/context/ScreenerContext';
 import { NavPoint } from '@/types/fund';
 import { fetchFundNavHistory } from '@/lib/data-loader';
@@ -29,6 +30,11 @@ export const FundDetailDrawer: React.FC = () => {
   const [openPillarKey, setOpenPillarKey] = useState<string | null>(null);
   const [navHistory, setNavHistory] = useState<NavPoint[]>([]);
   const [loadingNav, setLoadingNav] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fund = funds.find(f => f.code === selectedFundCode);
 
@@ -85,7 +91,7 @@ export const FundDetailDrawer: React.FC = () => {
     };
   }, [selectedFundCode]);
 
-  if (!fund) return null;
+  if (!fund || !mounted || typeof document === 'undefined') return null;
 
   const score = fund.smart_score?.overall ?? (fund.suggester_score ? fund.suggester_score / 10 : 6.0);
   const theme = getSuperScoreTheme(score);
@@ -162,8 +168,8 @@ export const FundDetailDrawer: React.FC = () => {
     setIsComparisonMatrixOpen(true);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+  return createPortal(
+    <div className="fixed inset-0 z-[70] flex justify-end">
       {/* Backdrop blur with touch click dismiss */}
       <div
         onClick={() => setSelectedFundCode(null)}
@@ -743,6 +749,7 @@ export const FundDetailDrawer: React.FC = () => {
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

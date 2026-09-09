@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useScreener } from '@/context/ScreenerContext';
 import { getSuperScoreTheme } from '@/lib/smartscore';
 import { AmcBadge } from '@/components/common/AmcBadge';
@@ -123,14 +124,30 @@ export const ComparisonMatrixModal: React.FC = () => {
     toggleComparison
   } = useScreener();
 
-  if (!isComparisonMatrixOpen) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scrolling when matrix modal is open
+  useEffect(() => {
+    if (!isComparisonMatrixOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isComparisonMatrixOpen]);
+
+  if (!isComparisonMatrixOpen || !mounted || typeof document === 'undefined') return null;
 
   const comparedFunds = comparisonList
     .map(code => funds.find(f => f.code === code))
     .filter(Boolean);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/70 backdrop-blur-xs animate-in fade-in duration-150">
+  return createPortal(
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/70 backdrop-blur-xs animate-in fade-in duration-150">
       <div className="bg-surface rounded-3xl border border-surface-container max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
         
         {/* Modal Header */}
@@ -258,19 +275,20 @@ export const ComparisonMatrixModal: React.FC = () => {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 border-t border-surface-container bg-surface-container-low flex items-center justify-between flex-shrink-0">
+        <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] border-t border-surface-container bg-surface-container-low flex items-center justify-between flex-shrink-0">
           <span className="text-xs text-on-surface-variant">
             <span className="text-gain font-bold">Green highlight</span> denotes institutional best-in-class within comparison set.
           </span>
           <button
             type="button"
             onClick={() => setIsComparisonMatrixOpen(false)}
-            className="min-h-[44px] px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary-container touch-spring"
+            className="min-h-[44px] px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary-container touch-spring cursor-pointer"
           >
             Done
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useScreener } from '@/context/ScreenerContext';
 import { KPI_CATALOG, DEFAULT_TABLE_COLUMNS } from '@/lib/kpi-catalog';
 
@@ -14,8 +15,23 @@ export const KpiModal: React.FC = () => {
 
   const [selectedCols, setSelectedCols] = useState<string[]>(tableColumns);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [mounted, setMounted] = useState(false);
 
-  if (!isKpiModalOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scrolling when KPI modal is open
+  useEffect(() => {
+    if (!isKpiModalOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isKpiModalOpen]);
+
+  if (!isKpiModalOpen || !mounted || typeof document === 'undefined') return null;
 
   const allMetrics = Object.values(KPI_CATALOG);
 
@@ -60,8 +76,8 @@ export const KpiModal: React.FC = () => {
     setIsKpiModalOpen(false);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+  return createPortal(
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div className="bg-surface rounded-2xl border border-surface-container max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
         {/* Header */}
         <div className="p-4 border-b border-surface-container flex items-center justify-between bg-surface-container-low">
@@ -182,11 +198,11 @@ export const KpiModal: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-3 border-t border-surface-container bg-surface-container-low flex items-center justify-between">
+        <div className="p-3.5 pb-[calc(0.875rem+env(safe-area-inset-bottom,0px))] border-t border-surface-container bg-surface-container-low flex items-center justify-between gap-2 flex-wrap flex-shrink-0">
           <button
             type="button"
-            onClick={handleRestoreDefaults}
-            className="text-xs text-primary font-bold hover:underline"
+            onClick={() => setSelectedCols(DEFAULT_TABLE_COLUMNS)}
+            className="text-xs text-primary hover:underline font-semibold touch-spring cursor-pointer"
           >
             Reset Defaults
           </button>
@@ -194,14 +210,14 @@ export const KpiModal: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsKpiModalOpen(false)}
-              className="min-h-[40px] px-3.5 py-1.5 rounded-xl border border-surface-container bg-surface text-xs font-bold text-on-surface-variant hover:text-on-surface touch-spring"
+              className="min-h-[40px] px-3.5 py-1.5 rounded-xl border border-surface-container bg-surface text-xs font-bold text-on-surface-variant hover:text-on-surface touch-spring cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleApply}
-              className="min-h-[40px] px-5 py-1.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary-container touch-spring flex items-center gap-1.5"
+              className="min-h-[40px] px-5 py-1.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary-container touch-spring flex items-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">table_chart</span>
               <span>Apply Table KPIs</span>
@@ -209,6 +225,7 @@ export const KpiModal: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
