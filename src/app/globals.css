@@ -1,12 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@source "../**";
+
 
 body {
   font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-:root {
+@theme {
   /* Surface & Background */
   --color-background: #f8f9fb;
   --color-surface: #f8f9fb;
@@ -43,13 +43,20 @@ body {
   /* Text & Typography */
   --color-on-surface: #191c1e;
   --color-on-surface-variant: #434654;
+  --color-on-background: #191c1e;
   --color-outline: #737685;
   --color-outline-variant: #c3c6d6;
+  --color-error: #DE350B;
+  --color-error-container: #ffdad6;
 
-  /* Shadows */
-  --shadow-level-1: 0px 4px 12px rgba(9, 30, 66, 0.08);
-  --shadow-level-2: 0px 8px 24px rgba(9, 30, 66, 0.12);
-  --shadow-level-3: 0px 16px 40px rgba(9, 30, 66, 0.16);
+  /* Typography Font Families */
+  --font-display-financial: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-headline-lg: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-headline-md: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body-lg: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body-md: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-label-bold: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-label-sm: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 html.dark, .dark {
@@ -84,8 +91,11 @@ html.dark, .dark {
 
   --color-on-surface: #f1f5f9;
   --color-on-surface-variant: #94a3b8;
+  --color-on-background: #f1f5f9;
   --color-outline: #64748b;
   --color-outline-variant: #334155;
+  --color-error: #f87171;
+  --color-error-container: rgba(248, 113, 113, 0.2);
 }
 
 /* Touch Spring tactile feedback */
