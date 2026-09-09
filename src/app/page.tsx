@@ -10,6 +10,8 @@ import { FundTable } from '@/components/screener/FundTable';
 import { KpiModal } from '@/components/screener/KpiModal';
 import { ComparisonBar } from '@/components/comparison/ComparisonBar';
 import { ComparisonMatrixModal } from '@/components/comparison/ComparisonMatrixModal';
+import { FundDetailDrawer } from '@/components/drawer/FundDetailDrawer';
+import { SimSimModal } from '@/components/simsim/SimSimModal';
 
 const ScreenerDashboard: React.FC = () => {
   const {
@@ -17,7 +19,9 @@ const ScreenerDashboard: React.FC = () => {
     loading,
     viewMode,
     displayLimit,
-    loadMoreFunds
+    loadMoreFunds,
+    isSimSimModalOpen,
+    setIsSimSimModalOpen
   } = useScreener();
 
   const displayedFunds = filteredFunds.slice(0, displayLimit);
@@ -85,9 +89,14 @@ const ScreenerDashboard: React.FC = () => {
       {/* Floating Bottom Comparison Dock */}
       <ComparisonBar />
 
-      {/* Modals */}
+      {/* Modals & Slide-over Drawers */}
       <KpiModal />
       <ComparisonMatrixModal />
+      <FundDetailDrawer />
+      <SimSimModal
+        isOpen={isSimSimModalOpen}
+        onClose={() => setIsSimSimModalOpen(false)}
+      />
     </div>
   );
 };

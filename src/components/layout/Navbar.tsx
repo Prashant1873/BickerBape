@@ -12,7 +12,8 @@ export const Navbar: React.FC = () => {
     filters,
     updateFilter,
     activeFilterCount,
-    setSidebarOpen
+    setSidebarOpen,
+    setIsSimSimModalOpen
   } = useScreener();
 
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -153,6 +154,18 @@ export const Navbar: React.FC = () => {
               );
             })}
           </div>
+
+          {/* SimSim™ AI Wizard Trigger */}
+          <button
+            type="button"
+            onClick={() => setIsSimSimModalOpen(true)}
+            className="min-h-[40px] px-3 rounded-xl bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5 hover:from-primary/25 hover:to-primary/15 text-primary border border-primary/25 text-xs font-bold transition-all flex items-center gap-1.5 touch-spring shadow-2xs"
+            title="Open SimSim™ Portfolio Backtester"
+            aria-label="Open SimSim Portfolio Backtester"
+          >
+            <span className="material-symbols-outlined text-base leading-none text-primary">auto_awesome</span>
+            <span className="hidden sm:inline font-mono">SimSim™</span>
+          </button>
 
           {/* Theme Mode Toggle (Min 44x44px Touch Target) */}
           <button

@@ -57,6 +57,8 @@ interface ScreenerContextType {
   setIsComparisonMatrixOpen: (open: boolean) => void;
   isKpiModalOpen: boolean;
   setIsKpiModalOpen: (open: boolean) => void;
+  isSimSimModalOpen: boolean;
+  setIsSimSimModalOpen: (open: boolean) => void;
   displayLimit: number;
   loadMoreFunds: () => void;
 }
@@ -76,6 +78,7 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [isComparisonMatrixOpen, setIsComparisonMatrixOpen] = useState<boolean>(false);
   const [isKpiModalOpen, setIsKpiModalOpen] = useState<boolean>(false);
+  const [isSimSimModalOpen, setIsSimSimModalOpen] = useState<boolean>(false);
   const [displayLimit, setDisplayLimit] = useState<number>(36);
 
   // Initialize from storage
@@ -223,6 +226,8 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setIsComparisonMatrixOpen,
         isKpiModalOpen,
         setIsKpiModalOpen,
+        isSimSimModalOpen,
+        setIsSimSimModalOpen,
         displayLimit,
         loadMoreFunds
       }}
