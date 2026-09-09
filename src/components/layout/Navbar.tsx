@@ -90,7 +90,7 @@ export const Navbar: React.FC = () => {
           >
             <div className="relative w-9 h-9 rounded-xl overflow-hidden shadow-md border border-white/20 group-hover:scale-105 transition-transform flex items-center justify-center bg-[#07090E]">
               <img
-                src="/assets/logo.png"
+                src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/assets/logo.png`}
                 alt="BickerBape Logo"
                 className="w-full h-full object-cover"
                 onError={(e) => {

@@ -6,6 +6,9 @@ const navCache = new Map<string | number, NavPoint[]>();
 
 // Adjust basePath for GitHub Pages subpaths if deployed under a subpath
 const getBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_BASE_PATH) {
+    return process.env.NEXT_PUBLIC_BASE_PATH;
+  }
   if (typeof window !== 'undefined') {
     return window.location.pathname.startsWith('/BickerBape') ? '/BickerBape' : '';
   }
