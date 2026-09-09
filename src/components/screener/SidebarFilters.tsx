@@ -4,13 +4,13 @@ import React, { useState, useMemo } from 'react';
 import { useScreener } from '@/context/ScreenerContext';
 
 const PRESETS = [
-  { id: 'all', label: 'All Funds', icon: 'apps' },
-  { id: 'smartscore_elite', label: 'SmartScore™ Elite (>= 7.5)', icon: 'workspace_premium' },
-  { id: 'prashant', label: '10-Step Formula', icon: 'military_tech' },
-  { id: 'compounders', label: 'Consistent Compounders', icon: 'trending_up' },
-  { id: 'low_vol', label: 'Low Volatility Titans', icon: 'security' },
-  { id: 'alpha', label: 'High Alpha Champions', icon: 'bolt' },
-  { id: 'elss', label: 'ELSS Tax Saver', icon: 'savings' }
+  { id: 'all', label: 'All Funds', icon: 'apps', emblemClass: 'chip-emblem-indigo' },
+  { id: 'smartscore_elite', label: 'SmartScore™ Elite (>= 7.5)', icon: 'workspace_premium', emblemClass: 'chip-emblem-purple' },
+  { id: 'prashant', label: '10-Step Formula', icon: 'military_tech', emblemClass: 'chip-emblem-gold' },
+  { id: 'compounders', label: 'Consistent Compounders', icon: 'trending_up', emblemClass: 'chip-emblem-emerald' },
+  { id: 'low_vol', label: 'Low Volatility Titans', icon: 'security', emblemClass: 'chip-emblem-blue' },
+  { id: 'alpha', label: 'High Alpha Champions', icon: 'bolt', emblemClass: 'chip-emblem-coral' },
+  { id: 'elss', label: 'ELSS Tax Saver', icon: 'savings', emblemClass: 'chip-emblem-teal' }
 ];
 
 const INSIGHTS = [
@@ -91,7 +91,7 @@ export const SidebarFilters: React.FC = () => {
             </button>
           )}
         </div>
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-2">
           {PRESETS.map(p => {
             const active = filters.preset === p.id;
             return (
@@ -99,17 +99,21 @@ export const SidebarFilters: React.FC = () => {
                 key={p.id}
                 type="button"
                 onClick={() => updateFilter('preset', p.id)}
-                className={`min-h-[40px] px-3 py-2 rounded-xl text-xs font-semibold text-left flex items-center justify-between transition-all touch-spring ${
-                  active
-                    ? 'bg-primary text-white shadow-xs'
-                    : 'bg-surface-container-low/60 hover:bg-surface-container text-on-surface-variant hover:text-on-surface'
+                className={`strategy-chip min-h-[46px] px-3 py-2 text-xs font-semibold text-left flex items-center justify-between transition-all touch-spring ${
+                  active ? 'active' : ''
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-base">{p.icon}</span>
-                  <span>{p.label}</span>
+                <div className="flex items-center gap-2.5">
+                  <div className={`chip-emblem ${p.emblemClass}`}>
+                    <span className="material-symbols-outlined text-base leading-none text-white">{p.icon}</span>
+                  </div>
+                  <span className="font-medium tracking-tight leading-snug">{p.label}</span>
                 </div>
-                {active && <span className="material-symbols-outlined text-sm">check</span>}
+                {active && (
+                  <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 ml-1">
+                    <span className="material-symbols-outlined text-xs leading-none text-white">check</span>
+                  </span>
+                )}
               </button>
             );
           })}
@@ -117,7 +121,7 @@ export const SidebarFilters: React.FC = () => {
       </div>
 
       {/* Quantitative Range Sliders */}
-      <div className="space-y-4 pt-2 border-t border-surface-container">
+      <div className="space-y-4 pt-3 border-t border-surface-container">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
             Quantitative Hurdles
@@ -135,9 +139,9 @@ export const SidebarFilters: React.FC = () => {
 
         {/* Min 3Y Rolling Return */}
         <div>
-          <div className="flex items-center justify-between text-xs mb-1">
+          <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-on-surface font-medium">Min 3Y Rolling Return</span>
-            <span className="font-mono font-bold text-primary px-1.5 py-0.5 rounded bg-surface-container text-[11px]">
+            <span className="font-mono font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
               {filters.minRollingReturn > -100 ? `${filters.minRollingReturn}%` : 'Off'}
             </span>
           </div>
@@ -148,16 +152,16 @@ export const SidebarFilters: React.FC = () => {
             step="1"
             value={filters.minRollingReturn > -100 ? filters.minRollingReturn : -10}
             onChange={(e) => updateFilter('minRollingReturn', Number(e.target.value))}
-            className="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary"
+            className="apple-slider"
             aria-label="Minimum 3 Year Rolling Return"
           />
         </div>
 
         {/* Min Sharpe Ratio */}
         <div>
-          <div className="flex items-center justify-between text-xs mb-1">
+          <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-on-surface font-medium">Min Sharpe Ratio</span>
-            <span className="font-mono font-bold text-primary px-1.5 py-0.5 rounded bg-surface-container text-[11px]">
+            <span className="font-mono font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
               {filters.minSharpe > -10 ? filters.minSharpe.toFixed(1) : 'Off'}
             </span>
           </div>
@@ -168,16 +172,16 @@ export const SidebarFilters: React.FC = () => {
             step="0.1"
             value={filters.minSharpe > -10 ? filters.minSharpe : 0}
             onChange={(e) => updateFilter('minSharpe', Number(e.target.value))}
-            className="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary"
+            className="apple-slider"
             aria-label="Minimum Sharpe Ratio"
           />
         </div>
 
         {/* Max Volatility */}
         <div>
-          <div className="flex items-center justify-between text-xs mb-1">
+          <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-on-surface font-medium">Max Volatility</span>
-            <span className="font-mono font-bold text-primary px-1.5 py-0.5 rounded bg-surface-container text-[11px]">
+            <span className="font-mono font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
               {filters.maxVolatility < 100 ? `${filters.maxVolatility}%` : 'Off'}
             </span>
           </div>
@@ -188,16 +192,16 @@ export const SidebarFilters: React.FC = () => {
             step="1"
             value={filters.maxVolatility < 100 ? filters.maxVolatility : 30}
             onChange={(e) => updateFilter('maxVolatility', Number(e.target.value))}
-            className="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary"
+            className="apple-slider"
             aria-label="Maximum Volatility"
           />
         </div>
 
         {/* Min SmartScore */}
         <div>
-          <div className="flex items-center justify-between text-xs mb-1">
+          <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-on-surface font-medium">Min SmartScore™</span>
-            <span className="font-mono font-bold text-primary px-1.5 py-0.5 rounded bg-surface-container text-[11px]">
+            <span className="font-mono font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
               {filters.minSmartScore > 0 ? `${filters.minSmartScore.toFixed(1)}/10` : 'Off'}
             </span>
           </div>
@@ -208,7 +212,7 @@ export const SidebarFilters: React.FC = () => {
             step="0.5"
             value={filters.minSmartScore}
             onChange={(e) => updateFilter('minSmartScore', Number(e.target.value))}
-            className="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary"
+            className="apple-slider"
             aria-label="Minimum SmartScore"
           />
         </div>

@@ -120,21 +120,38 @@ export const FundDetailDrawer: React.FC = () => {
         </div>
 
         {/* Action & Quick Stats Bar */}
-        <div className="p-4 border-b border-surface-container bg-surface-container-low/40 flex items-center justify-between gap-3 flex-wrap flex-shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className={`px-3 py-1 rounded-xl border flex items-center gap-1.5 ${theme.badgeBg} ${theme.badgeBorder}`}>
-              <span className="material-symbols-outlined text-sm text-primary">stars</span>
-              <span className={`font-mono font-black text-sm ${theme.badgeText}`}>
-                {score.toFixed(1)}
-              </span>
-              <span className="text-[10px] font-bold uppercase text-on-surface-variant">/ 10</span>
-            </div>
-            {fund.smart_score && (fund.smart_score as any).rank_text && (
-              <span className="text-xs font-semibold text-on-surface">
-                {(fund.smart_score as any).rank_text}
-              </span>
-            )}
-          </div>
+        {(() => {
+          const ringColor = score >= 8.0 ? '#36B37E' : score >= 6.5 ? '#2563EB' : score >= 5.0 ? '#FF9F0A' : '#FF5630';
+          const scorePct = Math.min(100, Math.max(0, Math.round(score * 10)));
+          return (
+            <div className="p-4 border-b border-surface-container bg-surface-container-low/40 flex items-center justify-between gap-3 flex-wrap flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div
+                  className="smartscore-gauge gauge-large"
+                  style={{
+                    background: `conic-gradient(${ringColor} ${scorePct}%, var(--color-surface-container, #edeef0) 0deg)`,
+                  }}
+                  title={`SmartScore™: ${score.toFixed(1)}/10 (${theme.label})`}
+                >
+                  <span className="gauge-value" style={{ color: ringColor }}>
+                    {score.toFixed(1)}
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant/80">
+                    SmartScore™ Scorecard
+                  </span>
+                  {fund.smart_score && (fund.smart_score as any).rank_text ? (
+                    <span className="text-xs font-bold text-primary mt-0.5">
+                      {(fund.smart_score as any).rank_text}
+                    </span>
+                  ) : (
+                    <span className="text-xs font-semibold text-on-surface mt-0.5">
+                      {theme.label}
+                    </span>
+                  )}
+                </div>
+              </div>
 
           <button
             type="button"
@@ -151,6 +168,8 @@ export const FundDetailDrawer: React.FC = () => {
             <span>{isCompared ? 'In Comparison Tray' : 'Add to Compare'}</span>
           </button>
         </div>
+      );
+    })()}
 
         {/* Scrollable Body */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-6 hide-scrollbar flex-1">

@@ -22,7 +22,7 @@ export const ComparisonBar: React.FC = () => {
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-full max-w-4xl px-3 pointer-events-none">
-      <div className="bg-surface-container-lowest/95 dark:bg-surface-container-lowest/95 backdrop-blur-md rounded-2xl border border-primary/30 shadow-2xl p-3 sm:p-4 pointer-events-auto transition-all animate-in slide-in-from-bottom-5 duration-200">
+      <div className="glass-chrome rounded-[20px] border border-primary/30 shadow-2xl p-3 sm:p-4 pointer-events-auto transition-all animate-in slide-in-from-bottom-5 duration-200">
         
         {/* Minimized Pill on Mobile / Small screens */}
         {isMinimized ? (

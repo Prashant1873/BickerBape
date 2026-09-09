@@ -56,7 +56,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-surface/90 dark:bg-surface/95 backdrop-blur-md border-b border-surface-container transition-colors">
+    <header className="sticky top-0 z-30 glass-chrome transition-colors">
       <div className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4">
         
         {/* Brand & Mobile Drawer Button */}
@@ -65,7 +65,7 @@ export const Navbar: React.FC = () => {
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-surface-container-low border border-surface-container text-on-surface-variant hover:text-on-surface flex items-center justify-center relative touch-spring"
+            className="lg:hidden w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-surface-container-low border border-surface-container text-on-surface-variant hover:text-on-surface flex items-center justify-center relative touch-spring shadow-2xs"
             aria-label="Open filter sidebar"
           >
             <span className="material-symbols-outlined text-xl">tune</span>
@@ -77,7 +77,7 @@ export const Navbar: React.FC = () => {
           </button>
 
           <a href="#" className="flex items-center gap-2.5 group select-none">
-            <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-black shadow-xs font-mono text-base tracking-tighter group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-container to-primary text-white flex items-center justify-center font-black font-mono text-base tracking-tighter shadow-md border border-white/20 group-hover:scale-105 transition-transform">
               BB
             </div>
             <div className="hidden sm:flex flex-col">
@@ -102,7 +102,7 @@ export const Navbar: React.FC = () => {
             value={filters.searchQuery}
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Search 620 funds by scheme, AMC, or fund manager..."
-            className="w-full bg-surface-container-low border border-surface-container rounded-xl py-2 pl-9 pr-14 text-xs text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all min-h-[40px]"
+            className="w-full bg-surface-container-lowest dark:bg-surface-container-low border border-surface-container rounded-xl py-2 pl-9 pr-14 text-xs text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all min-h-[40px] shadow-2xs"
             aria-label="Search mutual funds"
           />
           <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -110,7 +110,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => updateFilter('searchQuery', '')}
-                className="w-5 h-5 text-on-surface-variant hover:text-on-surface flex items-center justify-center rounded-full"
+                className="w-5 h-5 text-on-surface-variant hover:text-on-surface flex items-center justify-center rounded-full hover:bg-surface-container"
                 aria-label="Clear search"
               >
                 <span className="material-symbols-outlined text-sm">close</span>
@@ -127,23 +127,28 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Mood 3-Way Switcher */}
           <div
-            className="flex items-center p-1 bg-surface-container-low border border-surface-container rounded-xl shadow-2xs"
+            className="flex items-center p-1 bg-surface-container-low/80 dark:bg-surface-container-low border border-surface-container rounded-xl shadow-2xs"
             role="radiogroup"
             aria-label="Investor Mood Scoring Weight"
           >
             {(['growth', 'safety', 'income'] as InvestorMood[]).map((m) => {
               const cfg = MOOD_CONFIG[m];
               const active = mood === m;
+              let activeClass = '';
+              if (active) {
+                if (m === 'growth') activeClass = 'mood-btn-growth-active';
+                else if (m === 'safety') activeClass = 'mood-btn-safety-active';
+                else if (m === 'income') activeClass = 'mood-btn-income-active';
+              } else {
+                activeClass = 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50';
+              }
+
               return (
                 <button
                   key={m}
                   type="button"
                   onClick={() => setMood(m)}
-                  className={`min-h-[38px] px-2.5 sm:px-3 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 touch-spring select-none ${
-                    active
-                      ? 'bg-primary text-white shadow-xs'
-                      : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50'
-                  }`}
+                  className={`min-h-[36px] px-2.5 sm:px-3 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 touch-spring select-none ${activeClass}`}
                   title={`${cfg.label} Mood: ${cfg.focus}`}
                   aria-checked={active}
                   role="radio"
@@ -159,19 +164,19 @@ export const Navbar: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsSimSimModalOpen(true)}
-            className="min-h-[40px] px-3 rounded-xl bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5 hover:from-primary/25 hover:to-primary/15 text-primary border border-primary/25 text-xs font-bold transition-all flex items-center gap-1.5 touch-spring shadow-2xs"
+            className="min-h-[38px] px-3.5 rounded-xl bg-gradient-to-r from-emerald-500/15 via-primary/15 to-primary-container/20 hover:from-emerald-500/25 hover:to-primary/25 text-on-surface border border-emerald-500/30 text-xs font-bold transition-all flex items-center gap-1.5 touch-spring shadow-xs"
             title="Open SimSim™ Portfolio Backtester"
             aria-label="Open SimSim Portfolio Backtester"
           >
-            <span className="material-symbols-outlined text-base leading-none text-primary">auto_awesome</span>
-            <span className="hidden sm:inline font-mono">SimSim™</span>
+            <span className="material-symbols-outlined text-base leading-none text-emerald-500 dark:text-emerald-400">auto_awesome</span>
+            <span className="hidden sm:inline font-mono font-bold tracking-tight">SimSim™</span>
           </button>
 
           {/* Theme Mode Toggle (Min 44x44px Touch Target) */}
           <button
             type="button"
             onClick={toggleTheme}
-            className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-surface-container-low border border-surface-container text-on-surface-variant hover:text-on-surface flex items-center justify-center touch-spring"
+            className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-surface-container-low border border-surface-container text-on-surface-variant hover:text-on-surface flex items-center justify-center touch-spring shadow-2xs"
             aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >

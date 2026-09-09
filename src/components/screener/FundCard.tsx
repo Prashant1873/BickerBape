@@ -29,51 +29,60 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
     toggleComparison(fund.code);
   };
 
+  // Conic ring color based on score
+  const ringColor = score >= 8.0 ? '#36B37E' : score >= 6.5 ? '#2563EB' : score >= 5.0 ? '#FF9F0A' : '#FF5630';
+  const scorePct = Math.min(100, Math.max(0, Math.round(score * 10)));
+
   return (
     <div
       onClick={handleCardClick}
-      className="group p-4 sm:p-5 rounded-2xl bg-surface-container-lowest border border-surface-container hover:border-primary/40 hover:shadow-md transition-all cursor-pointer relative flex flex-col justify-between select-none touch-spring"
+      className="card-interactive group p-4 sm:p-5 cursor-pointer relative flex flex-col justify-between select-none touch-spring"
       tabIndex={0}
       role="button"
       aria-label={`View details for ${fund.name}`}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleCardClick()}
     >
       <div>
-        {/* Card Header: SuperScore Badge & Compare Toggle */}
-        <div className="flex items-start justify-between gap-3 mb-3">
-          {/* SuperScore™ Scorecard Pill */}
-          <div className="flex items-center gap-2">
+        {/* Card Header: Circular Conic SmartScore Gauge & Compare Toggle */}
+        <div className="flex items-start justify-between gap-3 mb-3.5">
+          {/* SmartScore™ Circular Conic Gauge & Rank */}
+          <div className="flex items-center gap-3">
             <div
-              className={`px-2.5 py-1 rounded-xl border flex items-center gap-1.5 shadow-2xs ${theme.badgeBg} ${theme.badgeBorder}`}
+              className="smartscore-gauge"
+              style={{
+                background: `conic-gradient(${ringColor} ${scorePct}%, var(--color-surface-container, #edeef0) 0deg)`,
+              }}
               title={`SmartScore™: ${score.toFixed(1)}/10 (${theme.label})`}
             >
-              <span className="material-symbols-outlined text-sm leading-none text-primary">
-                stars
-              </span>
-              <span className={`font-mono font-black text-sm leading-none ${theme.badgeText}`}>
+              <span className="gauge-value" style={{ color: ringColor }}>
                 {score.toFixed(1)}
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/80">
-                /10
               </span>
             </div>
 
-            {/* Rank in Category */}
-            {fund.smart_score && (fund.smart_score as any).rank_text && (
-              <span className="text-[11px] font-medium text-on-surface-variant truncate max-w-[140px] sm:max-w-[160px]" title={(fund.smart_score as any).rank_text}>
-                {(fund.smart_score as any).rank_text.split(' of ')[0]}
+            <div className="flex flex-col">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant/80 leading-none">
+                SmartScore™
               </span>
-            )}
+              {fund.smart_score && (fund.smart_score as any).rank_text ? (
+                <span className="text-[11px] font-bold text-primary truncate max-w-[130px] sm:max-w-[150px] mt-0.5" title={(fund.smart_score as any).rank_text}>
+                  {(fund.smart_score as any).rank_text.split(' of ')[0]}
+                </span>
+              ) : (
+                <span className="text-[11px] font-semibold text-on-surface-variant mt-0.5">
+                  {theme.label}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Quick Compare Button (Fitts's Law: 44x44px Touch Target) */}
           <button
             type="button"
             onClick={handleCompareClick}
-            className={`min-h-[38px] px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 touch-spring border ${
+            className={`min-h-[36px] px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 touch-spring border shadow-2xs ${
               isCompared
                 ? 'bg-primary text-white border-primary shadow-xs'
-                : 'bg-surface-container-low border-surface-container text-on-surface-variant hover:text-on-surface hover:border-primary/30'
+                : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-on-surface hover:border-primary/30 hover:bg-surface-container'
             }`}
             aria-label={isCompared ? `Remove ${fund.name} from comparison` : `Add ${fund.name} to comparison`}
             title={isCompared ? 'Remove from comparison' : 'Add to comparison'}

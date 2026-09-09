@@ -278,7 +278,7 @@ export const SimSimModal: React.FC<SimSimModalProps> = ({ isOpen, onClose }) => 
                         step="5"
                         value={currentWeight}
                         onChange={(e) => handleWeightChange(idx, Number(e.target.value))}
-                        className="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary"
+                        className="apple-slider"
                       />
                     </div>
                   </div>
@@ -289,14 +289,14 @@ export const SimSimModal: React.FC<SimSimModalProps> = ({ isOpen, onClose }) => 
 
           {/* Step 3: Capital & Mode Controls */}
           <section className="p-4 rounded-2xl bg-surface-container-low border border-surface-container flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               {/* Mode Toggle: Lumpsum vs SIP */}
-              <div className="flex items-center p-1 bg-surface border border-surface-container rounded-xl">
+              <div className="flex items-center p-1 bg-surface border border-surface-container rounded-xl shadow-2xs">
                 <button
                   type="button"
                   onClick={() => setInvestmentMode('lumpsum')}
-                  className={`min-h-[36px] px-3 rounded-lg text-xs font-bold transition-all touch-spring ${
-                    investmentMode === 'lumpsum' ? 'bg-primary text-white shadow-xs' : 'text-on-surface-variant'
+                  className={`min-h-[36px] px-3.5 rounded-lg text-xs font-bold transition-all touch-spring ${
+                    investmentMode === 'lumpsum' ? 'bg-primary text-white shadow-xs' : 'text-on-surface-variant hover:text-on-surface'
                   }`}
                 >
                   Lumpsum
@@ -304,8 +304,8 @@ export const SimSimModal: React.FC<SimSimModalProps> = ({ isOpen, onClose }) => 
                 <button
                   type="button"
                   onClick={() => setInvestmentMode('sip')}
-                  className={`min-h-[36px] px-3 rounded-lg text-xs font-bold transition-all touch-spring ${
-                    investmentMode === 'sip' ? 'bg-primary text-white shadow-xs' : 'text-on-surface-variant'
+                  className={`min-h-[36px] px-3.5 rounded-lg text-xs font-bold transition-all touch-spring ${
+                    investmentMode === 'sip' ? 'bg-primary text-white shadow-xs' : 'text-on-surface-variant hover:text-on-surface'
                   }`}
                 >
                   Monthly SIP
@@ -321,7 +321,7 @@ export const SimSimModal: React.FC<SimSimModalProps> = ({ isOpen, onClose }) => 
                   min="1000"
                   value={capital}
                   onChange={(e) => setCapital(Number(e.target.value))}
-                  className="w-32 bg-surface border border-surface-container rounded-xl py-1.5 px-2.5 text-xs font-mono font-bold text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 min-h-[36px]"
+                  className="w-32 bg-surface border border-surface-container rounded-xl py-1.5 px-2.5 text-xs font-mono font-bold text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 min-h-[36px] shadow-2xs"
                 />
               </div>
             </div>
@@ -331,7 +331,7 @@ export const SimSimModal: React.FC<SimSimModalProps> = ({ isOpen, onClose }) => 
               type="button"
               disabled={isSimulating}
               onClick={handleRunSimulation}
-              className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md hover:bg-primary-container touch-spring flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-primary to-primary-container text-white text-xs font-bold shadow-md hover:shadow-lg hover:scale-[1.02] touch-spring flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-all"
             >
               <span className="material-symbols-outlined text-base">rocket_launch</span>
               <span>{isSimulating ? 'Simulating Historical Points...' : 'Simulate & Backtest'}</span>

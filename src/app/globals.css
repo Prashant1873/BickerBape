@@ -99,9 +99,312 @@ html.dark, .dark {
 }
 
 /* Touch Spring tactile feedback */
-.touch-spring:active {
+.touch-spring:active, button:active, .category-pill:active, .strategy-chip:active, .card-interactive:active {
   transform: scale(0.97);
   transition: transform 100ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Material Symbols configuration */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.icon-filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Tabular numbers for financial accuracy */
+.tabular-nums, .font-display-financial, .financial-figure, td.numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Translucent Frosted Glass Chrome */
+.glass-chrome {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.dark .glass-chrome, html.dark .glass-chrome {
+  background: rgba(15, 23, 42, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-surface {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+.dark .glass-surface, html.dark .glass-surface {
+  background: rgba(30, 41, 59, 0.9);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.dark .glass-card, html.dark .glass-card {
+  background: rgba(30, 41, 59, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 3D Interactive Fund Cards with 20px Squircle Curvature */
+.card-interactive {
+  background: var(--color-surface-container-lowest);
+  border: 1px solid rgba(9, 30, 66, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 4px 18px -2px rgba(9, 30, 66, 0.06), 0 1px 3px rgba(9, 30, 66, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 200ms ease;
+}
+
+.dark .card-interactive, html.dark .card-interactive {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.card-interactive:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 82, 204, 0.22);
+  box-shadow: 0 16px 36px -6px rgba(9, 30, 66, 0.12), 
+              0 4px 14px -2px rgba(0, 82, 204, 0.08), 
+              inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.dark .card-interactive:hover, html.dark .card-interactive:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6);
+}
+
+.card-interactive:active {
+  transform: translateY(0px) scale(0.985);
+}
+
+/* Strategy Preset Badges with Tactile Depth & 14px Squircle Curvature */
+.strategy-chip {
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, color 180ms ease;
+  border: 1px solid rgba(9, 30, 66, 0.08);
+  border-radius: 14px;
+  background: var(--color-surface-container-lowest);
+  color: var(--color-on-surface);
+  box-shadow: 0 2px 6px -1px rgba(9, 30, 66, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .strategy-chip, html.dark .strategy-chip {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.strategy-chip:hover {
+  border-color: rgba(59, 130, 246, 0.35);
+  background: var(--color-surface-container-lowest);
+  box-shadow: 0 6px 16px -2px rgba(9, 30, 66, 0.08);
+  transform: translateY(-2px);
+}
+
+.strategy-chip:active {
+  transform: translateY(0px) scale(0.97);
+}
+
+.strategy-chip.active {
+  background: linear-gradient(135deg, #0052cc 0%, #00368c 100%) !important;
+  color: #ffffff !important;
+  border-color: #00368c !important;
+  box-shadow: 0 8px 24px -3px rgba(0, 82, 204, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Radiant Squircle Emblems for Strategy Chips (10px curvature) */
+.chip-emblem {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.strategy-chip:hover .chip-emblem {
+  transform: scale(1.12);
+}
+
+.chip-emblem-indigo {
+  background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%);
+  color: #ffffff;
+}
+
+.chip-emblem-purple {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+  color: #ffffff;
+}
+
+.chip-emblem-gold {
+  background: linear-gradient(135deg, #FBBF24 0%, #D97706 100%);
+  color: #ffffff;
+}
+
+.chip-emblem-emerald {
+  background: linear-gradient(135deg, #34D399 0%, #059669 100%);
+  color: #ffffff;
+}
+
+.chip-emblem-blue {
+  background: linear-gradient(135deg, #60A5FA 0%, #1D4ED8 100%);
+  color: #ffffff;
+}
+
+.chip-emblem-coral {
+  background: linear-gradient(135deg, #F87171 0%, #DC2626 100%);
+  color: #ffffff;
+}
+
+.chip-emblem-teal {
+  background: linear-gradient(135deg, #2DD4BF 0%, #0F766E 100%);
+  color: #ffffff;
+}
+
+/* Circular Conic-Gradient SmartScore Gauge */
+.smartscore-gauge {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(9, 30, 66, 0.08);
+  padding: 3.5px;
+  user-select: none;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.smartscore-gauge.gauge-large {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  padding: 4.5px;
+}
+
+.smartscore-gauge::before {
+  content: '';
+  position: absolute;
+  inset: 3.5px;
+  background: var(--color-surface-container-lowest);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.dark .smartscore-gauge::before, html.dark .smartscore-gauge::before {
+  background: var(--color-surface-container-low);
+}
+
+.smartscore-gauge.gauge-large::before {
+  inset: 4.5px;
+}
+
+.smartscore-gauge .gauge-value {
+  position: relative;
+  z-index: 2;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  color: var(--color-on-surface);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.smartscore-gauge.gauge-large .gauge-value {
+  font-size: 17px;
+}
+
+/* Apple Range Slider with glowing thumb */
+.apple-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--color-surface-container);
+  border-radius: 9999px;
+  outline: none;
+  transition: background 150ms ease;
+  cursor: pointer;
+}
+
+.apple-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-primary-container);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 82, 204, 0.35);
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 150ms ease;
+}
+
+.apple-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+  background: var(--color-primary);
+}
+
+.apple-slider::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+}
+
+.apple-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-primary-container);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 82, 204, 0.35);
+}
+
+/* Investor Mood Controller - Solid Themes */
+.mood-btn-growth-active {
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 14px -1px rgba(16, 185, 129, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.mood-btn-safety-active {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 14px -1px rgba(37, 99, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.mood-btn-income-active {
+  background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 14px -1px rgba(245, 158, 11, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
 }
 
 /* Hide scrollbar utility */
@@ -112,3 +415,4 @@ html.dark, .dark {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
