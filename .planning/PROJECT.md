@@ -14,6 +14,18 @@ Zero-bias, institutional-grade quantitative scoring (SmartScore™) and realisti
 - **Revenue model**: Free open-source financial utility; zero affiliate bias or commission kickbacks.
 - **Success metric**: 100% calculation accuracy, zero runtime NaN/undefined regressions, and sub-100ms client-side filter and simulation response time.
 
+## Current Milestone: v1.0 Production Polish, UI/UX Overhaul & Official Release
+
+**Goal:** Elevate BickerBape into an institutional-grade, distraction-free Indian mutual fund screener with full `/frontend-skill` design standards, Apple fluid physics, atomic zero-shift loading, and verified official GitHub launch.
+
+**Target features:**
+- Harmonious color token system and semantic contrast (/frontend-skill colorize)
+- Concentric-radius precision buttons, toggles, and viscoelastic segmented controls (/frontend-skill buttons & animate)
+- Apple HIG spring physics and interruptible gesture transitions (/frontend-skill animate)
+- Coordinated atomic skeleton loading barrier (CLS = 0)
+- Cognitive UX law optimization (Hick's, Fitts's, Miller's, Doherty threshold) and anti-slop audit
+- Official GitHub release documentation, institutional README, and CI deployment verification
+
 ## Requirements
 
 ### Validated
@@ -30,21 +42,40 @@ Zero-bias, institutional-grade quantitative scoring (SmartScore™) and realisti
 ### Active
 
 - [ ] **TEST-01**: Native TypeScript unit test suite (Vitest) covering `smartscore.ts`, `simsim-engine.ts`, and `analytics.ts`
-- [ ] **TEST-02**: Automated GitHub Actions CI workflow executing `npm run typecheck` and `npm test` before deployment
-- [ ] **REFACTOR-01**: Decompose monolithic `SimSimPage.tsx` (837 lines) into focused sub-components
-- [ ] **REFACTOR-02**: Decompose monolithic `FundDetailDrawer.tsx` (698 lines) into modular scorecard components
-- [ ] **CLEAN-01**: Resolve repository bloat by excluding `./out` build artifacts from git tracking
-- [ ] **UI-01**: Mobile viewport ergonomic polish, touch-spring feedback, and Fitts's law compliance
-- [ ] **UI-02**: Enhanced fund table column customizer and sticky header persistence
-- [ ] **FEAT-01**: Expanded benchmark comparison metrics and category alpha analytics
-- [ ] **FEAT-02**: SimSim portfolio export capability (CSV / JSON / printable summary sheet)
+- [ ] **TEST-02**: Native TypeScript unit tests for `simsim-engine.ts`
+- [ ] **TEST-03**: Native TypeScript unit tests for `analytics.ts`
+- [ ] **TEST-04**: Automated GitHub Actions CI workflow executing `npm run typecheck` and `npm test` before deployment
+- [ ] **ARCH-01**: Decompose monolithic `SimSimPage.tsx` (837 lines) into modular sub-components
+- [ ] **ARCH-02**: Decompose monolithic `FundDetailDrawer.tsx` (698 lines) into isolated tabs
+- [ ] **ARCH-03**: Resolve git repository bloat by excluding generated `./out` static build output from version control
+- [ ] **UI-01**: Mobile viewport optimization for FundDetailDrawer and SimSim modal sheets
+- [ ] **UI-02**: Fitts's law compliance audit ensuring minimum 44px tap targets
+- [ ] **UI-03**: Fund table sticky header stabilization and responsive horizontal scrolling
+- [ ] **FEAT-01**: Benchmark outperformance ratio visualizer and category alpha comparison cards
+- [ ] **FEAT-02**: Portfolio export capability in SimSim (CSV and printable summary sheet)
+- [ ] **COLOR-01**: Semantic chromatic color palette with subtle blue/zinc undertones via `/frontend-skill`
+- [ ] **COLOR-02**: WCAG 2.2 AA contrast compliance across all text, cards, and status badges
+- [ ] **BTN-01**: Buttons and pills with concentric corner radii and optical SVG icon centering
+- [ ] **BTN-02**: Zero pointer-lag active feedback and viscoelastic sliding toggles for mood switchers
+- [ ] **ANIM-01**: Apple HIG critically damped spring physics (`damping: 1.0`) for drawers, modals, and tray
+- [ ] **ANIM-02**: Interruptible transitions with GPU-accelerated transforms and zero layout thrashing
+- [ ] **LOAD-01**: Pixel-matched shimmer skeleton states for table, cards, and chart canvas (CLS = 0)
+- [ ] **LOAD-02**: Atomic mounting barrier and synchronized priming gate eliminating piecemeal element pop-in
+- [ ] **UX-01**: Cognitive UX laws optimization (Hick's, Jakob's, Miller's, Doherty <400ms threshold)
+- [ ] **UX-02**: Chrome distillation stripping unearned borders, heavy shadows, and redundant cards
+- [ ] **UX-03**: Pre-flight anti-slop craft audit across all viewports
+- [ ] **REL-01**: Institutional README with architecture diagram, SmartScore™ methodology, and setup guide
+- [ ] **REL-02**: Comprehensive data pipeline and quantitative formula documentation
+- [ ] **REL-03**: v1.0.0 release checklist, static CI export verification, and GitHub launch preparation
 
 ### Out of Scope
 
-- User authentication / cloud database — Purely client-side static web utility with zero data collection
-- Synthetic or extrapolated financial metrics — Fiduciary principle: unproven periods remain strictly `N/A`
-- Regular mutual fund plans — Fiduciary focus strictly on Direct-Growth schemes to avoid distributor commission drag
-- Hybrid / Debt / Commodity fund categories — Dedicated solely to Indian Equity mutual fund analysis
+| Feature | Reason |
+|---------|--------|
+| User login / Auth | BickerBape is an open, private, zero-tracking web utility; no accounts needed |
+| Extrapolated / Synthetic Metrics | Fiduciary violation; funds with <1Y or <3Y history must remain explicit `N/A` |
+| Regular mutual fund plans | Distributor commission bias; platform strictly evaluates Direct-Growth funds |
+| Debt / Hybrid funds | Platform algorithms are specifically tuned for Indian equity risk/return models |
 
 ## Context
 
@@ -67,7 +98,9 @@ Zero-bias, institutional-grade quantitative scoring (SmartScore™) and realisti
 | Next.js Static Export Architecture | Zero hosting overhead, high reliability via GitHub Pages, fast client execution | ✓ Good |
 | In-Memory Dynamic Score Recalibration | Instant mood switching (Growth, Safety, Income) without network latency | ✓ Good |
 | Dual Python ETL + Node Static Pre-generation | Python provides numeric library convenience; Node pre-splits 19.7MB into lean JSON | ✓ Good |
-| Unified 4-Phase Milestone | User chose to address testing, refactoring, mobile UX, and feature expansion together | — Pending |
+| Unified 10-Phase Milestone | Expands foundation with frontend-skill UI/UX overhaul, atomic skeleton loading, and launch prep | — Pending |
+| Atomic Skeleton Loading Gate | Synchronize data priming behind atomic barrier to guarantee 0 CLS and prevent pop-in | — Pending |
+| `/frontend-skill` Design System Alignment | Enforces concentric radii, viscoelastic toggles, Apple springs, WCAG 2.2 AA | — Pending |
 
 ## Evolution
 
@@ -88,4 +121,4 @@ This document evolves at phase transitions and milestone boundaries.
 5. Update Context with current state
 
 ---
-*Last updated: 2026-10-11 after initialization*
+*Last updated: 2026-10-11 after expanding milestone to 10 phases*

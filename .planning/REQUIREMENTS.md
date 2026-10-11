@@ -29,6 +29,38 @@
 - [ ] **FEAT-01**: Benchmark outperformance ratio visualizer and category alpha comparison cards in fund detail view
 - [ ] **FEAT-02**: Portfolio export capability in SimSim allowing users to download simulation breakdown as CSV and printable summary sheet
 
+### Design Tokens & Harmonious Color System (/frontend-skill)
+
+- [ ] **COLOR-01**: Establish semantic chromatic color system in CSS/Tailwind tokens with subtle blue/zinc undertones, eliminating dead `#000000` and `#71717A`
+- [ ] **COLOR-02**: Enforce WCAG 2.2 AA contrast compliance across all text (min 4.5:1 body, 3:1 headings/icons), card surfaces, and status indicators
+
+### Buttons & Interactive Controls (/frontend-skill)
+
+- [ ] **BTN-01**: Standardize buttons, chips, and pill filters with concentric corner radii ($r_{inner} = \max(0, r_{outer} - \text{padding})$) and sub-pixel optical icon centering (`translateY(-0.5px)`)
+- [ ] **BTN-02**: Implement zero-pointer-lag active-down feedback and viscoelastic sliding indicators for mood switchers and toggle groups
+
+### Apple Fluid Animation & Motion Engine (/frontend-skill)
+
+- [ ] **ANIM-01**: Implement Apple HIG critically damped spring physics (`damping: 1.0` interface settling, `0.8` momentum gestures) for drawer, modals, and dockable tray
+- [ ] **ANIM-02**: Ensure all transitions are interruptible and cancelable mid-flight, leveraging GPU-accelerated transforms (`transform`, `opacity`) without layout thrashing
+
+### Coordinated Atomic Skeleton Loading
+
+- [ ] **LOAD-01**: Pixel-matched shimmer skeleton states matching exact primed layout geometries for table, metric summary cards, and chart canvas (CLS = 0)
+- [ ] **LOAD-02**: Atomic mounting barrier and synchronized data priming gate that reveals all page elements together in a coordinated transition, preventing staggered pop-in
+
+### Comprehensive UI/UX Craft Overhaul & Anti-Slop Audit (/frontend-skill)
+
+- [ ] **UX-01**: Apply cognitive UX laws: Hick's Law (streamlined filter density), Jakob's Law (standard table controls), Miller's Law (chunked metrics), and Doherty threshold (<400ms feedback)
+- [ ] **UX-02**: Distill visual noise by stripping unearned borders, gratuitous shadows, and redundant nested card containers for clean institutional aesthetics
+- [ ] **UX-03**: Complete pre-flight anti-slop audit across all viewports to guarantee typography scale, baseline grid rhythm, and craft excellence
+
+### Official GitHub Release & Launch Readiness
+
+- [ ] **REL-01**: Author institutional `README.md` with visual architecture diagram, SmartScore™ methodology, Zero Estimations fiduciary disclosure, and setup instructions
+- [ ] **REL-02**: Author comprehensive documentation covering AMFI/MFAPI data ETL pipelines, quantitative formulas, and contributing guidelines
+- [ ] **REL-03**: Finalize v1.0.0 release checklist, verify static export and GitHub Actions CI build passes cleanly, and prepare launch release notes
+
 ## v2 Requirements
 
 ### Analytics & Tools
@@ -62,12 +94,26 @@
 | UI-03 | Phase 3 | Pending |
 | FEAT-01 | Phase 4 | Pending |
 | FEAT-02 | Phase 4 | Pending |
+| COLOR-01 | Phase 5 | Pending |
+| COLOR-02 | Phase 5 | Pending |
+| BTN-01 | Phase 6 | Pending |
+| BTN-02 | Phase 6 | Pending |
+| ANIM-01 | Phase 7 | Pending |
+| ANIM-02 | Phase 7 | Pending |
+| LOAD-01 | Phase 8 | Pending |
+| LOAD-02 | Phase 8 | Pending |
+| UX-01 | Phase 9 | Pending |
+| UX-02 | Phase 9 | Pending |
+| UX-03 | Phase 9 | Pending |
+| REL-01 | Phase 10 | Pending |
+| REL-02 | Phase 10 | Pending |
+| REL-03 | Phase 10 | Pending |
 
 **Coverage:**
-- v1 requirements: 12 total
-- Mapped to phases: 12
+- v1 requirements: 26 total
+- Mapped to phases: 26
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-11*
-*Last updated: 2026-10-11 after initial definition*
+*Last updated: 2026-10-11 with Phases 5-10 requirements*
