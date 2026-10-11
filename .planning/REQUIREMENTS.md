@@ -7,47 +7,47 @@
 
 ### Testing & CI
 
-- [ ] **TEST-01**: Native TypeScript unit test suite (Vitest) covering `smartscore.ts` (weights, seasoning caps, category re-ranking)
-- [ ] **TEST-02**: Native TypeScript unit tests for `simsim-engine.ts` (lumpsum compounding, monthly SIP cashflows, Newton-Raphson XIRR, NAV alignment)
-- [ ] **TEST-03**: Native TypeScript unit tests for `analytics.ts` (filtering, quantitative presets, multi-column sorting)
-- [ ] **TEST-04**: Automated GitHub Actions CI workflow executing `npm run typecheck` and `npm test` before static export deployment
+- [x] **TEST-01**: Native TypeScript unit test suite (Vitest) covering `smartscore.ts` (weights, seasoning caps, category re-ranking)
+- [x] **TEST-02**: Native TypeScript unit tests for `simsim-engine.ts` (lumpsum compounding, monthly SIP cashflows, Newton-Raphson XIRR, NAV alignment)
+- [x] **TEST-03**: Native TypeScript unit tests for `analytics.ts` (filtering, quantitative presets, multi-column sorting)
+- [x] **TEST-04**: Automated GitHub Actions CI workflow executing `npm run typecheck` and `npm test` before static export deployment
 
 ### Refactoring & Architecture
 
-- [ ] **ARCH-01**: Decompose monolithic `SimSimPage.tsx` (837 lines) into modular sub-components (canvas header, chart container, metrics table, basket summary)
-- [ ] **ARCH-02**: Decompose monolithic `FundDetailDrawer.tsx` (698 lines) into isolated tabs (overview, rolling performance, risk metrics, portfolio holdings)
-- [ ] **ARCH-03**: Resolve git repository bloat by excluding generated `./out` static build output from version control and updating `.gitignore`
+- [x] **ARCH-01**: Decompose monolithic `SimSimPage.tsx` (837 lines) into modular sub-components (canvas header, chart container, metrics table, basket summary)
+- [x] **ARCH-02**: Decompose monolithic `FundDetailDrawer.tsx` (698 lines) into isolated tabs (overview, rolling performance, risk metrics, portfolio holdings)
+- [x] **ARCH-03**: Resolve git repository bloat by excluding generated `./out` static build output from version control and updating `.gitignore`
 
 ### UI & Mobile Ergonomics
 
-- [ ] **UI-01**: Mobile viewport optimization for FundDetailDrawer and SimSim modal sheets with proper touch dismiss handles and backdrop blur
-- [ ] **UI-02**: Fitts's law compliance audit ensuring all interactive buttons and pill tags maintain minimum 44px touch targets
-- [ ] **UI-03**: Fund table sticky header stabilization and responsive horizontal scrolling on narrow tablet/mobile screens
+- [x] **UI-01**: Mobile viewport optimization for FundDetailDrawer and SimSim modal sheets with proper touch dismiss handles and backdrop blur
+- [x] **UI-02**: Fitts's law compliance audit ensuring all interactive buttons and pill tags maintain minimum 44px touch targets
+- [x] **UI-03**: Fund table sticky header stabilization and responsive horizontal scrolling on narrow tablet/mobile screens
 
 ### Features & Analytics
 
-- [ ] **FEAT-01**: Benchmark outperformance ratio visualizer and category alpha comparison cards in fund detail view
-- [ ] **FEAT-02**: Portfolio export capability in SimSim allowing users to download simulation breakdown as CSV and printable summary sheet
+- [x] **FEAT-01**: Benchmark outperformance ratio visualizer and category alpha comparison cards in fund detail view
+- [x] **FEAT-02**: Portfolio export capability in SimSim allowing users to download simulation breakdown as CSV and printable summary sheet
 
 ### Design Tokens & Harmonious Color System (/frontend-skill)
 
-- [ ] **COLOR-01**: Establish semantic chromatic color system in CSS/Tailwind tokens with subtle blue/zinc undertones, eliminating dead `#000000` and `#71717A`
-- [ ] **COLOR-02**: Enforce WCAG 2.2 AA contrast compliance across all text (min 4.5:1 body, 3:1 headings/icons), card surfaces, and status indicators
+- [x] **COLOR-01**: Establish semantic chromatic color system in CSS/Tailwind tokens with subtle blue/zinc undertones, eliminating dead `#000000` and `#71717A`
+- [x] **COLOR-02**: Enforce WCAG 2.2 AA contrast compliance across all text (min 4.5:1 body, 3:1 headings/icons), card surfaces, and status indicators
 
 ### Buttons & Interactive Controls (/frontend-skill)
 
-- [ ] **BTN-01**: Standardize buttons, chips, and pill filters with concentric corner radii ($r_{inner} = \max(0, r_{outer} - \text{padding})$) and sub-pixel optical icon centering (`translateY(-0.5px)`)
-- [ ] **BTN-02**: Implement zero-pointer-lag active-down feedback and viscoelastic sliding indicators for mood switchers and toggle groups
+- [x] **BTN-01**: Standardize buttons, chips, and pill filters with concentric corner radii ($r_{inner} = \max(0, r_{outer} - \text{padding})$) and sub-pixel optical icon centering (`translateY(-0.5px)`)
+- [x] **BTN-02**: Implement zero-pointer-lag active-down feedback and viscoelastic sliding indicators for mood switchers and toggle groups
 
 ### Apple Fluid Animation & Motion Engine (/frontend-skill)
 
-- [ ] **ANIM-01**: Implement Apple HIG critically damped spring physics (`damping: 1.0` interface settling, `0.8` momentum gestures) for drawer, modals, and dockable tray
-- [ ] **ANIM-02**: Ensure all transitions are interruptible and cancelable mid-flight, leveraging GPU-accelerated transforms (`transform`, `opacity`) without layout thrashing
+- [x] **ANIM-01**: Implement Apple HIG critically damped spring physics (`damping: 1.0` interface settling, `0.8` momentum gestures) for drawer, modals, and dockable tray
+- [x] **ANIM-02**: Ensure all transitions are interruptible and cancelable mid-flight, leveraging GPU-accelerated transforms (`transform`, `opacity`) without layout thrashing
 
 ### Coordinated Atomic Skeleton Loading
 
-- [ ] **LOAD-01**: Pixel-matched shimmer skeleton states matching exact primed layout geometries for table, metric summary cards, and chart canvas (CLS = 0)
-- [ ] **LOAD-02**: Atomic mounting barrier and synchronized data priming gate that reveals all page elements together in a coordinated transition, preventing staggered pop-in
+- [x] **LOAD-01**: Pixel-matched shimmer skeleton states matching exact primed layout geometries for table, metric summary cards, and chart canvas (CLS = 0)
+- [x] **LOAD-02**: Atomic mounting barrier and synchronized data priming gate that reveals all page elements together in a coordinated transition, preventing staggered pop-in
 
 ### Comprehensive UI/UX Craft Overhaul & Anti-Slop Audit (/frontend-skill)
 
@@ -82,26 +82,26 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TEST-01 | Phase 1 | Pending |
-| TEST-02 | Phase 1 | Pending |
-| TEST-03 | Phase 1 | Pending |
-| TEST-04 | Phase 1 | Pending |
-| ARCH-01 | Phase 2 | Pending |
-| ARCH-02 | Phase 2 | Pending |
-| ARCH-03 | Phase 2 | Pending |
-| UI-01 | Phase 3 | Pending |
-| UI-02 | Phase 3 | Pending |
-| UI-03 | Phase 3 | Pending |
-| FEAT-01 | Phase 4 | Pending |
-| FEAT-02 | Phase 4 | Pending |
-| COLOR-01 | Phase 5 | Pending |
-| COLOR-02 | Phase 5 | Pending |
-| BTN-01 | Phase 6 | Pending |
-| BTN-02 | Phase 6 | Pending |
-| ANIM-01 | Phase 7 | Pending |
-| ANIM-02 | Phase 7 | Pending |
-| LOAD-01 | Phase 8 | Pending |
-| LOAD-02 | Phase 8 | Pending |
+| TEST-01 | Phase 1 | Satisfied |
+| TEST-02 | Phase 1 | Satisfied |
+| TEST-03 | Phase 1 | Satisfied |
+| TEST-04 | Phase 1 | Satisfied |
+| ARCH-01 | Phase 2 | Satisfied |
+| ARCH-02 | Phase 2 | Satisfied |
+| ARCH-03 | Phase 2 | Satisfied |
+| UI-01 | Phase 3 | Satisfied |
+| UI-02 | Phase 3 | Satisfied |
+| UI-03 | Phase 3 | Satisfied |
+| FEAT-01 | Phase 4 | Satisfied |
+| FEAT-02 | Phase 4 | Satisfied |
+| COLOR-01 | Phase 5 | Satisfied |
+| COLOR-02 | Phase 5 | Satisfied |
+| BTN-01 | Phase 6 | Satisfied |
+| BTN-02 | Phase 6 | Satisfied |
+| ANIM-01 | Phase 7 | Satisfied |
+| ANIM-02 | Phase 7 | Satisfied |
+| LOAD-01 | Phase 8 | Satisfied |
+| LOAD-02 | Phase 8 | Satisfied |
 | UX-01 | Phase 9 | Pending |
 | UX-02 | Phase 9 | Pending |
 | UX-03 | Phase 9 | Pending |
