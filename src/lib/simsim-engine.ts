@@ -322,7 +322,11 @@ export class SimSimEngine {
         benchmarkNav *= (1 + dayNoise);
       }
 
-      if (currentMonth !== lastSipMonth && dayOfMonth >= sipDay) {
+      const nextDate = dates[i + 1];
+      const nextMonth = nextDate ? `${new Date(nextDate).getFullYear()}-${String(new Date(nextDate).getMonth() + 1).padStart(2, '0')}` : '';
+      const isLastTradingDayOfMonth = !nextDate || nextMonth !== currentMonth;
+
+      if (currentMonth !== lastSipMonth && (dayOfMonth >= sipDay || isLastTradingDayOfMonth)) {
         lastSipMonth = currentMonth;
         totalInvested += monthlySip;
 
@@ -515,4 +519,7 @@ export class SimSimEngine {
 
     return Math.abs(maxDd);
   }
+
+  static runLumpsumSimulation = SimSimEngine.simulateLumpsum;
+  static runSipSimulation = SimSimEngine.simulateSip;
 }
