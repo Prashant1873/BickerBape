@@ -43,6 +43,12 @@ jobs:
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
+      - name: Run TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Run unit tests
+        run: npm test
+
       - name: Build with Next.js static export
         run: |
           npm run build
