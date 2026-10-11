@@ -26,7 +26,8 @@ export const ActiveFiltersBar: React.FC = () => {
     activeFilterCount,
     viewMode,
     setViewMode,
-    setIsKpiModalOpen
+    setIsKpiModalOpen,
+    isPrimed
   } = useScreener();
 
   return (
@@ -34,12 +35,16 @@ export const ActiveFiltersBar: React.FC = () => {
       {/* Top Controls Bar: Counter, View Switcher, Sort */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-2 border-b border-surface-container">
         {/* Results Counter */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-on-surface">
-            Showing <span className="font-mono text-primary text-sm">{filteredFunds.length}</span> of {funds.length} Schemes
-          </span>
-          {activeFilterCount > 0 && (
-            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+        <div className="flex items-center gap-2 min-h-[24px]">
+          {!isPrimed ? (
+            <div className="h-5 w-36 rounded-md bg-surface-container-high/60 shimmer-sweep" aria-label="Loading scheme count" />
+          ) : (
+            <span className="text-xs font-bold text-on-surface">
+              Showing <span className="font-mono text-primary text-sm">{filteredFunds.length}</span> of {funds.length} Schemes
+            </span>
+          )}
+          {isPrimed && activeFilterCount > 0 && (
+            <span className="text-[0.75rem] font-bold tracking-[0.04em] uppercase px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
               {activeFilterCount} active filter{activeFilterCount > 1 ? 's' : ''}
             </span>
           )}
@@ -52,27 +57,27 @@ export const ActiveFiltersBar: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode('cards')}
-              className={`min-h-[36px] px-3 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 touch-spring ${
+              className={`min-h-[44px] px-3.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 touch-spring cursor-pointer ${
                 viewMode === 'cards'
-                  ? 'bg-surface text-primary shadow-xs'
+                  ? 'bg-surface text-primary shadow-xs btn-specular'
                   : 'text-on-surface-variant hover:text-on-surface'
               }`}
               aria-label="Cards View"
             >
-              <span className="material-symbols-outlined text-base">grid_view</span>
+              <span className="material-symbols-outlined text-base optical-icon">grid_view</span>
               <span className="hidden md:inline">Cards</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode('table')}
-              className={`min-h-[36px] px-3 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 touch-spring ${
+              className={`min-h-[44px] px-3.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 touch-spring cursor-pointer ${
                 viewMode === 'table'
-                  ? 'bg-surface text-primary shadow-xs'
+                  ? 'bg-surface text-primary shadow-xs btn-specular'
                   : 'text-on-surface-variant hover:text-on-surface'
               }`}
               aria-label="Table View"
             >
-              <span className="material-symbols-outlined text-base">table_chart</span>
+              <span className="material-symbols-outlined text-base optical-icon">table_chart</span>
               <span className="hidden md:inline">Table</span>
             </button>
           </div>
@@ -82,7 +87,7 @@ export const ActiveFiltersBar: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsKpiModalOpen(true)}
-              className="min-h-[36px] px-3 py-1.5 rounded-xl border border-surface-container bg-surface-container-low text-xs font-bold text-on-surface hover:text-primary hover:border-primary/40 flex items-center gap-1.5 transition-all touch-spring"
+              className="min-h-[44px] px-3.5 py-2 rounded-xl border border-surface-container bg-surface-container-low text-xs font-bold text-on-surface hover:text-primary hover:border-primary/40 flex items-center gap-1.5 transition-all touch-spring cursor-pointer"
             >
               <span className="material-symbols-outlined text-base">view_column</span>
               <span>Customize KPIs</span>
@@ -90,7 +95,7 @@ export const ActiveFiltersBar: React.FC = () => {
           )}
 
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-1 bg-surface-container-low border border-surface-container rounded-xl px-2 py-1">
+          <div className="min-h-[44px] flex items-center gap-1.5 bg-surface-container-low border border-surface-container rounded-xl px-2.5 py-1">
             <span className="material-symbols-outlined text-on-surface-variant text-base">sort</span>
             <select
               value={filters.sortBy}
@@ -107,7 +112,7 @@ export const ActiveFiltersBar: React.FC = () => {
             <button
               type="button"
               onClick={() => updateFilter('sortDir', filters.sortDir === 'asc' ? 'desc' : 'asc')}
-              className="w-7 h-7 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface touch-spring"
+              className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface touch-spring cursor-pointer"
               title={`Sort ${filters.sortDir === 'asc' ? 'Ascending' : 'Descending'}`}
               aria-label={`Sort ${filters.sortDir === 'asc' ? 'Ascending' : 'Descending'}`}
             >
@@ -125,99 +130,99 @@ export const ActiveFiltersBar: React.FC = () => {
           <span className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Active:</span>
 
           {filters.category !== 'All Funds' && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface">
+            <span className="inline-flex items-center gap-1.5 pl-3 pr-1 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface min-h-[36px]">
               <span>Category: {filters.category}</span>
               <button
                 type="button"
                 onClick={() => updateFilter('category', 'All Funds')}
-                className="hover:text-error"
+                className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-surface-container-high/60 hover:text-error touch-spring cursor-pointer"
                 aria-label="Remove category filter"
               >
-                <span className="material-symbols-outlined text-xs">close</span>
+                <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </span>
           )}
 
           {filters.preset !== 'all' && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-xs font-semibold text-primary">
+            <span className="inline-flex items-center gap-1.5 pl-3 pr-1 py-1 rounded-lg bg-primary/10 border border-primary/20 text-xs font-semibold text-primary min-h-[36px]">
               <span>Preset: {filters.preset.replace('_', ' ')}</span>
               <button
                 type="button"
                 onClick={() => updateFilter('preset', 'all')}
-                className="hover:text-error"
+                className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-primary/20 hover:text-error touch-spring cursor-pointer"
                 aria-label="Remove preset filter"
               >
-                <span className="material-symbols-outlined text-xs">close</span>
+                <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </span>
           )}
 
           {filters.searchQuery && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface">
+            <span className="inline-flex items-center gap-1.5 pl-3 pr-1 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface min-h-[36px]">
               <span>Search: &quot;{filters.searchQuery}&quot;</span>
               <button
                 type="button"
                 onClick={() => updateFilter('searchQuery', '')}
-                className="hover:text-error"
+                className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-surface-container-high/60 hover:text-error touch-spring cursor-pointer"
                 aria-label="Remove search filter"
               >
-                <span className="material-symbols-outlined text-xs">close</span>
+                <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </span>
           )}
 
           {filters.minSmartScore > 0 && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface">
+            <span className="inline-flex items-center gap-1.5 pl-3 pr-1 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface min-h-[36px]">
               <span>Score &gt;= {filters.minSmartScore}</span>
               <button
                 type="button"
                 onClick={() => updateFilter('minSmartScore', 0)}
-                className="hover:text-error"
+                className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-surface-container-high/60 hover:text-error touch-spring cursor-pointer"
                 aria-label="Remove minimum score filter"
               >
-                <span className="material-symbols-outlined text-xs">close</span>
+                <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </span>
           )}
 
           {filters.minRollingReturn > -100 && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface">
+            <span className="inline-flex items-center gap-1.5 pl-3 pr-1 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface min-h-[36px]">
               <span>Rolling 3Y &gt;= {filters.minRollingReturn}%</span>
               <button
                 type="button"
                 onClick={() => updateFilter('minRollingReturn', -100)}
-                className="hover:text-error"
+                className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-surface-container-high/60 hover:text-error touch-spring cursor-pointer"
                 aria-label="Remove minimum rolling return filter"
               >
-                <span className="material-symbols-outlined text-xs">close</span>
+                <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </span>
           )}
 
           {filters.minSharpe > -10 && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface">
+            <span className="inline-flex items-center gap-1.5 pl-3 pr-1 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface min-h-[36px]">
               <span>Sharpe &gt;= {filters.minSharpe}</span>
               <button
                 type="button"
                 onClick={() => updateFilter('minSharpe', -10)}
-                className="hover:text-error"
+                className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-surface-container-high/60 hover:text-error touch-spring cursor-pointer"
                 aria-label="Remove minimum Sharpe ratio filter"
               >
-                <span className="material-symbols-outlined text-xs">close</span>
+                <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </span>
           )}
 
           {filters.maxVolatility < 100 && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface">
+            <span className="inline-flex items-center gap-1.5 pl-3 pr-1 py-1 rounded-lg bg-surface-container border border-surface-container text-xs font-semibold text-on-surface min-h-[36px]">
               <span>Volatility &lt;= {filters.maxVolatility}%</span>
               <button
                 type="button"
                 onClick={() => updateFilter('maxVolatility', 100)}
-                className="hover:text-error"
+                className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-surface-container-high/60 hover:text-error touch-spring cursor-pointer"
                 aria-label="Remove maximum volatility filter"
               >
-                <span className="material-symbols-outlined text-xs">close</span>
+                <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </span>
           )}
@@ -225,7 +230,7 @@ export const ActiveFiltersBar: React.FC = () => {
           <button
             type="button"
             onClick={resetFilters}
-            className="text-xs text-primary font-bold hover:underline ml-1 touch-spring"
+            className="min-h-[44px] px-3 rounded-xl text-xs text-primary font-bold hover:underline hover:bg-primary/10 ml-1 touch-spring flex items-center cursor-pointer"
           >
             Clear All
           </button>
@@ -233,7 +238,7 @@ export const ActiveFiltersBar: React.FC = () => {
       )}
 
       {/* Zero-Results Friendly Recovery Card (Postel's Law) */}
-      {filteredFunds.length === 0 && (
+      {isPrimed && filteredFunds.length === 0 && (
         <div className="p-8 rounded-3xl bg-surface-container-lowest border border-surface-container text-center space-y-3 my-6 shadow-xs">
           <div className="w-14 h-14 mx-auto rounded-2xl bg-warning/10 border border-warning/20 flex items-center justify-center text-warning">
             <span className="material-symbols-outlined text-3xl">filter_alt_off</span>

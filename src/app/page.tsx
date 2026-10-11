@@ -17,12 +17,15 @@ import { SimSimSidebar } from '@/components/simsim/SimSimSidebar';
 import { SimSimFloatingTray } from '@/components/simsim/SimSimFloatingTray';
 import { SimSimBasketModal } from '@/components/simsim/SimSimBasketModal';
 import { BackToTop } from '@/components/common/BackToTop';
+import { FundCardSkeleton } from '@/components/screener/FundCardSkeleton';
+import { FundTableSkeleton } from '@/components/screener/FundTableSkeleton';
 
 const ScreenerDashboard: React.FC = () => {
   const {
     appMode,
     filteredFunds,
     loading,
+    isPrimed,
     viewMode,
     displayLimit,
     loadMoreFunds
@@ -55,26 +58,20 @@ const ScreenerDashboard: React.FC = () => {
               {/* Active Filters Bar & Controls */}
               <ActiveFiltersBar />
 
-              {/* Loading State Skeleton */}
-              {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {[...Array(6)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-56 rounded-2xl bg-surface-container-low border border-surface-container animate-pulse p-4 flex flex-col justify-between"
-                    >
-                      <div className="space-y-2">
-                        <div className="h-6 w-24 bg-surface-container rounded-lg" />
-                        <div className="h-4 w-3/4 bg-surface-container rounded" />
-                        <div className="h-3 w-1/2 bg-surface-container rounded" />
-                      </div>
-                      <div className="h-14 bg-surface-container rounded-xl" />
-                    </div>
-                  ))}
-                </div>
+              {/* Loading State Skeleton with Coordinated Atomic Barrier */}
+              {loading || !isPrimed ? (
+                viewMode === 'cards' ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5" data-testid="cards-skeleton-grid">
+                    {[...Array(6)].map((_, i) => (
+                      <FundCardSkeleton key={i} />
+                    ))}
+                  </div>
+                ) : (
+                  <FundTableSkeleton rowCount={12} />
+                )
               ) : viewMode === 'cards' ? (
                 /* Cards View (Responsive 1-col on mobile, 2-col tablet, 3-col desktop) */
-                <div className="space-y-6">
+                <div className="space-y-6 view-transition-enter">
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
                     {displayedFunds.map(fund => (
                       <FundCard key={String(fund.code)} fund={fund} />
@@ -96,7 +93,9 @@ const ScreenerDashboard: React.FC = () => {
                 </div>
               ) : (
                 /* Table View */
-                <FundTable funds={filteredFunds} />
+                <div className="view-transition-enter">
+                  <FundTable funds={filteredFunds} />
+                </div>
               )}
             </>
           ) : (

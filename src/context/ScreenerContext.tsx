@@ -36,7 +36,7 @@ const DEFAULT_FILTERS: FilterValues = {
   sortDir: 'desc'
 };
 
-interface ScreenerContextType {
+export interface ScreenerContextType {
   // Mode
   appMode: AppPlatformMode;
   setAppMode: (mode: AppPlatformMode) => void;
@@ -46,6 +46,7 @@ interface ScreenerContextType {
   filteredFunds: FundSummary[];
   categories: CategoriesSummary;
   loading: boolean;
+  isPrimed: boolean;
   mood: InvestorMood;
   setMood: (mood: InvestorMood) => void;
 
@@ -116,7 +117,7 @@ interface ScreenerContextType {
   applyRegimePreset: (regimeId: string) => void;
 }
 
-const ScreenerContext = createContext<ScreenerContextType | undefined>(undefined);
+export const ScreenerContext = createContext<ScreenerContextType | undefined>(undefined);
 
 export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { showToast } = useToast();
@@ -138,6 +139,7 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [rawFunds, setRawFunds] = useState<FundSummary[]>([]);
   const [categories, setCategories] = useState<CategoriesSummary>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const [isPrimed, setIsPrimed] = useState<boolean>(false);
   const [mood, setMoodState] = useState<InvestorMood>('growth');
   const [filters, setFilters] = useState<FilterValues>(DEFAULT_FILTERS);
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
@@ -190,17 +192,24 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  // Fetch initial data
+  // Fetch initial data behind atomic barrier
   useEffect(() => {
     async function loadData() {
       setLoading(true);
-      const [fundsData, catData] = await Promise.all([
-        fetchFundsSummary(),
-        fetchCategoriesSummary()
-      ]);
-      setRawFunds(fundsData);
-      setCategories(catData);
-      setLoading(false);
+      setIsPrimed(false);
+      try {
+        const [fundsData, catData] = await Promise.all([
+          fetchFundsSummary(),
+          fetchCategoriesSummary()
+        ]);
+        setRawFunds(fundsData);
+        setCategories(catData);
+      } catch (err) {
+        console.error('Failed to load initial mutual fund universe', err);
+      } finally {
+        setLoading(false);
+        setIsPrimed(true);
+      }
     }
     loadData();
   }, []);
@@ -556,6 +565,7 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         filteredFunds,
         categories,
         loading,
+        isPrimed,
         mood,
         setMood,
         filters,

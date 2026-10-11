@@ -160,11 +160,11 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 08-01: Build pixel-matched shimmer skeleton components for table, metrics cards, and chart canvas.
+- [x] 08-01: Build pixel-matched shimmer skeleton components for table, metrics cards, and chart canvas.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 08-02: Implement coordinated atomic mounting barrier and crossfade transition for complete page readiness.
+- [x] 08-02: Implement coordinated atomic mounting barrier and crossfade transition for complete page readiness.
 
 ### Phase 9: Comprehensive UI/UX Craft Overhaul & Anti-Slop Audit
 
