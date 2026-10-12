@@ -9,9 +9,9 @@ export const FundCardSkeleton: React.FC = () => {
       className="card-interactive group p-4 sm:p-5 relative flex flex-col justify-between select-none min-h-[224px] pointer-events-none"
     >
       <div>
-        {/* Card Header: Circular Gauge Placeholder & Action Buttons Placeholder */}
-        <div className="flex items-start justify-between gap-3 mb-3.5">
-          <div className="flex items-center gap-3">
+        {/* Card Header: Circular Gauge Placeholder & Category Pill Placeholder */}
+        <div className="flex items-center justify-between gap-2.5 mb-3">
+          <div className="flex items-center gap-2.5">
             {/* Circular Gauge */}
             <div className="w-10 h-10 rounded-full shimmer-sweep shrink-0" />
             <div className="flex flex-col gap-1.5">
@@ -20,11 +20,8 @@ export const FundCardSkeleton: React.FC = () => {
             </div>
           </div>
 
-          {/* Action Buttons Placeholders (min-h 44px Fitts's law) */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            <div className="h-11 w-16 sm:w-20 rounded-xl shimmer-sweep" />
-            <div className="h-11 w-16 sm:w-20 rounded-xl shimmer-sweep" />
-          </div>
+          {/* Category Pill Placeholder */}
+          <div className="h-5 w-20 rounded-md shimmer-sweep shrink-0" />
         </div>
 
         {/* Fund Identity Placeholders */}
@@ -51,6 +48,12 @@ export const FundCardSkeleton: React.FC = () => {
             <div className="h-2.5 w-12 rounded shimmer-sweep" />
             <div className="h-3.5 w-10 rounded shimmer-sweep" />
           </div>
+        </div>
+
+        {/* Action Buttons Placeholders (min-h 44px Fitts's law) */}
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          <div className="h-11 rounded-xl shimmer-sweep" />
+          <div className="h-11 rounded-xl shimmer-sweep" />
         </div>
       </div>
 

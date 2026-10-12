@@ -58,12 +58,12 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleCardClick()}
     >
       <div>
-        {/* Card Header: Circular Conic SmartScore Gauge & Compare Toggle */}
-        <div className="flex items-start justify-between gap-3 mb-3.5">
+        {/* Card Header: Circular Conic SmartScore Gauge & Category Badge */}
+        <div className="flex items-center justify-between gap-2.5 mb-3">
           {/* SmartScore™ Circular Conic Gauge & Rank */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div
-              className="smartscore-gauge"
+              className="smartscore-gauge flex-shrink-0"
               style={{
                 background: `conic-gradient(${ringColor} ${scorePct}%, var(--color-surface-container, #edeef0) 0deg)`,
               }}
@@ -74,12 +74,12 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               </span>
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col min-w-0">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant/80 leading-none">
                 SmartScore™
               </span>
               {fund.smart_score && (fund.smart_score as any).rank_text ? (
-                <span className="text-[11px] font-bold text-primary truncate max-w-[130px] sm:max-w-[150px] mt-0.5" title={(fund.smart_score as any).rank_text}>
+                <span className="text-[11px] font-bold text-primary truncate max-w-[120px] sm:max-w-[140px] mt-0.5" title={(fund.smart_score as any).rank_text}>
                   {(fund.smart_score as any).rank_text.split(' of ')[0]}
                 </span>
               ) : (
@@ -90,63 +90,28 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             </div>
           </div>
 
-          {/* Action Buttons: SimSim & Compare */}
+          {/* Scheme Badges */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
-            {/* Quick SimSim Bucket Toggle */}
-            <button
-              type="button"
-              onClick={handleSimSimClick}
-              className={`min-h-[44px] px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 touch-spring border shadow-2xs cursor-pointer ${
-                inBucket
-                  ? 'bg-[#00F090] text-black border-[#00F090] font-extrabold shadow-sm'
-                  : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-[#00F090] hover:border-[#00F090]/40 hover:bg-surface-container'
-              }`}
-              aria-label={inBucket ? `Remove ${fund.name} from SimSim` : `Add ${fund.name} to SimSim`}
-              title={inBucket ? 'Remove from SimSim portfolio bucket' : 'Add to SimSim portfolio bucket'}
-            >
-              <span className="material-symbols-outlined text-sm leading-none">
-                {inBucket ? 'check' : 'hourglass_top'}
+            <span className="text-[0.7rem] font-bold tracking-[0.03em] uppercase px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant truncate max-w-[120px]" title={fund.category}>
+              {fund.category}
+            </span>
+            {fund.is_young_fund && (
+              <span className="text-[0.65rem] font-bold tracking-[0.02em] uppercase px-1.5 py-0.5 rounded bg-warning/15 text-warning-text border border-warning/30" title="Scheme <3Y track record seasoning cap applied">
+                &lt;3Y
               </span>
-              <span className="text-[11px] hidden sm:inline">{inBucket ? 'In SimSim' : 'SimSim'}</span>
-            </button>
-
-            {/* Quick Compare Button */}
-            <button
-              type="button"
-              onClick={handleCompareClick}
-              className={`min-h-[44px] px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 touch-spring border shadow-2xs cursor-pointer ${
-                isCompared
-                  ? 'bg-primary text-white border-primary shadow-xs'
-                  : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-on-surface hover:border-primary/30 hover:bg-surface-container'
-              }`}
-              aria-label={isCompared ? `Remove ${fund.name} from comparison` : `Add ${fund.name} to comparison`}
-              title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
-            >
-              <span className="material-symbols-outlined text-sm leading-none">
-                {isCompared ? 'check' : 'add'}
-              </span>
-              <span className="text-[11px] hidden sm:inline">{isCompared ? 'Added' : 'Compare'}</span>
-            </button>
+            )}
           </div>
         </div>
 
         {/* Fund Identity */}
-        <div className="mb-3.5">
+        <div className="mb-3">
           <div className="flex items-center gap-1.5 flex-wrap mb-1">
             <AmcBadge fundHouse={fund.fund_house} size="sm" />
-            <span className="text-[0.75rem] font-bold tracking-[0.04em] uppercase px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant">
-              {fund.category}
-            </span>
-            {fund.is_young_fund && (
-              <span className="text-[0.75rem] font-bold tracking-[0.04em] uppercase px-1.5 py-0.5 rounded bg-warning/15 text-warning-text border border-warning/30" title="Scheme <3Y track record seasoning cap applied">
-                Young (&lt;3Y)
-              </span>
-            )}
           </div>
-          <h3 className="font-semibold text-[1.125rem] leading-[1.3] text-on-surface line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-[1.0625rem] leading-[1.3] text-on-surface line-clamp-2 group-hover:text-primary transition-colors">
             {fund.name}
           </h3>
-          <p className="text-[0.9375rem] font-normal text-on-surface-variant mt-0.5 truncate leading-[1.45]">
+          <p className="text-[0.875rem] font-normal text-on-surface-variant mt-0.5 truncate leading-[1.45]">
             {fund.fund_house}
           </p>
         </div>
@@ -192,6 +157,45 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               </span>
             )}
           </div>
+        </div>
+
+        {/* Action Buttons: 2-Column Equal-Width Grid (Zero Spilling & Cropping) */}
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          {/* Quick SimSim Bucket Toggle */}
+          <button
+            type="button"
+            onClick={handleSimSimClick}
+            className={`min-h-[44px] px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 touch-spring border shadow-2xs cursor-pointer select-none ${
+              inBucket
+                ? 'bg-[#00F090] text-black border-[#00F090] font-extrabold shadow-sm'
+                : 'bg-surface-container-low border-surface-container text-on-surface-variant hover:text-[#00F090] hover:border-[#00F090]/40 hover:bg-surface-container'
+            }`}
+            aria-label={inBucket ? `Remove ${fund.name} from SimSim` : `Add ${fund.name} to SimSim`}
+            title={inBucket ? 'Remove from SimSim portfolio bucket' : 'Add to SimSim portfolio bucket'}
+          >
+            <span className="material-symbols-outlined text-sm leading-none">
+              {inBucket ? 'check' : 'hourglass_top'}
+            </span>
+            <span className="text-[11px] font-bold truncate">{inBucket ? 'In SimSim' : 'SimSim'}</span>
+          </button>
+
+          {/* Quick Compare Button */}
+          <button
+            type="button"
+            onClick={handleCompareClick}
+            className={`min-h-[44px] px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 touch-spring border shadow-2xs cursor-pointer select-none ${
+              isCompared
+                ? 'bg-primary text-white border-primary shadow-xs'
+                : 'bg-surface-container-low border-surface-container text-on-surface-variant hover:text-on-surface hover:border-primary/30 hover:bg-surface-container'
+            }`}
+            aria-label={isCompared ? `Remove ${fund.name} from comparison` : `Add ${fund.name} to comparison`}
+            title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
+          >
+            <span className="material-symbols-outlined text-sm leading-none">
+              {isCompared ? 'check' : 'add'}
+            </span>
+            <span className="text-[11px] font-bold truncate">{isCompared ? 'Added' : 'Compare'}</span>
+          </button>
         </div>
       </div>
 
