@@ -436,6 +436,7 @@ interface AmcBadgeProps {
   size?: 'sm' | 'md' | 'lg';
   showFullName?: boolean;
   showLogoOnly?: boolean;
+  showBadgeText?: boolean;
   className?: string;
 }
 
@@ -444,6 +445,7 @@ export const AmcBadge: React.FC<AmcBadgeProps> = ({
   size = 'sm',
   showFullName = false,
   showLogoOnly = false,
+  showBadgeText = false,
   className = ''
 }) => {
   const config = resolveAmcConfig(fundHouse);
@@ -456,9 +458,9 @@ export const AmcBadge: React.FC<AmcBadgeProps> = ({
   const logoUrl = config.slug ? `${basePath}/logos/amc/${config.slug}.png` : null;
 
   const avatarSizes = {
-    sm: 'w-5 h-5 rounded-md',
-    md: 'w-6 h-6 rounded-lg',
-    lg: 'w-8 h-8 rounded-xl'
+    sm: 'w-5 h-5 rounded-md p-0.5',
+    md: 'w-7 h-7 rounded-lg p-0.5',
+    lg: 'w-9 h-9 rounded-xl p-1'
   };
 
   const badgeTextSizes = {
@@ -467,26 +469,38 @@ export const AmcBadge: React.FC<AmcBadgeProps> = ({
     lg: 'text-xs px-2.5 py-1 font-extrabold tracking-wider rounded-xl'
   };
 
+  const hasLogo = Boolean(logoUrl && !imgError);
+
   return (
     <div
       className={`inline-flex items-center gap-1.5 select-none ${className}`}
       title={`Fund House: ${fundHouse}`}
     >
-      {logoUrl && !imgError && (
+      {hasLogo ? (
         <div
-          className={`flex items-center justify-center bg-white border border-surface-container dark:border-white/10 shadow-2xs overflow-hidden flex-shrink-0 p-0.5 ${avatarSizes[size]}`}
+          className={`flex items-center justify-center bg-white border border-surface-container dark:border-white/10 shadow-2xs overflow-hidden flex-shrink-0 ${avatarSizes[size]}`}
         >
           <img
-            src={logoUrl}
+            src={logoUrl!}
             alt={`${config.shortName} logo`}
             className="w-full h-full object-contain"
             onError={() => setImgError(true)}
             loading="lazy"
           />
         </div>
-      )}
+      ) : showLogoOnly ? (
+        <div
+          className={`flex items-center justify-center border font-black uppercase ${config.bg} ${config.border} ${config.text} ${avatarSizes[size]} select-none flex-shrink-0`}
+          title={config.shortName}
+        >
+          <span className={size === 'lg' ? 'text-xs font-bold' : 'text-[9px] font-bold'}>
+            {config.shortName.slice(0, 3)}
+          </span>
+        </div>
+      ) : null}
 
-      {!showLogoOnly && (
+      {/* Show text badge only if explicitly asked, or as fallback when no logo image exists and showLogoOnly is not active */}
+      {(showBadgeText || (!hasLogo && !showLogoOnly)) && (
         <span
           className={`font-mono uppercase border ${config.bg} ${config.border} ${config.text} ${badgeTextSizes[size]}`}
         >

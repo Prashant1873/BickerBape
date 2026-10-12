@@ -172,7 +172,7 @@ export const SimSimConstituentsTable: React.FC<SimSimConstituentsTableProps> = (
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 mb-1">
-                      <AmcBadge fundHouse={f.fund_house} size="sm" />
+                      <AmcBadge fundHouse={f.fund_house} size="sm" showLogoOnly />
                       <span className="text-[10px] px-1.5 py-0.2 rounded bg-surface-container dark:bg-white/10 text-on-surface-variant dark:text-[#94A3B8] font-bold uppercase">
                         {f.category}
                       </span>

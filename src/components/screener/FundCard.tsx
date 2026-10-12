@@ -104,16 +104,21 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
         </div>
 
         {/* Fund Identity */}
-        <div className="mb-3">
-          <div className="flex items-center gap-1.5 flex-wrap mb-1">
-            <AmcBadge fundHouse={fund.fund_house} size="sm" />
+        <div className="flex items-start gap-3 mb-3">
+          <AmcBadge
+            fundHouse={fund.fund_house}
+            size="lg"
+            showLogoOnly
+            className="mt-0.5 flex-shrink-0"
+          />
+          <div className="min-w-0 flex-1">
+            <h3 className="font-semibold text-[1.0625rem] leading-[1.3] text-on-surface line-clamp-2 group-hover:text-primary transition-colors">
+              {fund.name}
+            </h3>
+            <p className="text-[0.875rem] font-normal text-on-surface-variant mt-0.5 truncate leading-[1.45]">
+              {fund.fund_house}
+            </p>
           </div>
-          <h3 className="font-semibold text-[1.0625rem] leading-[1.3] text-on-surface line-clamp-2 group-hover:text-primary transition-colors">
-            {fund.name}
-          </h3>
-          <p className="text-[0.875rem] font-normal text-on-surface-variant mt-0.5 truncate leading-[1.45]">
-            {fund.fund_house}
-          </p>
         </div>
 
         {/* Key Metrics Grid (Distilled without redundant inner border - UX-02) */}

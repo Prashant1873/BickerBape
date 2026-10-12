@@ -80,23 +80,30 @@ export const DrawerHeader: React.FC<DrawerHeaderProps> = ({
 
       {/* Drawer Title Bar */}
       <div className="p-4 sm:p-5 border-b border-surface-container bg-surface-container-low flex items-start justify-between gap-3 flex-shrink-0">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 flex-wrap mb-1">
-            <AmcBadge fundHouse={fund.fund_house} size="md" />
-            <span className="text-[0.75rem] font-bold tracking-[0.04em] uppercase px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant">
-              {fund.category}
-            </span>
-            {fund.is_young_fund && (
-              <span className="text-[0.75rem] font-bold tracking-[0.04em] uppercase px-1.5 py-0.5 rounded bg-warning/15 text-warning-text border border-warning/30">
-                Young Scheme (&lt;3Y Seasoning Cap)
+        <div className="flex items-start gap-3.5 min-w-0">
+          <AmcBadge
+            fundHouse={fund.fund_house}
+            size="lg"
+            showLogoOnly
+            className="mt-0.5 flex-shrink-0"
+          />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <span className="text-[0.75rem] font-bold tracking-[0.04em] uppercase px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant">
+                {fund.category}
               </span>
-            )}
-          </div>
+              {fund.is_young_fund && (
+                <span className="text-[0.75rem] font-bold tracking-[0.04em] uppercase px-1.5 py-0.5 rounded bg-warning/15 text-warning-text border border-warning/30">
+                  Young Scheme (&lt;3Y Seasoning Cap)
+                </span>
+              )}
+            </div>
 
-          <h2 className="font-bold text-[1.375rem] leading-[1.2] text-on-surface">{fund.name}</h2>
-          <p className="text-[0.9375rem] font-normal text-on-surface-variant mt-0.5 leading-[1.45]">
-            {fund.fund_house} • Code: <span className="font-bold">{fund.code}</span>
-          </p>
+            <h2 className="font-bold text-[1.375rem] leading-[1.2] text-on-surface">{fund.name}</h2>
+            <p className="text-[0.9375rem] font-normal text-on-surface-variant mt-0.5 leading-[1.45]">
+              {fund.fund_house} • Code: <span className="font-bold">{fund.code}</span>
+            </p>
+          </div>
         </div>
 
         <button

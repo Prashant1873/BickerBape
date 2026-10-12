@@ -212,8 +212,8 @@ export const ComparisonMatrixModal: React.FC = () => {
                           <span className="material-symbols-outlined text-xs">close</span>
                         </button>
                       </div>
-                      <div className="mb-1">
-                        <AmcBadge fundHouse={fund!.fund_house} size="sm" />
+                      <div className="mb-1.5">
+                        <AmcBadge fundHouse={fund!.fund_house} size="md" showLogoOnly />
                       </div>
                       <h4 className="font-bold text-on-surface text-xs leading-snug line-clamp-2">
                         {fund!.name}
