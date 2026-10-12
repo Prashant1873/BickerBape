@@ -81,12 +81,20 @@ export const SimSimBasketModal: React.FC = () => {
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="bg-surface-container-lowest dark:bg-[#0B0F19] text-on-surface dark:text-white border border-surface-container dark:border-white/15 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setIsBasketModalOpen(false);
+      }}
+      className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm apple-spring-backdrop cursor-pointer"
+    >
+      <div className="bg-surface-container-lowest dark:bg-[#0B0F19] text-on-surface dark:text-white border border-surface-container dark:border-white/15 rounded-t-3xl sm:rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] sm:max-h-[90vh] apple-spring-modal">
+        {/* Mobile touch grab handle */}
+        <div className="w-12 h-1.5 rounded-full bg-surface-container-high/80 mx-auto mt-2.5 sm:hidden flex-shrink-0" />
+
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-surface-container dark:border-white/10 bg-surface-container-low dark:bg-[#0F1626] flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#00F090]/15 border border-[#00F090]/30 flex items-center justify-center text-[#00A86B] dark:text-[#00F090]">
+            <div className="w-10 h-10 rounded-2xl bg-gain-bg border border-gain/30 flex items-center justify-center text-gain-text">
               <span className="material-symbols-outlined text-xl">{basketDef.icon}</span>
             </div>
             <div>
@@ -102,7 +110,8 @@ export const SimSimBasketModal: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsBasketModalOpen(false)}
-            className="w-9 h-9 rounded-full bg-surface-container hover:bg-surface-container-high dark:bg-white/5 dark:hover:bg-white/10 text-on-surface dark:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-surface-container hover:bg-surface-container-high dark:bg-white/5 dark:hover:bg-white/10 text-on-surface dark:text-white flex items-center justify-center transition-colors touch-spring cursor-pointer"
+            aria-label="Close basket modal"
           >
             <span className="material-symbols-outlined text-lg">close</span>
           </button>
@@ -110,8 +119,8 @@ export const SimSimBasketModal: React.FC = () => {
 
         {/* Modal Body: Slots */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1 hide-scrollbar">
-          {/* Preset Selector Buttons */}
-          <div className="flex items-center gap-2 pb-2">
+          {/* Preset Selector Buttons (Fitts's Law min-h-[44px]) */}
+          <div className="flex items-center gap-2 pb-2 flex-wrap">
             {(['titan', 'aggressive', 'defensive'] as const).map(k => (
               <button
                 key={k}
@@ -120,7 +129,7 @@ export const SimSimBasketModal: React.FC = () => {
                   setActiveBasketPreset(k);
                   setSelectedCodes({});
                 }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold transition-all touch-spring cursor-pointer flex items-center justify-center ${
                   activeBasketPreset === k
                     ? 'bg-primary text-white dark:bg-[#00F090] dark:text-black shadow-sm font-extrabold'
                     : 'bg-surface-container text-on-surface-variant dark:bg-white/5 dark:text-[#94A3B8] hover:text-on-surface dark:hover:text-white border border-surface-container-high dark:border-white/10'
@@ -145,7 +154,7 @@ export const SimSimBasketModal: React.FC = () => {
                       Slot {slotIdx + 1}: {so.slot.category}
                     </span>
                   </div>
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-[#00F090]/15 text-[#00A86B] dark:text-[#00F090] border border-[#00F090]/30">
+                  <span className="text-[0.75rem] font-mono font-bold px-2 py-0.5 rounded-md bg-[#00F090]/15 text-[#00A86B] dark:text-[#00F090] border border-[#00F090]/30 tracking-[0.04em] uppercase">
                     Weight: {so.slot.suggestedWeight}%
                   </span>
                 </div>
@@ -172,14 +181,14 @@ export const SimSimBasketModal: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsBasketModalOpen(false)}
-            className="px-4 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high dark:bg-white/5 dark:hover:bg-white/10 text-xs font-bold text-on-surface-variant dark:text-[#94A3B8] hover:text-on-surface dark:hover:text-white transition-colors cursor-pointer"
+            className="min-h-[44px] px-4 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high dark:bg-white/5 dark:hover:bg-white/10 text-xs font-bold text-on-surface-variant dark:text-[#94A3B8] hover:text-on-surface dark:hover:text-white transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleApplyBasket}
-            className="px-6 py-2 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black text-xs font-extrabold shadow-lg transition-all flex items-center gap-1.5 touch-spring cursor-pointer"
+            className="min-h-[44px] px-6 py-2 rounded-xl bg-[#00F090] hover:bg-[#00d880] text-black text-xs font-extrabold shadow-lg transition-all flex items-center gap-1.5 touch-spring cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">rocket_launch</span>
             <span>Apply & Launch SimSim™</span>

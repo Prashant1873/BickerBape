@@ -80,6 +80,18 @@ const config: Config = {
         'body-md': ['var(--font-hanken)', 'system-ui', 'sans-serif'],
         'label-bold': ['var(--font-hanken)', 'system-ui', 'sans-serif'],
         'label-sm': ['var(--font-hanken)', 'system-ui', 'sans-serif']
+      },
+      boxShadow: {
+        'resting-card': '0px 4px 12px rgba(9, 30, 66, 0.08)',
+        'elevated-hover': '0px 16px 36px -6px rgba(9, 30, 66, 0.12)',
+        'floating-dock': '0px 16px 40px rgba(9, 30, 66, 0.16)',
+      },
+      fontSize: {
+        'display': ['clamp(1.875rem, 4vw, 2.25rem)', { lineHeight: '1.15', fontWeight: '800' }],
+        'headline': ['1.375rem', { lineHeight: '1.2', fontWeight: '700' }],
+        'title': ['1.125rem', { lineHeight: '1.3', fontWeight: '600' }],
+        'body': ['0.9375rem', { lineHeight: '1.45', fontWeight: '400' }],
+        'label': ['0.75rem', { letterSpacing: '0.04em', fontWeight: '700' }],
       }
     },
   },

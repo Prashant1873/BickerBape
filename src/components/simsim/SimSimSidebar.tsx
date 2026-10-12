@@ -207,7 +207,7 @@ export const SimSimSidebar: React.FC = () => {
                 key={c}
                 type="button"
                 onClick={() => setSimsimCapital(c)}
-                className={`px-2 py-1 rounded-full text-[10px] font-bold tabular-nums border transition-colors touch-spring cursor-pointer ${
+                className={`px-2 py-1 rounded-md text-[0.75rem] font-bold tabular-nums border transition-colors touch-spring cursor-pointer ${
                   simsimCapital === c
                     ? 'bg-[#00F090] text-black border-[#00F090] font-extrabold shadow-xs'
                     : 'bg-surface-container dark:bg-white/5 border-surface-container-high dark:border-white/10 text-on-surface-variant dark:text-[#94A3B8] hover:text-on-surface dark:hover:text-white'

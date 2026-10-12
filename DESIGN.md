@@ -51,6 +51,10 @@ typography:
     fontSize: "0.75rem"
     fontWeight: 700
     letterSpacing: "0.04em"
+shadows:
+  resting-card: "0px 4px 12px rgba(9, 30, 66, 0.08)"
+  elevated-hover: "0px 16px 36px -6px rgba(9, 30, 66, 0.12)"
+  floating-dock: "0px 16px 40px rgba(9, 30, 66, 0.16)"
 rounded:
   sm: "4px"
   md: "8px"
@@ -75,16 +79,6 @@ components:
     textColor: "{colors.surface-container-lowest}"
     rounded: "{rounded.xl}"
     padding: "10px 16px"
-  category-pill:
-    backgroundColor: "transparent"
-    textColor: "{colors.on-surface-variant}"
-    rounded: "{rounded.lg}"
-    padding: "8px 12px"
-  category-pill-active:
-    backgroundColor: "{colors.primary-container}"
-    textColor: "{colors.surface-container-lowest}"
-    rounded: "{rounded.lg}"
-    padding: "8px 12px"
   card-interactive:
     backgroundColor: "{colors.surface-container-lowest}"
     textColor: "{colors.on-surface}"
@@ -118,6 +112,7 @@ The aesthetic balances high-trust fiduciary authority with modern digital fluidi
 - **Tactile Spring Micro-Interactions:** Immediate spring compression (`scale(0.97)`) on pointer down for instant feedback.
 - **Institutional Palette with Vivid Accents:** Deep ultramarine primary anchor with crisp semantic risk/gain colors.
 - **Quiet Accordion Scorecards:** Closed-by-default drawers to protect focus and reduce cognitive load.
+- **No Eyebrow Pills:** Clean, direct typographic headers without floating pill capsules or decorative micro-pill clutter.
 
 ## Colors
 
@@ -125,16 +120,16 @@ The palette character is defined by institutional fiduciary trust, combining ric
 
 ### Primary
 - **Institutional Navy** (`#003d9b`): Used for primary text anchors, brand titles, and deep background accents.
-- **Royal Ultramarine** (`#0052cc`): The core interactive accent. Used for active strategy chips, primary action buttons, selected tabs, and top-tier SmartScore badges ($\ge 8.0$).
+- **Royal Ultramarine** (`#0052cc`): The core interactive accent. Used for active strategy chips, primary action buttons, selected tabs, and top-tier SmartScore badges (>= 8.0).
 
 ### Secondary
 - **Cobalt Blue** (`#285ab9`): Secondary interactive states, secondary buttons, and slider thumbs.
 - **Ice Cobalt Container** (`#709bfe`): Soft background highlight for active filters and secondary selections.
 
 ### Semantic Financial Indicators
-- **Emerald Alpha Gain** (`#36B37E` for graphics/badges, `#00875A` for text): Highlights positive outperformance ratios ($\ge 1.35\times$), 3Y/5Y alpha generation, and 🚀 Growth Investor Mood presets. Text on light cards uses `#00875A` to ensure WCAG AA compliant $\ge 4.5:1$ contrast.
-- **Coral Risk Loss** (`#FF5630` for graphics/badges, `#DE350B` for text): Flags severe underperformance, high annual volatility ($\sigma > 18\%$), and bottom-tier scores ($< 5.0$).
-- **Amber Concentration Warning** (`#FF9F0A` for graphics/badges, `#B76E00` for text): Used for 💰 Income Mood accents, single-sector concentration risk badges (`⚠️ Sector Risk`), and track record warnings (<1Y/3Y schemes).
+- **Emerald Alpha Gain** (`#36B37E` for graphics/badges, `#00875A` for text): Highlights positive outperformance ratios (>= 1.35x), 3Y/5Y alpha generation, and Growth Investor Mood presets. Text on light cards uses `#00875A` to ensure WCAG AA compliant >= 4.5:1 contrast.
+- **Coral Risk Loss** (`#FF5630` for graphics/badges, `#DE350B` for text): Flags severe underperformance, high annual volatility (volatility > 18%), and bottom-tier scores (< 5.0).
+- **Amber Concentration Warning** (`#FF9F0A` for graphics/badges, `#B76E00` for text): Used for Income Mood accents, single-sector concentration risk badges (`Sector Risk`), and track record warnings (<1Y/3Y schemes).
 
 ### SimSim™ Time Machine Sub-Palette
 - **SimSim Neon Core** (`#00F090`): Primary energy accent for simulation projections, portfolio time-machine triggers, and active model basket chips.
@@ -150,7 +145,7 @@ The palette character is defined by institutional fiduciary trust, combining ric
 - **Cool Border Grey** (`#737685`): Outlines, input borders, and table gridlines.
 
 ### Named Rules
-**The One Primary Voice Rule.** Royal Ultramarine (`#0052cc`) is reserved strictly for primary interactive affordances, active filter states, and top-tier score highlights. It covers $\le 10\%$ of any given viewport to maintain maximum visual pop and hierarchy.
+**The One Primary Voice Rule.** Royal Ultramarine (`#0052cc`) is reserved strictly for primary interactive affordances, active filter states, and top-tier score highlights. It covers <= 10% of any given viewport to maintain maximum visual pop and hierarchy.
 
 ## Typography
 
@@ -172,12 +167,12 @@ The palette character is defined by institutional fiduciary trust, combining ric
 
 ## Layout
 
-The spatial model uses an edge-to-edge full-viewport app shell (`app-shell`) with a collapsible 320px fluid sidebar on the left and a scrollable main content stage. 
+The spatial model uses an edge-to-edge full-viewport app shell (`app-shell`) with a collapsible 320px fluid sidebar on the left and a scrollable main content stage.
 
 - **Grid & Rhythm:** Standard 8px spatial grid (`xs: 4px`, `sm: 8px`, `md: 16px`, `lg: 24px`, `xl: 32px`).
 - **Responsive Behavior:** 
-  - Desktop ($\ge 1024\text{px}$): Dual-pane split with persistent collapsible sidebar and multi-column grid (2-3 fund cards per row).
-  - Tablet/Mobile ($< 1024\text{px}$): Sidebar collapses into an overlay drawer; card grids stack vertically in single-column layout.
+  - Desktop (>= 1024px): Dual-pane split with persistent collapsible sidebar and multi-column grid (2-3 fund cards per row).
+  - Tablet/Mobile (< 1024px): Sidebar collapses into an overlay drawer; card grids stack vertically in single-column layout.
 - **Container Strategy:** Maximum content width capped at `1400px` for optimal eye-scan lines.
 
 ## Elevation & Depth
@@ -198,7 +193,7 @@ Form language is characterized by smooth squircle corner curvatures and clean bo
 
 - **Strategy Chips & Badges:** `14px` radius squircle border (`rounded-xl`).
 - **Interactive Cards:** `20px` radius container curvature (`rounded-2xl`).
-- **Category Pills & View Switchers:** Smooth pill curvature (`rounded-full` / `9999px`).
+- **View Switchers:** Smooth pill curvature (`rounded-full` / `9999px`).
 - **Inputs & Dropdowns:** `12px` rounded border (`rounded-lg`) with `1px` subtle outline (`rgba(9, 30, 66, 0.12)`).
 
 ## Components
@@ -212,27 +207,30 @@ Form language is characterized by smooth squircle corner curvatures and clean bo
 ### Interactive Fund Cards
 - **Corner Style:** `20px` radius squircle (`rounded-2xl`).
 - **Background:** White glass surface (`#ffffff`) with subtle `1px` border (`rgba(9, 30, 66, 0.08)`).
-- **Hover Treatment:** `translateY(-3px)` subtle lift, border glow (`rgba(0, 82, 204, 0.22)`), and expanded ambient drop shadow.
+- **Shadow:** Resting state uses Resting Card Shadow (`0px 4px 12px rgba(9, 30, 66, 0.08)`).
+- **Hover Treatment:** `translateY(-3px)` subtle lift, border glow (`rgba(0, 82, 204, 0.22)`), and Elevated Hover Shadow (`0px 16px 36px -6px rgba(9, 30, 66, 0.12)`).
 
 ### View Switcher Toggle
 - **Track Style:** Soft grey track (`#edeef0`), `4px` internal padding, full pill radius (`9999px`).
 - **Thumb Style:** Floating white pill thumb (`#ffffff`) with crisp navy text (`#003d9b`) and elevation shadow.
 
 ### Investor Mood Controller
-- **Style:** 3-way segmented pill track with high-contrast color badges:
-  - 🚀 **Growth**: Emerald Green accent (`#36B37E`)
-  - 🛡️ **Safety**: Royal Ultramarine accent (`#0052cc`)
-  - 💰 **Income**: Amber Gold accent (`#FF9F0A`)
+- **Style:** 3-way segmented track with high-contrast color badges:
+  - **Growth**: Emerald Green accent (`#36B37E`)
+  - **Safety**: Royal Ultramarine accent (`#0052cc`)
+  - **Income**: Amber Gold accent (`#FF9F0A`)
 
 ## Do's and Don'ts
 
 ### Do:
 - **Do** apply `font-variant-numeric: tabular-nums` to every numerical figure, score, CAGR, and ratio.
+- **Do** rely on clean typographic hierarchy (`Display`, `Headline`, `Title`, `Body`, `Label`) for section and card titles.
 - **Do** keep detail scorecard accordions closed by default on initial drawer opening to prevent visual overwhelm.
-- **Do** use translucent glass chrome (`glass-chrome`) for floating navigation bars and comparison docks.
+- **Do** use translucent glass chrome (`glass-chrome`) for floating navigation bars and comparison docks with Floating Dock Shadow.
 - **Do** enforce fiduciary seasoning flags (`New Scheme (<1Y)` or `Emerging (<3Y)`) with capped scores.
 
 ### Don't:
+- **Don't** render eyebrow pills, floating tag capsules, or pill badges above headlines or card titles. Headings must anchor directly to the layout grid without pill prefixes.
 - **Don't** use raw proportional figures or unaligned numbers in multi-column financial comparison tables.
 - **Don't** apply heavy, dark opaque drop shadows that obscure surrounding card borders or content.
 - **Don't** invent or estimate missing performance numbers; display explicit `N/A` badges.

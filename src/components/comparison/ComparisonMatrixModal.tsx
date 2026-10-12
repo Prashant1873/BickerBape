@@ -147,8 +147,15 @@ export const ComparisonMatrixModal: React.FC = () => {
     .filter(Boolean);
 
   return createPortal(
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/70 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-surface rounded-3xl border border-surface-container max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setIsComparisonMatrixOpen(false);
+      }}
+      className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6 bg-black/70 backdrop-blur-xs apple-spring-backdrop cursor-pointer"
+    >
+      <div className="bg-surface rounded-t-3xl sm:rounded-3xl border border-surface-container max-w-5xl w-full max-h-[88vh] sm:max-h-[90vh] flex flex-col overflow-hidden shadow-2xl apple-spring-modal">
+        {/* Mobile touch grab handle */}
+        <div className="w-12 h-1.5 rounded-full bg-surface-container-highest mx-auto my-2 block sm:hidden flex-shrink-0" />
         
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-surface-container flex items-center justify-between bg-surface-container-low flex-shrink-0">
@@ -179,10 +186,10 @@ export const ComparisonMatrixModal: React.FC = () => {
         {/* Matrix Table Body */}
         <div className="p-4 sm:p-6 overflow-x-auto overflow-y-auto hide-scrollbar flex-1">
           <table className="w-full text-left text-xs border-collapse">
-            <thead>
+            <thead className="sticky top-0 z-20 bg-surface shadow-xs">
               <tr className="border-b-2 border-surface-container text-on-surface">
                 {/* Metric Label Column */}
-                <th className="py-3 px-3 min-w-[170px] bg-surface font-bold uppercase text-[11px] text-on-surface-variant">
+                <th className="sticky left-0 top-0 z-30 py-3 px-3 min-w-[170px] bg-surface font-bold uppercase text-[11px] text-on-surface-variant shadow-[2px_0_5px_rgba(0,0,0,0.04)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.25)]">
                   Quantitative Metric
                 </th>
 
@@ -237,7 +244,7 @@ export const ComparisonMatrixModal: React.FC = () => {
 
                 return (
                   <tr key={metric.label} className="hover:bg-surface-container-low/40">
-                    <td className="py-2.5 px-3 font-semibold text-on-surface text-xs">
+                    <td className="sticky left-0 z-10 bg-surface py-2.5 px-3 font-semibold text-on-surface text-xs shadow-[2px_0_5px_rgba(0,0,0,0.04)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.25)]">
                       <div>{metric.label}</div>
                       <span className="text-[10px] font-mono uppercase text-on-surface-variant/70">
                         {metric.category}

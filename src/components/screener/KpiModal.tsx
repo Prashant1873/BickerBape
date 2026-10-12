@@ -77,12 +77,19 @@ export const KpiModal: React.FC = () => {
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-surface rounded-2xl border border-surface-container max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setIsKpiModalOpen(false);
+      }}
+      className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs apple-spring-backdrop cursor-pointer"
+    >
+      <div className="bg-surface rounded-t-3xl sm:rounded-2xl border border-surface-container max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl apple-spring-modal">
+        {/* Mobile touch grab handle */}
+        <div className="w-12 h-1.5 rounded-full bg-surface-container-highest mx-auto my-2 block sm:hidden flex-shrink-0" />
         {/* Header */}
         <div className="p-4 border-b border-surface-container flex items-center justify-between bg-surface-container-low">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-xl">view_column</span>
+            <span className="material-symbols-outlined text-primary text-xl optical-icon">view_column</span>
             <div>
               <h3 className="font-headline-md font-bold text-sm sm:text-base text-on-surface">
                 Customize Financial KPIs

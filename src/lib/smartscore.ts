@@ -130,14 +130,14 @@ export function getSuperScoreTheme(score: number): {
   if (score >= 8.5) {
     return {
       badgeBg: 'bg-primary/10 dark:bg-primary/20',
-      badgeText: 'text-primary dark:text-blue-400 font-bold',
+      badgeText: 'text-primary dark:text-[#38bdf8] font-bold',
       badgeBorder: 'border-primary/30',
       label: 'Elite'
     };
   } else if (score >= 7.0) {
     return {
-      badgeBg: 'bg-gain/10 dark:bg-gain/20',
-      badgeText: 'text-gain-text dark:text-emerald-400 font-bold',
+      badgeBg: 'bg-gain-bg dark:bg-gain/20',
+      badgeText: 'text-gain-text dark:text-gain-text font-bold',
       badgeBorder: 'border-gain/30',
       label: 'Solid'
     };
@@ -150,8 +150,8 @@ export function getSuperScoreTheme(score: number): {
     };
   } else {
     return {
-      badgeBg: 'bg-loss/10 dark:bg-loss/20',
-      badgeText: 'text-loss-text dark:text-rose-400 font-medium',
+      badgeBg: 'bg-loss-bg dark:bg-loss/20',
+      badgeText: 'text-loss-text dark:text-loss-text font-medium',
       badgeBorder: 'border-loss/30',
       label: 'Lag'
     };
