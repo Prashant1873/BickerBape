@@ -143,7 +143,7 @@ export const ComparisonMatrixModal: React.FC = () => {
   if (!isComparisonMatrixOpen || !mounted || typeof document === 'undefined') return null;
 
   const comparedFunds = comparisonList
-    .map(code => funds.find(f => f.code === code))
+    .map(code => funds.find(f => String(f.code) === String(code)))
     .filter(Boolean);
 
   return createPortal(
@@ -200,7 +200,7 @@ export const ComparisonMatrixModal: React.FC = () => {
                   return (
                     <th key={String(fund!.code)} className="py-3 px-3 min-w-[180px] align-top bg-surface-container-low/40 rounded-t-xl">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <span className={`font-mono font-bold text-xs px-2 py-0.5 rounded-md border ${theme.badgeBg} ${theme.badgeBorder} ${theme.badgeText}`}>
+                        <span className={`tabular-nums font-bold text-xs px-2 py-0.5 rounded-md border ${theme.badgeBg} ${theme.badgeBorder} ${theme.badgeText}`}>
                           {score.toFixed(1)}/10
                         </span>
                         <button
@@ -218,7 +218,7 @@ export const ComparisonMatrixModal: React.FC = () => {
                       <h4 className="font-bold text-on-surface text-xs leading-snug line-clamp-2">
                         {fund!.name}
                       </h4>
-                      <div className="text-[10px] text-on-surface-variant font-mono mt-0.5">
+                      <div className="text-[10px] text-on-surface-variant font-medium mt-0.5">
                         {fund!.category}
                       </div>
                     </th>
@@ -246,7 +246,7 @@ export const ComparisonMatrixModal: React.FC = () => {
                   <tr key={metric.label} className="hover:bg-surface-container-low/40">
                     <td className="sticky left-0 z-10 bg-surface py-2.5 px-3 font-semibold text-on-surface text-xs shadow-[2px_0_5px_rgba(0,0,0,0.04)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.25)]">
                       <div>{metric.label}</div>
-                      <span className="text-[10px] font-mono uppercase text-on-surface-variant/70">
+                      <span className="text-[10px] font-semibold uppercase text-on-surface-variant/70">
                         {metric.category}
                       </span>
                     </td>
@@ -257,7 +257,7 @@ export const ComparisonMatrixModal: React.FC = () => {
                       return (
                         <td
                           key={String(fund!.code)}
-                          className={`py-2.5 px-3 font-mono text-xs ${
+                          className={`py-2.5 px-3 tabular-nums text-xs ${
                             isBest
                               ? 'bg-gain/10 text-gain-text dark:text-emerald-400 font-bold'
                               : 'text-on-surface'
@@ -266,7 +266,7 @@ export const ComparisonMatrixModal: React.FC = () => {
                           <div className="flex items-center gap-1.5">
                             <span>{metric.format(val)}</span>
                             {isBest && (
-                              <span className="text-[9px] font-bold uppercase px-1 py-0.2 rounded bg-gain/20 text-gain font-mono">
+                              <span className="text-[9px] font-bold uppercase px-1 py-0.2 rounded bg-gain/20 text-gain">
                                 Best
                               </span>
                             )}

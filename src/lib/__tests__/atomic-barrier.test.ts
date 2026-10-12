@@ -42,6 +42,7 @@ const renderWithScreenerContext = (
     setTableColumns: () => {},
     comparisonList: [],
     toggleComparison: () => {},
+    addFundsToComparison: () => {},
     clearComparison: () => {},
     selectedFundCode: null,
     setSelectedFundCode: () => {},
@@ -106,7 +107,8 @@ describe('Coordinated Atomic Barrier & Flash Elimination (LOAD-02)', () => {
     );
 
     // Should NOT show "Showing 0 of 0 Schemes"
-    expect(html).not.toContain('Showing <span class="font-mono text-primary text-sm">0</span> of 0 Schemes');
+    expect(html).not.toContain('Showing <span class="tabular-nums font-bold text-primary text-sm">0</span> of 0 Schemes');
+    expect(html).not.toContain('Showing');
     expect(html).toContain('aria-label="Loading scheme count"');
     expect(html).toContain('shimmer-sweep');
 

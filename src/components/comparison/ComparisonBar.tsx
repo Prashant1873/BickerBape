@@ -18,7 +18,7 @@ export const ComparisonBar: React.FC = () => {
   if (comparisonList.length === 0 || appMode === 'simsim') return null;
 
   const comparedFunds = comparisonList
-    .map(code => funds.find(f => f.code === code))
+    .map(code => funds.find(f => String(f.code) === String(code)))
     .filter(Boolean);
 
   return (

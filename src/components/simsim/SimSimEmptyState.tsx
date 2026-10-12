@@ -48,7 +48,7 @@ export const SimSimEmptyState: React.FC<SimSimEmptyStateProps> = ({
                 <div className="w-9 h-9 rounded-xl bg-[#00F090]/15 text-[#00A86B] dark:text-[#00F090] flex items-center justify-center">
                   <span className="material-symbols-outlined text-xl">shield</span>
                 </div>
-                <span className="text-[0.75rem] font-mono font-bold px-2 py-0.5 rounded-md bg-[#00F090]/15 text-[#00A86B] dark:text-[#00F090] border border-[#00F090]/30 tracking-[0.04em] uppercase">
+                <span className="text-[0.75rem] tabular-nums font-bold px-2 py-0.5 rounded-md bg-[#00F090]/15 text-[#00A86B] dark:text-[#00F090] border border-[#00F090]/30 tracking-[0.04em] uppercase">
                   40/35/25
                 </span>
               </div>
@@ -77,7 +77,7 @@ export const SimSimEmptyState: React.FC<SimSimEmptyStateProps> = ({
                 <div className="w-9 h-9 rounded-xl bg-[#FF5630]/15 text-[#DE350B] dark:text-[#FF5630] flex items-center justify-center">
                   <span className="material-symbols-outlined text-xl">rocket_launch</span>
                 </div>
-                <span className="text-[0.75rem] font-mono font-bold px-2 py-0.5 rounded-md bg-[#FF5630]/15 text-[#DE350B] dark:text-[#FF5630] border border-[#FF5630]/30 tracking-[0.04em] uppercase">
+                <span className="text-[0.75rem] tabular-nums font-bold px-2 py-0.5 rounded-md bg-[#FF5630]/15 text-[#DE350B] dark:text-[#FF5630] border border-[#FF5630]/30 tracking-[0.04em] uppercase">
                   40/30/30
                 </span>
               </div>
@@ -106,7 +106,7 @@ export const SimSimEmptyState: React.FC<SimSimEmptyStateProps> = ({
                 <div className="w-9 h-9 rounded-xl bg-[#FFB800]/15 text-[#975800] dark:text-[#FFB800] flex items-center justify-center">
                   <span className="material-symbols-outlined text-xl">savings</span>
                 </div>
-                <span className="text-[0.75rem] font-mono font-bold px-2 py-0.5 rounded-md bg-[#FFB800]/15 text-[#975800] dark:text-[#FFB800] border border-[#FFB800]/30 tracking-[0.04em] uppercase">
+                <span className="text-[0.75rem] tabular-nums font-bold px-2 py-0.5 rounded-md bg-[#FFB800]/15 text-[#975800] dark:text-[#FFB800] border border-[#FFB800]/30 tracking-[0.04em] uppercase">
                   40/30/30
                 </span>
               </div>

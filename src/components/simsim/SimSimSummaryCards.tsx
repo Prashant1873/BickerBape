@@ -118,7 +118,7 @@ export const SimSimSummaryCards: React.FC<SimSimSummaryCardsProps> = ({
                 step="5000"
                 value={capitalInputVal}
                 onChange={(e) => setCapitalInputVal(Number(e.target.value))}
-                className="w-full bg-surface-container dark:bg-[#080C14] border border-warning/60 rounded-lg py-1 px-2 text-xs text-on-surface dark:text-white font-bold font-mono outline-none"
+                className="w-full bg-surface-container dark:bg-[#080C14] border border-warning/60 rounded-lg py-1 px-2 text-xs text-on-surface dark:text-white font-bold tabular-nums outline-none"
                 autoFocus
               />
               <button
@@ -166,7 +166,7 @@ export const SimSimSummaryCards: React.FC<SimSimSummaryCardsProps> = ({
         ) : (
           <div>
             <div className="flex items-baseline gap-2">
-              <p className="font-display-financial text-2xl font-black text-on-surface dark:text-white font-mono">
+              <p className="font-display-financial text-2xl font-black text-on-surface dark:text-white tabular-nums">
                 ₹{Math.round(report.totalCapital).toLocaleString('en-IN')}
               </p>
               <span className="text-[10px] text-warning-text opacity-0 group-hover:opacity-100 transition-opacity font-bold">

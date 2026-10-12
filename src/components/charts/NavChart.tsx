@@ -131,8 +131,8 @@ export const NavChart: React.FC<NavChartProps> = ({ navHistory }) => {
       },
       tooltip: {
         backgroundColor: '#0f172a',
-        titleFont: { size: 11, weight: 'bold' },
-        bodyFont: { size: 12, family: 'monospace' },
+        titleFont: { size: 11, weight: 'bold', family: "'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif" },
+        bodyFont: { size: 12, family: "'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif" },
         padding: 10,
         cornerRadius: 8,
         displayColors: false,
@@ -146,13 +146,13 @@ export const NavChart: React.FC<NavChartProps> = ({ navHistory }) => {
         grid: { display: false },
         ticks: {
           maxTicksLimit: 6,
-          font: { size: 10 }
+          font: { size: 10, family: "'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif" }
         }
       },
       y: {
         grid: { color: 'rgba(0, 0, 0, 0.05)' },
         ticks: {
-          font: { size: 10 },
+          font: { size: 10, family: "'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif" },
           callback: (val) => `₹${val}`
         }
       }
@@ -169,10 +169,10 @@ export const NavChart: React.FC<NavChartProps> = ({ navHistory }) => {
           {points.length >= 2 ? (
             <div className="text-xs text-on-surface">
               <span>Growth in {horizon}: </span>
-              <strong className={`font-mono font-bold ${isPositive ? 'text-gain' : 'text-loss'}`}>
+              <strong className={`tabular-nums font-bold ${isPositive ? 'text-gain' : 'text-loss'}`}>
                 {isPositive ? '+' : ''}{changePct}%
               </strong>
-              <span className="text-[11px] text-on-surface-variant ml-1 font-mono">
+              <span className="text-[11px] text-on-surface-variant ml-1 tabular-nums">
                 ({startDate} to {endDate})
               </span>
             </div>

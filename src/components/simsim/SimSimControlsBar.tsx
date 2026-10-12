@@ -42,7 +42,7 @@ export const SimSimControlsBar: React.FC<SimSimControlsBarProps> = ({
               </strong>
             </span>
             {report && (
-              <span className="text-[0.75rem] font-mono px-2 py-0.5 rounded-md bg-surface-container border border-surface-container-high text-on-surface dark:bg-white/5 dark:border-white/10 dark:text-white flex items-center gap-1">
+              <span className="text-[0.75rem] tabular-nums px-2 py-0.5 rounded-md bg-surface-container border border-surface-container-high text-on-surface dark:bg-white/5 dark:border-white/10 dark:text-white flex items-center gap-1">
                 <span className="material-symbols-outlined text-xs text-[#00A86B] dark:text-[#00F090]">
                   calendar_today
                 </span>

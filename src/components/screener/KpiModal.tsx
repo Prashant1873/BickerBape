@@ -166,7 +166,7 @@ export const KpiModal: React.FC = () => {
 
             return (
               <div key={cat} className="space-y-1.5">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-primary font-mono pb-1 border-b border-surface-container/60">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-primary pb-1 border-b border-surface-container/60">
                   {cat}
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

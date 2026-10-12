@@ -240,7 +240,7 @@ export const SimSimConstituentsTable: React.FC<SimSimConstituentsTableProps> = (
             <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface dark:text-white">
               Constituent Schemes Performance Breakdown
             </h3>
-            <span className="text-[11px] font-mono text-on-surface-variant dark:text-[#94A3B8]">
+            <span className="text-[11px] tabular-nums text-on-surface-variant dark:text-[#94A3B8]">
               Period: {report.startDate} to {report.endDate} ({report.years} Years)
             </span>
           </div>
@@ -272,17 +272,17 @@ export const SimSimConstituentsTable: React.FC<SimSimConstituentsTableProps> = (
                         {c.category} • {c.fund_house}
                       </p>
                     </td>
-                    <td className="py-2.5 px-3 text-right font-mono font-bold text-[#00A86B] dark:text-[#00F090]">
+                    <td className="py-2.5 px-3 text-right tabular-nums font-bold text-[#00A86B] dark:text-[#00F090]">
                       {c.weightPct}%
                     </td>
-                    <td className="py-2.5 px-3 text-right font-mono text-on-surface-variant dark:text-[#94A3B8]">
+                    <td className="py-2.5 px-3 text-right tabular-nums text-on-surface-variant dark:text-[#94A3B8]">
                       ₹{Math.round(c.allocatedCap).toLocaleString('en-IN')}
                     </td>
-                    <td className="py-2.5 px-3 text-right font-mono font-bold text-on-surface dark:text-white">
+                    <td className="py-2.5 px-3 text-right tabular-nums font-bold text-on-surface dark:text-white">
                       ₹{Math.round(c.presentValue).toLocaleString('en-IN')}
                     </td>
                     <td
-                      className={`py-2.5 px-3 text-right font-mono font-bold ${
+                      className={`py-2.5 px-3 text-right tabular-nums font-bold ${
                         c.gain >= 0 ? 'text-gain-text dark:text-[#00F090]' : 'text-loss-text dark:text-[#FF4D4D]'
                       }`}
                     >
@@ -291,14 +291,14 @@ export const SimSimConstituentsTable: React.FC<SimSimConstituentsTableProps> = (
                       {c.gainPct.toFixed(1)}%)
                     </td>
                     <td
-                      className={`py-2.5 px-3 text-right font-mono font-bold ${
+                      className={`py-2.5 px-3 text-right tabular-nums font-bold ${
                         c.cagr >= 0 ? 'text-primary dark:text-[#00D2FF]' : 'text-loss-text dark:text-[#FF4D4D]'
                       }`}
                     >
                       {c.cagr >= 0 ? '+' : ''}
                       {c.cagr.toFixed(1)}%
                     </td>
-                    <td className="py-2.5 px-3 text-right font-mono text-on-surface-variant dark:text-[#94A3B8]">
+                    <td className="py-2.5 px-3 text-right tabular-nums text-on-surface-variant dark:text-[#94A3B8]">
                       {c.units.toFixed(2)}
                     </td>
                   </tr>

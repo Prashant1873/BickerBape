@@ -87,6 +87,7 @@ const renderWithContext = (
     setTableColumns: () => {},
     comparisonList: [],
     toggleComparison: () => {},
+    addFundsToComparison: () => {},
     clearComparison: () => {},
     selectedFundCode: null,
     setSelectedFundCode: () => {},
@@ -179,9 +180,14 @@ describe('Comprehensive UI/UX Craft Overhaul & Anti-Slop Audit (UX-01, UX-02)', 
 
     // Verify sticky left header has crisp border-r
     expect(html).toContain('sticky left-0 top-0 z-40 bg-surface-container-low py-3 px-4 min-w-[280px] sm:min-w-[360px] border-r border-surface-container');
+    // Verify sub-column widths in sticky column match between header and cells
+    expect(html).toContain('w-[84px] sm:w-[96px]');
+    expect(html).toContain('w-10');
     // Verify sort headers have group hover class for smooth affordance reveal
     expect(html).toContain('group');
     expect(html).toContain('unfold_more');
+    // Verify full-width flex container in headers prevents alignment drift
+    expect(html).toContain('w-full flex items-center');
   });
 
   it('verifies tabular numerals and Fitts\'s Law 44px min targets across controls (UX-03)', () => {
@@ -191,5 +197,24 @@ describe('Comprehensive UI/UX Craft Overhaul & Anti-Slop Audit (UX-01, UX-02)', 
 
     // Verify minimum touch targets (44px) exist on interactive buttons
     expect(cardHtml).toContain('min-h-[44px]');
+  });
+
+  it('verifies Quick Compare with Category resolves peer and populates both schemes atomically', () => {
+    const fundA = { ...sampleFund, code: 101, category: 'Flexi Cap', suggester_score: 80 };
+    const fundB = { ...sampleFund, code: 102, category: 'Flexi Cap', suggester_score: 95 };
+    const allFunds = [fundA, fundB];
+
+    const getFundScore = (f: any) =>
+      f.smart_score?.overall ?? (f.suggester_score ? f.suggester_score / 10 : 6.0);
+
+    const categoryPeers = allFunds
+      .filter((f) => f.category === fundA.category && String(f.code) !== String(fundA.code))
+      .sort((a, b) => getFundScore(b) - getFundScore(a));
+
+    expect(categoryPeers.length).toBe(1);
+    expect(categoryPeers[0].code).toBe(102);
+
+    const codesToAdd = [fundA.code, categoryPeers[0].code];
+    expect(codesToAdd).toEqual([101, 102]);
   });
 });

@@ -2,14 +2,40 @@
 @source "../**";
 
 
+@font-face {
+  font-family: 'Hanken Grotesk Fallback';
+  src: local('Arial');
+  size-adjust: 102%;
+  ascent-override: 98%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans Fallback';
+  src: local('Arial');
+  size-adjust: 102%;
+  ascent-override: 98%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
 body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'SF Pro Text', 'Product Sans', 'Hanken Grotesk', system-ui, sans-serif;
+  font-family: 'Hanken Grotesk', 'Plus Jakarta Sans', 'Hanken Grotesk Fallback', system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
   letter-spacing: -0.011em;
 }
 
-/* Numeric & Metric Display: Rounded SF / Product Sans with Tabular Alignment, NEVER ugly terminal code font */
+/* Numeric & Metric Display: Rounded High-Legibility Sans with Tabular Alignment, NEVER terminal/typewriter code font */
+.tabular-nums, [class*="tabular-nums"], .font-numeric {
+  font-family: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+  font-feature-settings: 'tnum' 1, 'lnum' 1, 'cv05' 1, 'cv11' 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.015em;
+}
+
+/* Guard against legacy font-mono: map strictly to crisp sans tabular figures */
 .font-mono, [class*="font-mono"] {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Product Sans', system-ui, sans-serif !important;
+  font-family: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
   font-feature-settings: 'tnum' 1, 'lnum' 1, 'cv05' 1, 'cv11' 1;
   font-variant-numeric: tabular-nums lining-nums;
   letter-spacing: -0.015em;
@@ -59,15 +85,15 @@ body {
   --color-error-container: #fde8e8;
 
   /* Typography Font Families */
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'SF Pro Text', 'Product Sans', 'Hanken Grotesk', system-ui, sans-serif;
-  --font-mono: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Product Sans', system-ui, sans-serif;
-  --font-display-financial: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Product Sans', 'Hanken Grotesk', system-ui, sans-serif;
-  --font-headline-lg: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Product Sans', 'Hanken Grotesk', system-ui, sans-serif;
-  --font-headline-md: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Product Sans', 'Hanken Grotesk', system-ui, sans-serif;
-  --font-body-lg: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Product Sans', 'Hanken Grotesk', system-ui, sans-serif;
-  --font-body-md: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Product Sans', 'Hanken Grotesk', system-ui, sans-serif;
-  --font-label-bold: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Product Sans', 'Hanken Grotesk', system-ui, sans-serif;
-  --font-label-sm: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Product Sans', 'Hanken Grotesk', system-ui, sans-serif;
+  --font-sans: 'Hanken Grotesk', 'Plus Jakarta Sans', 'Hanken Grotesk Fallback', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display-financial: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-headline-lg: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-headline-md: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-body-lg: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-body-md: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-label-bold: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-label-sm: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 
   /* Shadow Vocabulary */
   --shadow-resting-card: 0px 4px 12px rgba(9, 30, 66, 0.08);
@@ -792,7 +818,7 @@ button[disabled],
 }
 
 /* ==========================================================================
-   LEGACY TYPOGRAPHY HIERARCHY (Hanken Grotesk & Space Grotesk)
+   TYPOGRAPHY HIERARCHY (Hanken Grotesk & Plus Jakarta Sans)
    ========================================================================== */
 .font-display-financial {
   font-family: 'Hanken Grotesk', system-ui, sans-serif !important;
@@ -845,8 +871,9 @@ button[disabled],
 }
 
 .font-numeric {
-  font-family: 'Space Grotesk', 'Hanken Grotesk', monospace !important;
-  font-variant-numeric: tabular-nums;
+  font-family: 'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
 }
 
 /* ==========================================================================

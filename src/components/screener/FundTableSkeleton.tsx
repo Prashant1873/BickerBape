@@ -26,12 +26,18 @@ export const FundTableSkeleton: React.FC<FundTableSkeletonProps> = ({
             <thead className="sticky top-0 z-30 bg-surface-container-low/95 backdrop-blur-sm shadow-xs">
               <tr className="border-b border-surface-container text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
                 {/* Sticky Left Header: Compare & Fund Name */}
-                <th className="sticky left-0 top-0 z-40 bg-surface-container-low py-3 px-4 min-w-[280px] sm:min-w-[360px] shadow-[2px_0_5px_rgba(0,0,0,0.04)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.25)]">
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-on-surface-variant/70 w-5">#</span>
-                    <span className="text-[10px] text-[#00A86B] dark:text-[#00F090] font-bold">SimSim</span>
-                    <span className="text-[10px] text-on-surface-variant/70">Compare</span>
-                    <span className="truncate">Scheme &amp; Category</span>
+                <th className="sticky left-0 top-0 z-40 bg-surface-container-low py-3 px-4 min-w-[280px] sm:min-w-[360px] shadow-[2px_0_5px_rgba(0,0,0,0.04)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.25)] border-r border-surface-container">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-on-surface-variant/70 w-6 shrink-0 text-center">#</span>
+                    <div className="w-[84px] sm:w-[96px] shrink-0 text-center">
+                      <span className="text-[10px] text-[#00A86B] dark:text-[#00F090] font-bold">SimSim</span>
+                    </div>
+                    <div className="w-10 shrink-0 text-center">
+                      <span className="text-[10px] text-on-surface-variant/70 font-bold">Compare</span>
+                    </div>
+                    <div className="min-w-0 flex-1 pl-1">
+                      <span className="truncate">Scheme &amp; Category</span>
+                    </div>
                   </div>
                 </th>
 
@@ -39,13 +45,18 @@ export const FundTableSkeleton: React.FC<FundTableSkeletonProps> = ({
                 {columns.map((colId) => {
                   const metric = KPI_CATALOG[colId];
                   const label = metric ? metric.label : colId;
-                  const align = metric ? metric.align : 'text-center';
+                  const isRight = metric?.align === 'text-right';
+                  const isCenter = metric?.align === 'text-center';
                   return (
                     <th
                       key={colId}
-                      className={`py-3 px-3 min-w-[110px] ${align}`}
+                      className={`py-3 px-3 min-w-[110px] ${
+                        isRight ? 'text-right' : isCenter ? 'text-center' : 'text-left'
+                      }`}
                     >
-                      <div className={`inline-flex items-center gap-1 ${align === 'text-right' ? 'justify-end' : align === 'text-center' ? 'justify-center' : 'justify-start'}`}>
+                      <div className={`w-full flex items-center gap-1 ${
+                        isRight ? 'justify-end' : isCenter ? 'justify-center' : 'justify-start'
+                      }`}>
                         <span>{label}</span>
                       </div>
                     </th>
@@ -58,17 +69,21 @@ export const FundTableSkeleton: React.FC<FundTableSkeletonProps> = ({
               {[...Array(rowCount)].map((_, idx) => (
                 <tr key={idx} className="min-h-[52px]">
                   {/* Sticky Left Cell: Index, Buttons, and Scheme Identity Placeholder */}
-                  <td className="sticky left-0 z-10 bg-surface-container-lowest py-2.5 px-4 shadow-[2px_0_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
+                  <td className="sticky left-0 z-10 bg-surface-container-lowest py-2.5 px-4 shadow-[2px_0_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.2)] border-r border-surface-container">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[11px] text-on-surface-variant/60 w-5 shrink-0">
+                      <span className="tabular-nums text-[11px] text-on-surface-variant/60 w-6 shrink-0 text-center">
                         {idx + 1}
                       </span>
 
                       {/* SimSim button placeholder */}
-                      <div className="w-8 h-8 rounded-lg shimmer-sweep shrink-0" />
+                      <div className="w-[84px] sm:w-[96px] shrink-0 flex items-center justify-center">
+                        <div className="w-full h-8 rounded-lg shimmer-sweep" />
+                      </div>
 
                       {/* Compare checkbox placeholder */}
-                      <div className="w-5 h-5 rounded-md shimmer-sweep shrink-0" />
+                      <div className="w-10 h-10 shrink-0 flex items-center justify-center">
+                        <div className="w-5 h-5 rounded-md shimmer-sweep" />
+                      </div>
 
                       {/* Scheme & Category placeholder */}
                       <div className="min-w-0 flex-1 space-y-1.5 pl-1">
@@ -84,10 +99,18 @@ export const FundTableSkeleton: React.FC<FundTableSkeletonProps> = ({
                   {/* Dynamic Columns Placeholders */}
                   {columns.map((colId) => {
                     const metric = KPI_CATALOG[colId];
-                    const align = metric ? metric.align : 'text-center';
+                    const isRight = metric?.align === 'text-right';
+                    const isCenter = metric?.align === 'text-center';
                     return (
-                      <td key={colId} className={`py-3 px-3 min-h-[52px] ${align}`}>
-                        <div className={`inline-flex items-center ${align === 'text-right' ? 'justify-end' : align === 'text-center' ? 'justify-center' : 'justify-start'} w-full`}>
+                      <td
+                        key={colId}
+                        className={`py-3 px-3 min-h-[52px] ${
+                          isRight ? 'text-right' : isCenter ? 'text-center' : 'text-left'
+                        }`}
+                      >
+                        <div className={`w-full flex items-center ${
+                          isRight ? 'justify-end' : isCenter ? 'justify-center' : 'justify-start'
+                        }`}>
                           <div className="h-4 w-14 rounded shimmer-sweep" />
                         </div>
                       </td>

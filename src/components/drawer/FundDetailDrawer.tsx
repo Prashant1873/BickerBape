@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useScreener } from '@/context/ScreenerContext';
-import { NavPoint } from '@/types/fund';
+import { NavPoint, FundSummary } from '@/types/fund';
 import { fetchFundNavHistory } from '@/lib/data-loader';
 import { getSuperScoreTheme } from '@/lib/smartscore';
 import { DrawerHeader } from './DrawerHeader';
@@ -21,6 +21,7 @@ export const FundDetailDrawer: React.FC = () => {
     funds,
     comparisonList,
     toggleComparison,
+    addFundsToComparison,
     isInBucket,
     addToBucket,
     removeFromBucket,
@@ -97,7 +98,7 @@ export const FundDetailDrawer: React.FC = () => {
 
   const score = fund.smart_score?.overall ?? (fund.suggester_score ? fund.suggester_score / 10 : 6.0);
   const theme = getSuperScoreTheme(score);
-  const isCompared = comparisonList.includes(fund.code);
+  const isCompared = comparisonList.some((c) => String(c) === String(fund.code));
   const inBucket = isInBucket(fund.code);
   const smartScoreObj = (fund.smart_score as any) || {};
   const rawPillars = smartScoreObj.pillars || {};
@@ -116,15 +117,20 @@ export const FundDetailDrawer: React.FC = () => {
   const scorePct = Math.min(100, Math.max(0, Math.round(score * 10)));
 
   const handleQuickCompareCategory = () => {
-    if (!isCompared) {
-      toggleComparison(fund.code);
+    const getFundScore = (f: FundSummary) =>
+      f.smart_score?.overall ?? (f.suggester_score ? f.suggester_score / 10 : 6.0);
+
+    const categoryPeers = funds
+      .filter((f) => f.category === fund.category && String(f.code) !== String(fund.code))
+      .sort((a, b) => getFundScore(b) - getFundScore(a));
+
+    const topPeer = categoryPeers[0];
+    const codesToAdd: (string | number)[] = [fund.code];
+    if (topPeer) {
+      codesToAdd.push(topPeer.code);
     }
-    const peer = funds
-      .filter((f) => f.category === fund.category && f.code !== fund.code)
-      .sort((a, b) => (b.smart_score?.overall || 0) - (a.smart_score?.overall || 0))[0];
-    if (peer && !comparisonList.includes(peer.code)) {
-      toggleComparison(peer.code);
-    }
+
+    addFundsToComparison(codesToAdd);
     setIsComparisonMatrixOpen(true);
   };
 

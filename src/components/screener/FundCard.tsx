@@ -21,7 +21,7 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
     removeFromBucket
   } = useScreener();
 
-  const isCompared = comparisonList.includes(fund.code);
+  const isCompared = comparisonList.some(c => String(c) === String(fund.code));
   const inBucket = isInBucket(fund.code);
   const score = fund.smart_score?.overall ?? (fund.suggester_score ? fund.suggester_score / 10 : 6.0);
   const theme = getSuperScoreTheme(score);

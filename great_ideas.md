@@ -10,6 +10,7 @@
   - 💰 **Income**: Heavy weight on Cost Efficiency & Stability (35% cost, 30% risk, 20% track, 15% perf)
 - **SimSim™ Interactive Portfolio Simulation**: Historical multi-asset backtesting engine supporting lumpsum growth and monthly SIP unit accumulation with real-time XIRR convergence.
 - **Dockable Comparison & Head-to-Head Matrix**: Persistent bottom tray allowing seamless multi-fund comparison across dozens of quantitative dimensions.
+- **Automated Daily Data & Deployment Pipeline**: Hands-free GitHub Actions cron job triggering at midnight IST post-market, executing quant audits, updating SQLite and master bundles, and deploying to GitHub Pages.
 
 ## Visual & Interaction Design Directions
 - **Fiscal Clarity Design System**: Clean surface container hierarchy, subtle borders, and distraction-free institutional density.

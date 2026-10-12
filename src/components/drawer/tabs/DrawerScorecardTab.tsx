@@ -162,7 +162,7 @@ export const DrawerScorecardTab: React.FC<DrawerScorecardTabProps> = ({
           </div>
           {fund.ratio_3y && (
             <span
-              className={`text-xs font-mono font-black px-2.5 py-1 rounded-lg border ${
+              className={`text-xs tabular-nums font-black px-2.5 py-1 rounded-lg border ${
                 fund.ratio_3y >= 1.25
                   ? 'bg-gain-bg text-gain-text border-gain/30'
                   : fund.ratio_3y >= 1.0
@@ -196,7 +196,7 @@ export const DrawerScorecardTab: React.FC<DrawerScorecardTabProps> = ({
               >
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="font-bold text-on-surface-variant">{item.horizon} Ratio</span>
-                  <span className="font-mono font-bold text-xs text-on-surface">
+                  <span className="tabular-nums font-bold text-xs text-on-surface">
                     {hasRatio ? `${item.ratio!.toFixed(2)}x` : 'N/A (<Seasoning)'}
                   </span>
                 </div>

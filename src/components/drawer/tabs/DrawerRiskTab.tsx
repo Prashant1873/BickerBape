@@ -87,7 +87,7 @@ export const DrawerRiskTab: React.FC<DrawerRiskTabProps> = ({
               </p>
             </div>
           </div>
-          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-gain-bg text-gain-text border border-gain/30">
+          <span className="text-xs tabular-nums font-bold px-2 py-0.5 rounded-md bg-gain-bg text-gain-text border border-gain/30">
             {fund.alpha_estimate
               ? `${fund.alpha_estimate >= 0 ? '+' : ''}${fund.alpha_estimate.toFixed(2)}% Alpha`
               : '+3.25% Alpha (Est)'}
@@ -97,7 +97,7 @@ export const DrawerRiskTab: React.FC<DrawerRiskTabProps> = ({
         <div className="grid grid-cols-2 gap-3 text-xs">
           <div className="p-2.5 rounded-xl bg-surface-container border border-surface-container-high space-y-1">
             <span className="text-[10px] uppercase font-bold text-on-surface-variant block">Information Ratio</span>
-            <span className="font-mono font-bold text-on-surface block">
+            <span className="tabular-nums font-bold text-on-surface block">
               {fund.sharpe_ratio ? (fund.sharpe_ratio * 0.85).toFixed(2) : '1.05'}
             </span>
             <span className="text-[10px] text-on-surface-variant/80 block">Consistency of excess alpha</span>
@@ -105,7 +105,7 @@ export const DrawerRiskTab: React.FC<DrawerRiskTabProps> = ({
 
           <div className="p-2.5 rounded-xl bg-surface-container border border-surface-container-high space-y-1">
             <span className="text-[10px] uppercase font-bold text-on-surface-variant block">Capture Ratio (Up/Down)</span>
-            <span className="font-mono font-bold text-on-surface block">108% / 82%</span>
+            <span className="tabular-nums font-bold text-on-surface block">108% / 82%</span>
             <span className="text-[10px] text-on-surface-variant/80 block">Captures upside while curbing drops</span>
           </div>
         </div>

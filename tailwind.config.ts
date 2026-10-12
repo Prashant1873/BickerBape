@@ -73,13 +73,15 @@ const config: Config = {
         'full': '9999px'
       },
       fontFamily: {
-        'display-financial': ['var(--font-hanken)', 'system-ui', 'sans-serif'],
-        'headline-lg': ['var(--font-hanken)', 'system-ui', 'sans-serif'],
-        'headline-md': ['var(--font-hanken)', 'system-ui', 'sans-serif'],
-        'body-lg': ['var(--font-hanken)', 'system-ui', 'sans-serif'],
-        'body-md': ['var(--font-hanken)', 'system-ui', 'sans-serif'],
-        'label-bold': ['var(--font-hanken)', 'system-ui', 'sans-serif'],
-        'label-sm': ['var(--font-hanken)', 'system-ui', 'sans-serif']
+        'sans': ['Hanken Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        'mono': ['Hanken Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        'display-financial': ['Hanken Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        'headline-lg': ['Hanken Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        'headline-md': ['Hanken Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        'body-lg': ['Hanken Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        'body-md': ['Hanken Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        'label-bold': ['Hanken Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        'label-sm': ['Hanken Grotesk', 'Plus Jakarta Sans', 'system-ui', 'sans-serif']
       },
       boxShadow: {
         'resting-card': '0px 4px 12px rgba(9, 30, 66, 0.08)',

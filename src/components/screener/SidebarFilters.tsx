@@ -181,7 +181,7 @@ export const SidebarFilters: React.FC = () => {
             }`}
           >
             <span className="truncate pr-2 font-bold">All Equity Funds</span>
-            <span className={`text-[0.75rem] font-mono px-2 py-0.5 rounded-md font-bold ${
+            <span className={`text-[0.75rem] tabular-nums px-2 py-0.5 rounded-md font-bold ${
               filters.category === 'All Funds' ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'
             }`}>
               {funds.length}
@@ -213,7 +213,7 @@ export const SidebarFilters: React.FC = () => {
                       }`}
                     >
                       <span className="truncate pr-2">{cat}</span>
-                      <span className={`text-[0.75rem] font-mono px-2 py-0.5 rounded-md font-bold ${
+                      <span className={`text-[0.75rem] tabular-nums px-2 py-0.5 rounded-md font-bold ${
                         active ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'
                       }`}>
                         {categoryCounts[cat] || 0}
@@ -237,7 +237,7 @@ export const SidebarFilters: React.FC = () => {
         <div>
           <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-on-surface font-medium">Min 3Y Rolling Return</span>
-            <span className="font-mono font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
+            <span className="font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
               {filters.minRollingReturn > -100 ? `${filters.minRollingReturn}%` : 'Off'}
             </span>
           </div>
@@ -257,7 +257,7 @@ export const SidebarFilters: React.FC = () => {
         <div>
           <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-on-surface font-medium">Min Sharpe Ratio</span>
-            <span className="font-mono font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
+            <span className="font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
               {filters.minSharpe > -10 ? filters.minSharpe.toFixed(1) : 'Off'}
             </span>
           </div>
@@ -277,7 +277,7 @@ export const SidebarFilters: React.FC = () => {
         <div>
           <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-on-surface font-medium">Max Annualized Volatility</span>
-            <span className="font-mono font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
+            <span className="font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
               {filters.maxVolatility < 100 ? `${filters.maxVolatility}%` : 'Off'}
             </span>
           </div>
@@ -297,7 +297,7 @@ export const SidebarFilters: React.FC = () => {
         <div>
           <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-on-surface font-medium">Min SmartScore™</span>
-            <span className="font-mono font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
+            <span className="font-bold text-primary px-2 py-0.5 rounded-lg bg-surface-container text-[11px] tabular-nums">
               {filters.minSmartScore > 0 ? `${filters.minSmartScore.toFixed(1)}/10` : 'Off'}
             </span>
           </div>
@@ -328,7 +328,7 @@ export const SidebarFilters: React.FC = () => {
             <span className="material-symbols-outlined text-xs">psychology</span>
             <span>Quant Insight</span>
           </span>
-          <span className="text-on-surface-variant font-mono flex items-center gap-0.5 group-hover:text-primary">
+          <span className="text-on-surface-variant font-semibold text-xs flex items-center gap-0.5 group-hover:text-primary">
             <span>Next</span>
             <span className="material-symbols-outlined text-xs">arrow_forward</span>
           </span>
@@ -384,7 +384,7 @@ export const SidebarFilters: React.FC = () => {
               <span className="w-2 h-2 rounded-full bg-gain animate-pulse" />
               <span>AMFI Live</span>
             </span>
-            <span className="font-mono font-bold text-primary text-[11px]">
+            <span className="tabular-nums font-bold text-primary text-[11px]">
               {funds.length} Schemes
             </span>
           </div>

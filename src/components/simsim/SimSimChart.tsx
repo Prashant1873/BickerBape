@@ -142,13 +142,13 @@ export const SimSimChart: React.FC<SimSimChartProps> = ({
             scales: {
               x: {
                 grid: { display: false },
-                ticks: { color: '#64748B', font: { size: 10 }, maxTicksLimit: 8 }
+                ticks: { color: '#64748B', font: { size: 10, family: "'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif" }, maxTicksLimit: 8 }
               },
               y: {
                 grid: { color: 'rgba(128, 128, 128, 0.12)' },
                 ticks: {
                   color: '#64748B',
-                  font: { size: 10 },
+                  font: { size: 10, family: "'Hanken Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif" },
                   callback: (val) => `₹${(Number(val) / 1000).toFixed(0)}k`
                 }
               }

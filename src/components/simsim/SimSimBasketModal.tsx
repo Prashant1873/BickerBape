@@ -154,7 +154,7 @@ export const SimSimBasketModal: React.FC = () => {
                       Slot {slotIdx + 1}: {so.slot.category}
                     </span>
                   </div>
-                  <span className="text-[0.75rem] font-mono font-bold px-2 py-0.5 rounded-md bg-[#00F090]/15 text-[#00A86B] dark:text-[#00F090] border border-[#00F090]/30 tracking-[0.04em] uppercase">
+                  <span className="text-[0.75rem] tabular-nums font-bold px-2 py-0.5 rounded-md bg-[#00F090]/15 text-[#00A86B] dark:text-[#00F090] border border-[#00F090]/30 tracking-[0.04em] uppercase">
                     Weight: {so.slot.suggestedWeight}%
                   </span>
                 </div>

@@ -248,7 +248,7 @@ export const Navbar: React.FC = () => {
                   (e.target as HTMLElement).style.display = 'none';
                 }}
               />
-              <span className="font-mono font-black text-sm text-primary hidden">BB</span>
+              <span className="font-black text-sm text-primary hidden">BB</span>
             </div>
             <div className="hidden sm:flex flex-col">
               <div className="flex items-center gap-1.5">

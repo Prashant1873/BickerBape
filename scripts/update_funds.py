@@ -406,10 +406,10 @@ def main():
 
     print(f"\nCompleted! Total Indian Equity Funds Indexed: {len(funds_data)}")
     
-    # Compute 5-Pillar SmartScore (TM)
-    print("\nComputing SmartScore (TM) 5-Pillar Scorecards...")
+    # Compute 5-Pillar SmartScore (TM) & Database Enrichment
+    print("\nComputing SmartScore (TM) 5-Pillar Scorecards & Database Enrichment...")
     import subprocess
-    subprocess.run([sys.executable, "scripts/build_smart_score.py"], check=True)
+    subprocess.run([sys.executable, "scripts/enrich_and_audit_database.py"], check=True)
 
 if __name__ == "__main__":
     main()

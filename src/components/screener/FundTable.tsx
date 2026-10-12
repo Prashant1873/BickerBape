@@ -45,7 +45,7 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
         const theme = getSuperScoreTheme(score);
         return (
           <div className="flex flex-col items-center">
-            <span className={`font-mono font-bold text-xs px-2 py-0.5 rounded-lg border ${theme.badgeBg} ${theme.badgeBorder} ${theme.badgeText}`}>
+            <span className={`tabular-nums font-bold text-xs px-2 py-0.5 rounded-lg border ${theme.badgeBg} ${theme.badgeBorder} ${theme.badgeText}`}>
               {score.toFixed(1)}
             </span>
             {fund.smart_score && (fund.smart_score as any).rank_text && (
@@ -58,14 +58,14 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
       }
       case 'cagr_3y': {
         const val = fund.cagr_3y;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <div>
-            <span className={`font-mono font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
+          <div className="flex flex-col items-end">
+            <span className={`tabular-nums font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
               {val > 0 ? '+' : ''}{val.toFixed(1)}%
             </span>
             {fund.ratio_3y && (
-              <span className="block text-[10px] font-bold text-primary font-mono">
+              <span className="block text-[10px] font-bold text-primary tabular-nums">
                 {fund.ratio_3y}x cat
               </span>
             )}
@@ -74,14 +74,14 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
       }
       case 'cagr_5y': {
         const val = fund.cagr_5y;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <div>
-            <span className={`font-mono font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
+          <div className="flex flex-col items-end">
+            <span className={`tabular-nums font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
               {val > 0 ? '+' : ''}{val.toFixed(1)}%
             </span>
             {fund.ratio_5y && (
-              <span className="block text-[10px] text-on-surface-variant font-mono">
+              <span className="block text-[10px] text-on-surface-variant tabular-nums">
                 {fund.ratio_5y}x
               </span>
             )}
@@ -90,141 +90,141 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
       }
       case 'cagr_10y': {
         const val = fund.cagr_10y;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className={`font-mono font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
+          <span className={`tabular-nums font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
             {val > 0 ? '+' : ''}{val.toFixed(1)}%
           </span>
         );
       }
       case 'cagr_1y': {
         const val = fund.cagr_1y;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className={`font-mono font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
+          <span className={`tabular-nums font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
             {val > 0 ? '+' : ''}{val.toFixed(1)}%
           </span>
         );
       }
       case 'growth_3m': {
         const val = fund.growth_3m;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className={`font-mono font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
+          <span className={`tabular-nums font-bold text-xs ${val >= 0 ? 'text-gain' : 'text-loss'}`}>
             {val > 0 ? '+' : ''}{val.toFixed(1)}%
           </span>
         );
       }
       case 'rolling_3y_avg': {
         const val = fund.rolling_3y_avg;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono font-bold text-xs text-primary">
+          <span className="tabular-nums font-bold text-xs text-primary">
             {val.toFixed(1)}%
           </span>
         );
       }
       case 'sharpe_ratio': {
         const val = fund.sharpe_ratio;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className={`font-mono font-bold text-xs ${val >= 1.0 ? 'text-gain' : 'text-on-surface'}`}>
+          <span className={`tabular-nums font-bold text-xs ${val >= 1.0 ? 'text-gain' : 'text-on-surface'}`}>
             {val.toFixed(2)}
           </span>
         );
       }
       case 'sortino_ratio': {
         const val = fund.sortino_ratio;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className={`font-mono font-bold text-xs ${val >= 1.2 ? 'text-gain' : 'text-on-surface'}`}>
+          <span className={`tabular-nums font-bold text-xs ${val >= 1.2 ? 'text-gain' : 'text-on-surface'}`}>
             {val.toFixed(2)}
           </span>
         );
       }
       case 'volatility': {
         const val = fund.volatility;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono text-xs text-on-surface">
+          <span className="tabular-nums text-xs text-on-surface">
             {val.toFixed(1)}%
           </span>
         );
       }
       case 'max_drawdown': {
         const val = fund.max_drawdown;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono font-semibold text-xs text-loss">
+          <span className="tabular-nums font-semibold text-xs text-loss">
             -{Math.abs(val).toFixed(1)}%
           </span>
         );
       }
       case 'beta': {
         const val = fund.beta;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono text-xs text-on-surface">
+          <span className="tabular-nums text-xs text-on-surface">
             {val.toFixed(2)}
           </span>
         );
       }
       case 'expense_ratio': {
         const val = fund.expense_ratio;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono text-xs text-on-surface font-semibold">
+          <span className="tabular-nums text-xs text-on-surface font-semibold">
             {val.toFixed(2)}%
           </span>
         );
       }
       case 'exit_load_pct': {
         const val = fund.exit_load_pct;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono text-xs text-on-surface">
+          <span className="tabular-nums text-xs text-on-surface">
             {val.toFixed(1)}%
           </span>
         );
       }
       case 'aum_cr': {
         const val = fund.aum_cr;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono text-xs text-on-surface">
+          <span className="tabular-nums text-xs text-on-surface">
             ₹{val.toLocaleString()} Cr
           </span>
         );
       }
       case 'pe_ratio': {
         const val = fund.pe_ratio;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono text-xs text-on-surface">
+          <span className="tabular-nums text-xs text-on-surface">
             {val.toFixed(1)}
           </span>
         );
       }
       case 'pb_ratio': {
         const val = fund.pb_ratio;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono text-xs text-on-surface">
+          <span className="tabular-nums text-xs text-on-surface">
             {val.toFixed(1)}
           </span>
         );
       }
       case 'manager_tenure_years': {
         const val = fund.manager_tenure_years;
-        if (val === null || val === undefined) return <span className="text-on-surface-variant font-mono">-</span>;
+        if (val === null || val === undefined) return <span className="text-on-surface-variant tabular-nums">-</span>;
         return (
-          <span className="font-mono text-xs text-on-surface px-1.5 py-0.5 rounded bg-surface-container">
+          <span className="tabular-nums text-xs text-on-surface px-1.5 py-0.5 rounded bg-surface-container">
             {val.toFixed(1)}y
           </span>
         );
       }
       default:
-        return <span className="font-mono text-xs text-on-surface">-</span>;
+        return <span className="tabular-nums text-xs text-on-surface">-</span>;
     }
   };
 
@@ -241,11 +241,17 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
               <tr className="border-b border-surface-container text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
                 {/* Sticky Left Header: Compare & Fund Name */}
                 <th className="sticky left-0 top-0 z-40 bg-surface-container-low py-3 px-4 min-w-[280px] sm:min-w-[360px] border-r border-surface-container">
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-on-surface-variant/70 w-5">#</span>
-                    <span className="text-[10px] text-[#00A86B] dark:text-[#00F090] font-bold">SimSim</span>
-                    <span className="text-[10px] text-on-surface-variant/70">Compare</span>
-                    <span className="truncate">Scheme &amp; Category</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-on-surface-variant/70 w-6 shrink-0 text-center">#</span>
+                    <div className="w-[84px] sm:w-[96px] shrink-0 text-center">
+                      <span className="text-[10px] text-[#00A86B] dark:text-[#00F090] font-bold">SimSim</span>
+                    </div>
+                    <div className="w-10 shrink-0 text-center">
+                      <span className="text-[10px] text-on-surface-variant/70 font-bold">Compare</span>
+                    </div>
+                    <div className="min-w-0 flex-1 pl-1">
+                      <span className="truncate">Scheme &amp; Category</span>
+                    </div>
                   </div>
                 </th>
 
@@ -254,14 +260,22 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                   const metric = KPI_CATALOG[colId];
                   if (!metric) return null;
                   const isSorted = filters.sortBy === metric.sortKey;
+                  const isRight = metric.align === 'text-right';
+                  const isCenter = metric.align === 'text-center';
                   return (
                     <th
                       key={colId}
                       onClick={() => handleSort(metric.sortKey)}
-                      className={`py-3 px-3 min-w-[110px] cursor-pointer select-none hover:bg-surface-container/70 transition-colors group ${metric.align}`}
+                      className={`py-3 px-3 min-w-[110px] cursor-pointer select-none hover:bg-surface-container/70 transition-colors group ${
+                        isRight ? 'text-right' : isCenter ? 'text-center' : 'text-left'
+                      }`}
                       title={`Sort by ${metric.label}`}
                     >
-                      <div className={`inline-flex items-center gap-1 ${metric.align === 'text-right' ? 'justify-end' : metric.align === 'text-center' ? 'justify-center' : 'justify-start'}`}>
+                      <div
+                        className={`w-full flex items-center gap-1 ${
+                          isRight ? 'justify-end' : isCenter ? 'justify-center' : 'justify-start'
+                        }`}
+                      >
                         <span>{metric.label}</span>
                         {GLOSSARY[metric.label] && (
                           <InfoBadge term={metric.label} definition={GLOSSARY[metric.label]} />
@@ -284,7 +298,7 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
 
             <tbody className="divide-y divide-surface-container/60">
               {displayedFunds.map((fund, idx) => {
-                const isCompared = comparisonList.includes(fund.code);
+                const isCompared = comparisonList.some(c => String(c) === String(fund.code));
                 const inBucket = isInBucket(fund.code);
                 return (
                   <tr
@@ -295,42 +309,44 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                     {/* Sticky Left Column: Compare Checkbox, SimSim Button & Fund Identity */}
                     <td className="sticky left-0 z-10 bg-surface-container-lowest group-hover:bg-surface-container-low/90 py-2.5 px-4 border-r border-surface-container transition-colors">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-[11px] text-on-surface-variant/60 w-5 flex-shrink-0">
+                        <span className="tabular-nums text-[11px] text-on-surface-variant/60 w-6 shrink-0 text-center">
                           {idx + 1}
                         </span>
 
-                        {/* Quick SimSim Bucket Toggle Button (Fitts's Law 44px touch target) */}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (inBucket) {
-                              removeFromBucket(fund.code);
-                            } else {
-                              addToBucket(fund.code);
-                            }
-                          }}
-                          className={`min-h-[44px] px-3 rounded-xl text-[11px] font-bold transition-all flex items-center gap-1.5 touch-spring border flex-shrink-0 select-none cursor-pointer ${
-                            inBucket
-                              ? 'bg-[#00F090] text-black border-[#00F090] font-black shadow-2xs'
-                              : 'bg-surface-container-low/80 border-surface-container text-on-surface-variant hover:text-[#00A86B] dark:hover:text-[#00F090] hover:border-[#00F090]/50 hover:bg-surface-container'
-                          }`}
-                          aria-label={inBucket ? `Remove ${fund.name} from SimSim` : `Add ${fund.name} to SimSim`}
-                          title={inBucket ? 'Remove from SimSim portfolio' : 'Add to SimSim portfolio'}
-                        >
-                          <span className="material-symbols-outlined text-sm leading-none">
-                            {inBucket ? 'check' : 'hourglass_top'}
-                          </span>
-                          <span className="hidden sm:inline">{inBucket ? 'In SimSim' : '+ SimSim'}</span>
-                        </button>
+                        {/* Quick SimSim Bucket Toggle Button */}
+                        <div className="w-[84px] sm:w-[96px] shrink-0 flex items-center justify-center">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (inBucket) {
+                                removeFromBucket(fund.code);
+                              } else {
+                                addToBucket(fund.code);
+                              }
+                            }}
+                            className={`w-full min-h-[38px] px-2 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1 touch-spring border select-none cursor-pointer ${
+                              inBucket
+                                ? 'bg-[#00F090] text-black border-[#00F090] font-black shadow-2xs'
+                                : 'bg-surface-container-low/80 border-surface-container text-on-surface-variant hover:text-[#00A86B] dark:hover:text-[#00F090] hover:border-[#00F090]/50 hover:bg-surface-container'
+                            }`}
+                            aria-label={inBucket ? `Remove ${fund.name} from SimSim` : `Add ${fund.name} to SimSim`}
+                            title={inBucket ? 'Remove from SimSim portfolio' : 'Add to SimSim portfolio'}
+                          >
+                            <span className="material-symbols-outlined text-sm leading-none">
+                              {inBucket ? 'check' : 'hourglass_top'}
+                            </span>
+                            <span className="truncate">{inBucket ? 'In SimSim' : '+ SimSim'}</span>
+                          </button>
+                        </div>
 
-                        {/* Compare Toggle Checkbox (Min 44x44px Click Target) */}
+                        {/* Compare Toggle Checkbox */}
                         <div
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleComparison(fund.code);
                           }}
-                          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center hover:bg-surface-container text-on-surface-variant touch-spring flex-shrink-0 cursor-pointer"
+                          className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-surface-container text-on-surface-variant touch-spring shrink-0 cursor-pointer"
                           title={isCompared ? 'Remove from compare' : 'Add to compare'}
                         >
                           <input
@@ -342,14 +358,14 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                         </div>
 
                         {/* Name & Subtitle */}
-                        <div className="min-w-0 pr-2 flex items-center gap-2">
+                        <div className="min-w-0 flex-1 pl-1 flex items-center gap-2">
                           <AmcBadge fundHouse={fund.fund_house} size="sm" showLogoOnly />
                           <div className="min-w-0">
                             <h4 className="font-bold text-on-surface text-xs truncate max-w-[170px] sm:max-w-[220px] group-hover:text-primary transition-colors">
                               {fund.name}
                             </h4>
                             <div className="flex items-center gap-1.5 text-[10px] text-on-surface-variant mt-0.5">
-                              <span className="font-semibold text-primary/90 font-mono">{fund.category}</span>
+                              <span className="font-semibold text-primary/90">{fund.category}</span>
                               <span>•</span>
                               <span className="truncate max-w-[110px]">{fund.fund_house}</span>
                             </div>
@@ -362,8 +378,15 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                     {tableColumns.map(colId => {
                       const metric = KPI_CATALOG[colId];
                       if (!metric) return null;
+                      const isRight = metric.align === 'text-right';
+                      const isCenter = metric.align === 'text-center';
                       return (
-                        <td key={colId} className={`py-3 px-3 ${metric.align}`}>
+                        <td
+                          key={colId}
+                          className={`py-3 px-3 ${
+                            isRight ? 'text-right' : isCenter ? 'text-center' : 'text-left'
+                          }`}
+                        >
                           {renderCellContent(fund, colId)}
                         </td>
                       );

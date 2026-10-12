@@ -115,7 +115,7 @@ export const ActiveFiltersBar: React.FC = () => {
             <div className="h-5 w-36 rounded-md bg-surface-container-high/60 shimmer-sweep" aria-label="Loading scheme count" />
           ) : (
             <span className="text-xs font-bold text-on-surface">
-              Showing <span className="font-mono text-primary text-sm">{filteredFunds.length}</span> of {funds.length} Schemes
+              Showing <span className="tabular-nums font-bold text-primary text-sm">{filteredFunds.length}</span> of {funds.length} Schemes
             </span>
           )}
           {isPrimed && activeFilterCount > 0 && (

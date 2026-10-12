@@ -61,3 +61,13 @@
 ### 6. AMC Brand Identity & Asset Resolution
 - `scripts/fetch_amc_logos.py`: High-res (128px) asset harvester sourcing official AMC brand marks into `public/logos/amc/{slug}.png`.
 - `src/components/common/AmcBadge.tsx`: BasePath-aware asset resolver with fallback cascade (official PNG mark -> brand monogram pill on error) ensuring zero broken images. Integrated across FundCard, FundTable, DrawerHeader, ComparisonMatrix, and SimSim.
+
+### 7. Unified Typography & Zero-CLS Metric Stack
+- **Primary Voice**: Hanken Grotesk & Plus Jakarta Sans with zero-CLS metric fallbacks (`size-adjust`, `ascent-override`, `descent-override`).
+- **Tabular Numeric Figures**: Proportional geometric sans with `font-variant-numeric: tabular-nums lining-nums` and `font-feature-settings: 'tnum' 1, 'lnum' 1;` across all table columns, performance metrics, and simulation results.
+- **Monospace/Typewriter Eradication**: Complete elimination of typewriter code fonts (`monospace`, `font-mono`) from all UI elements, charts, badges, and counters.
+
+### 8. Automated Daily Data & Deployment Pipeline
+- `.github/workflows/daily-data-update.yml`: Scheduled GitHub Actions cron (`30 18 * * 1-5`, 00:00 AM IST Mon-Fri post-market).
+- **Execution Flow**: Runs `scripts/enrich_and_audit_database.py` (concurrent MFAPI daily NAV ingestion + 5-pillar SmartScore) -> `scripts/generate_static_data.js` -> commits dataset changes to git -> executes test suites & typechecks -> deploys static bundle to GitHub Pages.
+

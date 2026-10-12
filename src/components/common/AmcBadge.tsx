@@ -502,7 +502,7 @@ export const AmcBadge: React.FC<AmcBadgeProps> = ({
       {/* Show text badge only if explicitly asked, or as fallback when no logo image exists and showLogoOnly is not active */}
       {(showBadgeText || (!hasLogo && !showLogoOnly)) && (
         <span
-          className={`font-mono uppercase border ${config.bg} ${config.border} ${config.text} ${badgeTextSizes[size]}`}
+          className={`font-bold tracking-wider uppercase border ${config.bg} ${config.border} ${config.text} ${badgeTextSizes[size]}`}
         >
           {config.shortName}
         </span>
