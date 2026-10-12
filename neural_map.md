@@ -57,5 +57,7 @@
 - `idle`: Component unmounted or initial static SSR.
 - `skeleton`: Coordinated, full-geometry shimmer skeleton across table, summary metrics, and chart canvas.
 - `priming`: Data loader fetches SQLite/JSON, initializes filters, and pre-renders primed DOM in memory.
-- `primed_reveal`: Atomic crossfade transition reveals primed interactive UI simultaneously; zero staggered pop-in, 0 CLS.
 
+### 6. AMC Brand Identity & Asset Resolution
+- `scripts/fetch_amc_logos.py`: High-res (128px) asset harvester sourcing official AMC brand marks into `public/logos/amc/{slug}.png`.
+- `src/components/common/AmcBadge.tsx`: BasePath-aware asset resolver with fallback cascade (official PNG mark -> brand monogram pill on error) ensuring zero broken images. Integrated across FundCard, FundTable, DrawerHeader, ComparisonMatrix, and SimSim.

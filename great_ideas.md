@@ -18,4 +18,5 @@
 - **Apple Fluid Motion & Concentric Radii (/frontend-skill)**: Enforce $r_{inner} = \max(0, r_{outer} - \text{padding})$ across nested containers, sub-pixel optical icon centering (`translateY(-0.5px)`), and viscoelastic sliding tab rails.
 - **Fluid Segmented Selection Pin**: Adjacent toggle buttons share a single unified holder with an active indicator pin that elastically stretches to bridge source and target before squishing/settling into place, eliminating individual button distortion.
 - **Coordinated Atomic Skeleton Loading**: Full-layout pixel-matched skeleton screens paired with an atomic transition barrier, preventing piecemeal rendering and eliminating layout shift (CLS = 0).
+- **Official AMC Brand Recognition System**: High-contrast, high-resolution official fund house emblems with graceful fallback monogram pills, delivering instant visual trust and recognition across all cards, comparison matrices, tables, and simulation reports.
 

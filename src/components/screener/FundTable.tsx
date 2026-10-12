@@ -6,6 +6,7 @@ import { useScreener } from '@/context/ScreenerContext';
 import { KPI_CATALOG } from '@/lib/kpi-catalog';
 import { getSuperScoreTheme } from '@/lib/smartscore';
 import { InfoBadge, GLOSSARY } from '@/components/common/InfoBadge';
+import { AmcBadge } from '@/components/common/AmcBadge';
 
 interface FundTableProps {
   funds: FundSummary[];
@@ -341,14 +342,17 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                         </div>
 
                         {/* Name & Subtitle */}
-                        <div className="min-w-0 pr-2">
-                          <h4 className="font-bold text-on-surface text-xs truncate max-w-[170px] sm:max-w-[220px] group-hover:text-primary transition-colors">
-                            {fund.name}
-                          </h4>
-                          <div className="flex items-center gap-1.5 text-[10px] text-on-surface-variant mt-0.5">
-                            <span className="font-semibold text-primary/90 font-mono">{fund.category}</span>
-                            <span>•</span>
-                            <span className="truncate max-w-[110px]">{fund.fund_house}</span>
+                        <div className="min-w-0 pr-2 flex items-center gap-2">
+                          <AmcBadge fundHouse={fund.fund_house} size="sm" showLogoOnly />
+                          <div className="min-w-0">
+                            <h4 className="font-bold text-on-surface text-xs truncate max-w-[170px] sm:max-w-[220px] group-hover:text-primary transition-colors">
+                              {fund.name}
+                            </h4>
+                            <div className="flex items-center gap-1.5 text-[10px] text-on-surface-variant mt-0.5">
+                              <span className="font-semibold text-primary/90 font-mono">{fund.category}</span>
+                              <span>•</span>
+                              <span className="truncate max-w-[110px]">{fund.fund_house}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
