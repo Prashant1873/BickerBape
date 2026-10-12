@@ -105,9 +105,9 @@
 | UX-01 | Phase 9 | Satisfied |
 | UX-02 | Phase 9 | Satisfied |
 | UX-03 | Phase 9 | Satisfied |
-| REL-01 | Phase 10 | Pending |
-| REL-02 | Phase 10 | Pending |
-| REL-03 | Phase 10 | Pending |
+| REL-01 | Phase 10 | Satisfied |
+| REL-02 | Phase 10 | Satisfied |
+| REL-03 | Phase 10 | Satisfied |
 
 **Coverage:**
 - v1 requirements: 26 total
