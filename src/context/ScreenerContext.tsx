@@ -268,11 +268,11 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const toggleComparison = useCallback((code: string | number) => {
-    const fund = funds.find(f => f.code === code);
+    const fund = funds.find(f => String(f.code) === String(code));
     const fundName = fund ? fund.name.split(' - Direct')[0] : `Fund ${code}`;
 
-    if (comparisonList.includes(code)) {
-      const next = comparisonList.filter(c => c !== code);
+    if (comparisonList.some(c => String(c) === String(code))) {
+      const next = comparisonList.filter(c => String(c) !== String(code));
       setComparisonList(next);
       try {
         localStorage.setItem('bickerbape_compare_list', JSON.stringify(next));
@@ -306,17 +306,17 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // SimSim Bucket Operations
   const isInBucket = useCallback((code: string | number) => {
-    return simsimBucket.includes(code);
+    return simsimBucket.some(c => String(c) === String(code));
   }, [simsimBucket]);
 
   const addToBucket = useCallback((code: string | number) => {
-    if (simsimBucket.includes(code)) return;
+    if (simsimBucket.some(c => String(c) === String(code))) return;
     if (simsimBucket.length >= 10) {
       showToast('Maximum 10 funds permitted in SimSim portfolio.', 'warning');
       return;
     }
 
-    const fund = funds.find(f => f.code === code);
+    const fund = funds.find(f => String(f.code) === String(code));
     const fundName = fund ? fund.name.split(' - Direct')[0] : `Fund ${code}`;
 
     const nextBucket = [...simsimBucket, code];
@@ -345,10 +345,10 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [simsimBucket, funds, showToast]);
 
   const removeFromBucket = useCallback((code: string | number) => {
-    const fund = funds.find(f => f.code === code);
+    const fund = funds.find(f => String(f.code) === String(code));
     const fundName = fund ? fund.name.split(' - Direct')[0] : `Fund ${code}`;
 
-    const nextBucket = simsimBucket.filter(c => c !== code);
+    const nextBucket = simsimBucket.filter(c => String(c) !== String(code));
     setSimsimBucket(nextBucket);
 
     const nextWeights: Record<string | number, number> = {};
@@ -416,7 +416,7 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       const target = Math.max(0, Math.min(100, Math.round(weightPct)));
       const remainingBudget = 100 - target;
-      const otherCodes = simsimBucket.filter(c => c !== activeCode);
+      const otherCodes = simsimBucket.filter(c => String(c) !== String(activeCode));
       let otherSum = 0;
       otherCodes.forEach(c => {
         otherSum += (prev[c] ?? 0);

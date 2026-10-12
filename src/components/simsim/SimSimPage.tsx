@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useScreener } from '@/context/ScreenerContext';
 import { FundSummary } from '@/types/fund';
 import { fetchFundNavHistory } from '@/lib/data-loader';
@@ -37,12 +37,25 @@ export const SimSimPage: React.FC = () => {
   const [loadingSim, setLoadingSim] = useState(false);
   const [report, setReport] = useState<SimulationReport | null>(null);
 
-  // Funds currently in the bucket
+  // Funds currently in the bucket (type-safe string comparison)
   const bucketFunds = useMemo(() => {
     return simsimBucket
-      .map((code) => funds.find((f) => f.code === code))
+      .map((code) => funds.find((f) => String(f.code) === String(code)))
       .filter(Boolean) as FundSummary[];
   }, [simsimBucket, funds]);
+
+  // Serialized deterministic signatures to prevent object/array reference thrashing
+  const bucketCodesKey = useMemo(() => {
+    return simsimBucket.map(String).sort().join(',');
+  }, [simsimBucket]);
+
+  const weightsKey = useMemo(() => {
+    return JSON.stringify(simsimWeights);
+  }, [simsimWeights]);
+
+  const simSignature = `${bucketCodesKey}::${weightsKey}::${simsimCapital}::${simsimInvestmentMode}::${simsimHorizon}::${simsimCustomStartDate}::${simsimCustomEndDate}`;
+  const lastRanSignatureRef = useRef<string>('');
+  const inFlightSignatureRef = useRef<string>('');
 
   // Determine date range based on horizon
   const calculateDateRange = (horizon: string): { start: string; end: string | null } => {
@@ -71,48 +84,66 @@ export const SimSimPage: React.FC = () => {
   // Run simulation whenever bucket, weights, capital, mode, or horizon/dates change
   useEffect(() => {
     if (bucketFunds.length === 0) {
-      setReport(null);
+      if (report !== null) setReport(null);
+      lastRanSignatureRef.current = '';
       return;
     }
+
+    // Skip redundant simulation execution if this exact signature was already calculated
+    if (lastRanSignatureRef.current === simSignature && report !== null) {
+      return;
+    }
+
+    if (inFlightSignatureRef.current === simSignature) {
+      return;
+    }
+    inFlightSignatureRef.current = simSignature;
 
     let isMounted = true;
     async function runSim() {
       setLoadingSim(true);
 
-      // Load NAV histories
-      const fundsWithHist = await Promise.all(
-        bucketFunds.map(async (f) => {
-          const hist = await fetchFundNavHistory(f.code);
-          return {
-            ...f,
-            nav_history: hist
-          };
-        })
-      );
+      try {
+        // Load NAV histories
+        const fundsWithHist = await Promise.all(
+          bucketFunds.map(async (f) => {
+            const hist = await fetchFundNavHistory(f.code);
+            return {
+              ...f,
+              nav_history: hist
+            };
+          })
+        );
 
-      if (!isMounted) return;
+        if (!isMounted) return;
 
-      const { start: horizonStart, end: horizonEnd } = calculateDateRange(simsimHorizon);
-      const earliestCommon = SimSimEngine.calculateEarliestCommonDate(fundsWithHist);
-      const effectiveStart = horizonStart > earliestCommon ? horizonStart : earliestCommon;
-      const effectiveEnd = horizonEnd;
+        const { start: horizonStart, end: horizonEnd } = calculateDateRange(simsimHorizon);
+        const earliestCommon = SimSimEngine.calculateEarliestCommonDate(fundsWithHist);
+        const effectiveStart = horizonStart > earliestCommon ? horizonStart : earliestCommon;
+        const effectiveEnd = horizonEnd;
 
-      // Normalise weights to 1.0 sum
-      const weightMap: Record<string | number, number> = {};
-      const sumWeights = Object.values(simsimWeights).reduce((a, b) => a + b, 0) || 100;
-      bucketFunds.forEach((f) => {
-        const rawW = simsimWeights[f.code] ?? 100 / bucketFunds.length;
-        weightMap[f.code] = rawW / sumWeights;
-      });
+        // Normalise weights to 1.0 sum
+        const weightMap: Record<string | number, number> = {};
+        const sumWeights = Object.values(simsimWeights).reduce((a, b) => a + b, 0) || 100;
+        bucketFunds.forEach((f) => {
+          const rawW = simsimWeights[f.code] ?? 100 / bucketFunds.length;
+          weightMap[f.code] = rawW / sumWeights;
+        });
 
-      const rep =
-        simsimInvestmentMode === 'lumpsum'
-          ? SimSimEngine.simulateLumpsum(fundsWithHist, weightMap, simsimCapital, effectiveStart, effectiveEnd)
-          : SimSimEngine.simulateSip(fundsWithHist, weightMap, simsimCapital, effectiveStart, 5, effectiveEnd);
+        const rep =
+          simsimInvestmentMode === 'lumpsum'
+            ? SimSimEngine.simulateLumpsum(fundsWithHist, weightMap, simsimCapital, effectiveStart, effectiveEnd)
+            : SimSimEngine.simulateSip(fundsWithHist, weightMap, simsimCapital, effectiveStart, 5, effectiveEnd);
 
-      if (isMounted) {
-        setReport(rep);
-        setLoadingSim(false);
+        if (isMounted) {
+          lastRanSignatureRef.current = simSignature;
+          setReport(rep);
+          setLoadingSim(false);
+        }
+      } finally {
+        if (inFlightSignatureRef.current === simSignature) {
+          inFlightSignatureRef.current = '';
+        }
       }
     }
 
@@ -121,13 +152,9 @@ export const SimSimPage: React.FC = () => {
       isMounted = false;
     };
   }, [
-    bucketFunds,
-    simsimWeights,
-    simsimCapital,
-    simsimInvestmentMode,
-    simsimHorizon,
-    simsimCustomStartDate,
-    simsimCustomEndDate
+    simSignature,
+    bucketFunds.length,
+    funds.length
   ]);
 
   // VIEW A: Empty bucket welcome builder
