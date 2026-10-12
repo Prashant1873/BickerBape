@@ -25,7 +25,17 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const showToast = useCallback((message: string, type: ToastType = 'info') => {
     const id = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    setToasts(prev => [...prev.slice(-4), { id, message, type }]);
+
+    // Defer state update to next microtask so calls during render/updaters do not conflict
+    if (typeof queueMicrotask === 'function') {
+      queueMicrotask(() => {
+        setToasts(prev => [...prev.slice(-4), { id, message, type }]);
+      });
+    } else {
+      setTimeout(() => {
+        setToasts(prev => [...prev.slice(-4), { id, message, type }]);
+      }, 0);
+    }
 
     setTimeout(() => {
       removeToast(id);

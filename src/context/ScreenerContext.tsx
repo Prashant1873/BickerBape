@@ -267,29 +267,30 @@ export const ScreenerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } catch (e) {}
   };
 
-  const toggleComparison = (code: string | number) => {
+  const toggleComparison = useCallback((code: string | number) => {
     const fund = funds.find(f => f.code === code);
     const fundName = fund ? fund.name.split(' - Direct')[0] : `Fund ${code}`;
 
-    setComparisonList(prev => {
-      let next: (string | number)[];
-      if (prev.includes(code)) {
-        next = prev.filter(c => c !== code);
-        showToast(`Removed ${fundName} from Compare`, 'info');
-      } else {
-        if (prev.length >= 4) {
-          showToast('Maximum 4 funds can be compared simultaneously.', 'warning');
-          return prev;
-        }
-        next = [...prev, code];
-        showToast(`Added ${fundName} to Compare`, 'success');
-      }
+    if (comparisonList.includes(code)) {
+      const next = comparisonList.filter(c => c !== code);
+      setComparisonList(next);
       try {
         localStorage.setItem('bickerbape_compare_list', JSON.stringify(next));
       } catch (e) {}
-      return next;
-    });
-  };
+      showToast(`Removed ${fundName} from Compare`, 'info');
+    } else {
+      if (comparisonList.length >= 4) {
+        showToast('Maximum 4 funds can be compared simultaneously.', 'warning');
+        return;
+      }
+      const next = [...comparisonList, code];
+      setComparisonList(next);
+      try {
+        localStorage.setItem('bickerbape_compare_list', JSON.stringify(next));
+      } catch (e) {}
+      showToast(`Added ${fundName} to Compare`, 'success');
+    }
+  }, [comparisonList, funds, showToast]);
 
   const clearComparison = () => {
     setComparisonList([]);
