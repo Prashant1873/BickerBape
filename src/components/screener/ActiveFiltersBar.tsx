@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useScreener } from '@/context/ScreenerContext';
+import { ViewMode } from '@/types/fund';
 
 const SORT_OPTIONS = [
   { value: 'smart_score', label: 'SmartScore™' },
@@ -30,6 +31,80 @@ export const ActiveFiltersBar: React.FC = () => {
     isPrimed
   } = useScreener();
 
+  // Fluid Segmented Control Pin: Cards vs Table Switcher
+  const viewContainerRef = useRef<HTMLDivElement>(null);
+  const cardsBtnRef = useRef<HTMLButtonElement>(null);
+  const tableBtnRef = useRef<HTMLButtonElement>(null);
+  const [viewPinStyle, setViewPinStyle] = useState<{ left: number; width: number; height: number; ready: boolean }>({
+    left: 2,
+    width: 0,
+    height: 44,
+    ready: false
+  });
+  const [isViewStretching, setIsViewStretching] = useState(false);
+  const viewAnimationTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Measure and align view mode pin
+  useEffect(() => {
+    const updateViewPin = () => {
+      const activeBtn = viewMode === 'cards' ? cardsBtnRef.current : tableBtnRef.current;
+      if (!activeBtn || !viewContainerRef.current) return;
+      setViewPinStyle({
+        left: activeBtn.offsetLeft,
+        width: activeBtn.offsetWidth,
+        height: activeBtn.offsetHeight,
+        ready: true
+      });
+    };
+
+    updateViewPin();
+    window.addEventListener('resize', updateViewPin);
+    return () => window.removeEventListener('resize', updateViewPin);
+  }, [viewMode]);
+
+  // Fluid Stretch & Squish Transition Handler
+  const handleSwitchView = (targetView: ViewMode) => {
+    if (targetView === viewMode) return;
+    const fromBtn = viewMode === 'cards' ? cardsBtnRef.current : tableBtnRef.current;
+    const toBtn = targetView === 'cards' ? cardsBtnRef.current : tableBtnRef.current;
+
+    if (fromBtn && toBtn) {
+      if (viewAnimationTimerRef.current) clearTimeout(viewAnimationTimerRef.current);
+
+      const leftA = fromBtn.offsetLeft;
+      const rightA = fromBtn.offsetLeft + fromBtn.offsetWidth;
+      const leftB = toBtn.offsetLeft;
+      const rightB = toBtn.offsetLeft + toBtn.offsetWidth;
+
+      // Phase 1: Stretch to bridge both buttons
+      const stretchLeft = Math.min(leftA, leftB);
+      const stretchWidth = Math.max(rightA, rightB) - stretchLeft;
+
+      setIsViewStretching(true);
+      setViewPinStyle(prev => ({
+        ...prev,
+        left: stretchLeft,
+        width: stretchWidth,
+        height: toBtn.offsetHeight
+      }));
+
+      setViewMode(targetView);
+
+      // Phase 2: Squish into only the target button
+      viewAnimationTimerRef.current = setTimeout(() => {
+        setViewPinStyle(prev => ({
+          ...prev,
+          left: toBtn.offsetLeft,
+          width: toBtn.offsetWidth,
+          height: toBtn.offsetHeight
+        }));
+        setIsViewStretching(false);
+      }, 120);
+    } else {
+      setViewMode(targetView);
+    }
+  };
+
   return (
     <div className="space-y-3">
       {/* Top Controls Bar: Counter, View Switcher, Sort */}
@@ -53,13 +128,31 @@ export const ActiveFiltersBar: React.FC = () => {
         {/* Action Controls: View Switcher, Customize Columns, Sort */}
         <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-between sm:justify-end">
           {/* View Mode Segmented Switcher (Cards vs Table) */}
-          <div className="flex items-center p-0.5 bg-surface-container-low border border-surface-container rounded-xl shadow-2xs">
+          <div
+            ref={viewContainerRef}
+            className="relative flex items-center p-0.5 bg-surface-container-low border border-surface-container rounded-xl shadow-2xs"
+          >
+            {/* Fluid Stretching Selection Pin */}
+            {viewPinStyle.ready && (
+              <div
+                className={`absolute top-0.5 rounded-lg segmented-pin bg-surface shadow-xs btn-specular border border-black/5 dark:border-white/10 ${
+                  isViewStretching ? 'segmented-pin-stretching' : 'segmented-pin-settling'
+                }`}
+                style={{
+                  left: `${viewPinStyle.left}px`,
+                  width: `${viewPinStyle.width}px`,
+                  height: `${viewPinStyle.height}px`,
+                }}
+              />
+            )}
+
             <button
+              ref={cardsBtnRef}
               type="button"
-              onClick={() => setViewMode('cards')}
-              className={`min-h-[44px] px-3.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 touch-spring cursor-pointer ${
+              onClick={() => handleSwitchView('cards')}
+              className={`relative z-10 min-h-[44px] px-3.5 rounded-lg text-xs font-bold transition-colors duration-150 flex items-center gap-1.5 select-none cursor-pointer ${
                 viewMode === 'cards'
-                  ? 'bg-surface text-primary shadow-xs btn-specular'
+                  ? 'text-primary font-extrabold'
                   : 'text-on-surface-variant hover:text-on-surface'
               }`}
               aria-label="Cards View"
@@ -68,11 +161,12 @@ export const ActiveFiltersBar: React.FC = () => {
               <span className="hidden md:inline">Cards</span>
             </button>
             <button
+              ref={tableBtnRef}
               type="button"
-              onClick={() => setViewMode('table')}
-              className={`min-h-[44px] px-3.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 touch-spring cursor-pointer ${
+              onClick={() => handleSwitchView('table')}
+              className={`relative z-10 min-h-[44px] px-3.5 rounded-lg text-xs font-bold transition-colors duration-150 flex items-center gap-1.5 select-none cursor-pointer ${
                 viewMode === 'table'
-                  ? 'bg-surface text-primary shadow-xs btn-specular'
+                  ? 'text-primary font-extrabold'
                   : 'text-on-surface-variant hover:text-on-surface'
               }`}
               aria-label="Table View"

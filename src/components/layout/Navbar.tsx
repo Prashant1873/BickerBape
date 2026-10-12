@@ -22,6 +22,156 @@ export const Navbar: React.FC = () => {
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // Fluid Segmented Control Pin: Mode Switcher (Screener <-> SimSim)
+  const modeContainerRef = useRef<HTMLDivElement>(null);
+  const screenerBtnRef = useRef<HTMLButtonElement>(null);
+  const simsimBtnRef = useRef<HTMLButtonElement>(null);
+  const [modePinStyle, setModePinStyle] = useState<{ left: number; width: number; height: number; ready: boolean }>({
+    left: 4,
+    width: 0,
+    height: 44,
+    ready: false
+  });
+  const [isModeStretching, setIsModeStretching] = useState(false);
+  const modeAnimationTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Fluid Segmented Control Pin: Mood Switcher (Growth | Safety | Income)
+  const moodContainerRef = useRef<HTMLDivElement>(null);
+  const moodBtnRefs = useRef<Record<InvestorMood, HTMLButtonElement | null>>({
+    growth: null,
+    safety: null,
+    income: null
+  });
+  const [moodPinStyle, setMoodPinStyle] = useState<{ left: number; width: number; height: number; ready: boolean }>({
+    left: 4,
+    width: 0,
+    height: 40,
+    ready: false
+  });
+  const [isMoodStretching, setIsMoodStretching] = useState(false);
+  const moodAnimationTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Measure and align mode pin
+  useEffect(() => {
+    const updateModePin = () => {
+      const activeBtn = appMode === 'screener' ? screenerBtnRef.current : simsimBtnRef.current;
+      if (!activeBtn || !modeContainerRef.current) return;
+      setModePinStyle({
+        left: activeBtn.offsetLeft,
+        width: activeBtn.offsetWidth,
+        height: activeBtn.offsetHeight,
+        ready: true
+      });
+    };
+
+    updateModePin();
+    window.addEventListener('resize', updateModePin);
+    return () => window.removeEventListener('resize', updateModePin);
+  }, [appMode]);
+
+  // Measure and align mood pin
+  useEffect(() => {
+    const updateMoodPin = () => {
+      const activeBtn = moodBtnRefs.current[mood];
+      if (!activeBtn || !moodContainerRef.current) return;
+      setMoodPinStyle({
+        left: activeBtn.offsetLeft,
+        width: activeBtn.offsetWidth,
+        height: activeBtn.offsetHeight,
+        ready: true
+      });
+    };
+
+    updateMoodPin();
+    window.addEventListener('resize', updateMoodPin);
+    return () => window.removeEventListener('resize', updateMoodPin);
+  }, [mood]);
+
+  // Fluid Stretch & Squish Handlers
+  const handleSwitchMode = (targetMode: 'screener' | 'simsim') => {
+    if (targetMode === appMode) return;
+    const fromBtn = appMode === 'screener' ? screenerBtnRef.current : simsimBtnRef.current;
+    const toBtn = targetMode === 'screener' ? screenerBtnRef.current : simsimBtnRef.current;
+
+    if (fromBtn && toBtn) {
+      if (modeAnimationTimerRef.current) clearTimeout(modeAnimationTimerRef.current);
+
+      const leftA = fromBtn.offsetLeft;
+      const rightA = fromBtn.offsetLeft + fromBtn.offsetWidth;
+      const leftB = toBtn.offsetLeft;
+      const rightB = toBtn.offsetLeft + toBtn.offsetWidth;
+
+      // Phase 1: Stretch to cover both ends
+      const stretchLeft = Math.min(leftA, leftB);
+      const stretchWidth = Math.max(rightA, rightB) - stretchLeft;
+
+      setIsModeStretching(true);
+      setModePinStyle(prev => ({
+        ...prev,
+        left: stretchLeft,
+        width: stretchWidth,
+        height: toBtn.offsetHeight
+      }));
+
+      setAppMode(targetMode);
+
+      // Phase 2: Squish into only the target button
+      modeAnimationTimerRef.current = setTimeout(() => {
+        setModePinStyle(prev => ({
+          ...prev,
+          left: toBtn.offsetLeft,
+          width: toBtn.offsetWidth,
+          height: toBtn.offsetHeight
+        }));
+        setIsModeStretching(false);
+      }, 120);
+    } else {
+      setAppMode(targetMode);
+    }
+  };
+
+  const handleSwitchMood = (targetMood: InvestorMood) => {
+    if (targetMood === mood) return;
+    const fromBtn = moodBtnRefs.current[mood];
+    const toBtn = moodBtnRefs.current[targetMood];
+
+    if (fromBtn && toBtn) {
+      if (moodAnimationTimerRef.current) clearTimeout(moodAnimationTimerRef.current);
+
+      const leftA = fromBtn.offsetLeft;
+      const rightA = fromBtn.offsetLeft + fromBtn.offsetWidth;
+      const leftB = toBtn.offsetLeft;
+      const rightB = toBtn.offsetLeft + toBtn.offsetWidth;
+
+      // Phase 1: Stretch to cover both ends
+      const stretchLeft = Math.min(leftA, leftB);
+      const stretchWidth = Math.max(rightA, rightB) - stretchLeft;
+
+      setIsMoodStretching(true);
+      setMoodPinStyle(prev => ({
+        ...prev,
+        left: stretchLeft,
+        width: stretchWidth,
+        height: toBtn.offsetHeight
+      }));
+
+      setMood(targetMood);
+
+      // Phase 2: Squish into only the target button
+      moodAnimationTimerRef.current = setTimeout(() => {
+        setMoodPinStyle(prev => ({
+          ...prev,
+          left: toBtn.offsetLeft,
+          width: toBtn.offsetWidth,
+          height: toBtn.offsetHeight
+        }));
+        setIsMoodStretching(false);
+      }, 120);
+    } else {
+      setMood(targetMood);
+    }
+  };
+
   // Keyboard shortcut '/' to focus search, '\' or Ctrl+B to toggle sidebar
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -74,7 +224,7 @@ export const Navbar: React.FC = () => {
           <button
             type="button"
             onClick={toggleSidebarCollapse}
-            className="hidden md:flex w-9 h-9 min-w-[36px] min-h-[36px] rounded-xl bg-surface-container-low border border-surface-container text-on-surface-variant hover:text-on-surface items-center justify-center touch-spring shadow-2xs cursor-pointer"
+            className="hidden md:flex w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-surface-container-low border border-surface-container text-on-surface-variant hover:text-on-surface items-center justify-center touch-spring shadow-2xs cursor-pointer"
             title={sidebarCollapsed ? (appMode === 'simsim' ? 'Expand SimSim Sidebar (\\)' : 'Expand Filters Sidebar (\\)') : (appMode === 'simsim' ? 'Collapse SimSim Sidebar (\\)' : 'Collapse Filters Sidebar (\\)')}
             aria-label={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
@@ -114,34 +264,57 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Center: The Single Canonical Mode Switcher (Screener <-> SimSim™) */}
-        <div className="flex items-center p-1 bg-surface-container/70 dark:bg-[#0c1322] border border-surface-container-high dark:border-white/10 rounded-2xl shadow-sm backdrop-blur-md">
+        <div
+          ref={modeContainerRef}
+          className="relative flex items-center p-1 bg-surface-container/70 dark:bg-[#0c1322] border border-surface-container-high dark:border-white/10 rounded-2xl shadow-sm backdrop-blur-md"
+        >
+          {/* Fluid Stretching Selection Pin */}
+          {modePinStyle.ready && (
+            <div
+              className={`absolute top-1 rounded-xl segmented-pin ${
+                isModeStretching ? 'segmented-pin-stretching' : 'segmented-pin-settling'
+              } ${
+                appMode === 'simsim'
+                  ? 'bg-[#00F090] shadow-[0_0_16px_rgba(0,240,144,0.35)] border border-[#00F090]'
+                  : 'bg-surface-container-lowest dark:bg-white/10 shadow-xs border border-black/5 dark:border-white/10 btn-specular'
+              }`}
+              style={{
+                left: `${modePinStyle.left}px`,
+                width: `${modePinStyle.width}px`,
+                height: `${modePinStyle.height}px`,
+              }}
+            />
+          )}
+
           <button
+            ref={screenerBtnRef}
             type="button"
-            onClick={() => setAppMode('screener')}
-            className={`min-h-[40px] px-3.5 sm:px-4 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-2 touch-spring select-none cursor-pointer ${
+            onClick={() => handleSwitchMode('screener')}
+            className={`relative z-10 min-h-[44px] px-3.5 sm:px-4 rounded-xl text-xs font-bold transition-colors duration-150 flex items-center gap-2 select-none cursor-pointer ${
               appMode === 'screener'
-                ? 'bg-surface-container-lowest dark:bg-white/10 text-primary dark:text-white shadow-xs font-extrabold'
-                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50'
+                ? 'text-primary dark:text-white font-extrabold'
+                : 'text-on-surface-variant hover:text-on-surface'
             }`}
             aria-label="Switch to Screener Mode"
             title="Mutual Fund Screener"
           >
-            <span className="material-symbols-outlined text-base">analytics</span>
+            <span className="material-symbols-outlined text-base optical-icon">analytics</span>
             <span className="font-semibold">Screener</span>
           </button>
 
           <button
+            ref={simsimBtnRef}
             type="button"
-            onClick={() => setAppMode('simsim')}
-            className={`min-h-[40px] px-3.5 sm:px-5 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-2 touch-spring select-none cursor-pointer relative ${
+            onClick={() => handleSwitchMode('simsim')}
+            className={`relative z-10 min-h-[44px] px-3.5 sm:px-5 rounded-xl text-xs font-bold transition-colors duration-150 flex items-center gap-2 select-none cursor-pointer ${
               appMode === 'simsim'
-                ? 'bg-[#00F090] text-[#0A0E18] font-black shadow-[0_0_16px_rgba(0,240,144,0.35)] border border-[#00F090]'
-                : 'text-on-surface-variant hover:text-[#00A86B] dark:hover:text-[#00F090] hover:bg-[#00F090]/10'
+                ? 'text-[#0A0E18] font-black'
+                : 'text-on-surface-variant hover:text-[#00A86B] dark:hover:text-[#00F090]'
             }`}
             aria-label="Switch to SimSim Backtest Engine"
             title="Launch SimSim™ Backtester"
           >
-            <span className={`material-symbols-outlined text-base leading-none ${appMode === 'simsim' ? 'text-[#0A0E18]' : 'text-[#00A86B] dark:text-[#00F090] simsim-pulse-icon'}`}>
+            <span className={`material-symbols-outlined text-base leading-none optical-icon ${appMode === 'simsim' ? 'text-[#0A0E18]' : 'text-[#00A86B] dark:text-[#00F090] simsim-pulse-icon'}`}>
               hourglass_top
             </span>
             <span className="tracking-tight font-extrabold hidden sm:inline">SimSim™ Time Machine</span>
@@ -177,33 +350,49 @@ export const Navbar: React.FC = () => {
 
           {/* Mood 3-Way Switcher */}
           <div
-            className="flex items-center p-1 bg-surface-container-low/80 dark:bg-surface-container-low border border-surface-container rounded-xl shadow-2xs"
+            ref={moodContainerRef}
+            className="relative flex items-center p-1 bg-surface-container-low/80 dark:bg-surface-container-low border border-surface-container rounded-xl shadow-2xs"
             role="radiogroup"
             aria-label="Investor Mood Scoring Weight"
           >
+            {/* Fluid Stretching Selection Pin */}
+            {moodPinStyle.ready && (
+              <div
+                className={`absolute top-1 rounded-lg segmented-pin ${
+                  isMoodStretching ? 'segmented-pin-stretching' : 'segmented-pin-settling'
+                } ${
+                  mood === 'growth'
+                    ? 'mood-btn-growth-active shadow-xs'
+                    : mood === 'safety'
+                    ? 'mood-btn-safety-active shadow-xs'
+                    : 'mood-btn-income-active shadow-xs'
+                }`}
+                style={{
+                  left: `${moodPinStyle.left}px`,
+                  width: `${moodPinStyle.width}px`,
+                  height: `${moodPinStyle.height}px`,
+                }}
+              />
+            )}
+
             {(['growth', 'safety', 'income'] as InvestorMood[]).map((m) => {
               const cfg = MOOD_CONFIG[m];
               const active = mood === m;
-              let activeClass = '';
-              if (active) {
-                if (m === 'growth') activeClass = 'mood-btn-growth-active';
-                else if (m === 'safety') activeClass = 'mood-btn-safety-active';
-                else if (m === 'income') activeClass = 'mood-btn-income-active';
-              } else {
-                activeClass = 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50';
-              }
 
               return (
                 <button
                   key={m}
+                  ref={(el) => { moodBtnRefs.current[m] = el; }}
                   type="button"
-                  onClick={() => setMood(m)}
-                  className={`min-h-[34px] px-2 sm:px-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 touch-spring select-none ${activeClass}`}
+                  onClick={() => handleSwitchMood(m)}
+                  className={`relative z-10 min-h-[40px] sm:min-h-[44px] px-2.5 sm:px-3 rounded-lg text-xs font-bold transition-colors duration-150 flex items-center gap-1 select-none cursor-pointer ${
+                    active ? 'text-on-surface font-extrabold' : 'text-on-surface-variant hover:text-on-surface'
+                  }`}
                   title={`${cfg.label} Mood: ${cfg.focus}`}
                   aria-checked={active}
                   role="radio"
                 >
-                  <span className="material-symbols-outlined text-sm leading-none">{cfg.icon}</span>
+                  <span className="material-symbols-outlined text-sm leading-none optical-icon">{cfg.icon}</span>
                   <span className="hidden md:inline text-[11px]">{cfg.label}</span>
                 </button>
               );
@@ -231,7 +420,7 @@ export const Navbar: React.FC = () => {
             <button
               type="button"
               onClick={() => updateFilter('searchQuery', '')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 text-on-surface-variant hover:text-on-surface flex items-center justify-center rounded-full"
+              className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 min-w-[44px] min-h-[44px] text-on-surface-variant hover:text-on-surface flex items-center justify-center rounded-full cursor-pointer"
               aria-label="Clear search"
             >
               <span className="material-symbols-outlined text-sm">close</span>
