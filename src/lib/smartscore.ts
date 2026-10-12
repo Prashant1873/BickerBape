@@ -56,15 +56,36 @@ export function recalculateSmartScoresForMood(funds: FundSummary[], mood: Invest
   // 1. Recalculate overall weighted score for each fund
   const updatedFunds = funds.map(fund => {
     const p = (fund.smart_score as any)?.pillars || {};
-    const sp = p.performance?.score !== undefined ? p.performance.score : 6.0;
-    const sr = p.risk?.score !== undefined ? p.risk.score : 6.0;
-    const sc = p.cost?.score !== undefined ? p.cost.score : 6.0;
-    const st = p.track_record?.score !== undefined ? p.track_record.score : 6.0;
+    const spRaw = p.performance?.score !== undefined 
+      ? p.performance.score 
+      : (typeof p.return_ratios === 'number' ? p.return_ratios : undefined);
+    const srRaw = p.risk?.score !== undefined 
+      ? p.risk.score 
+      : (typeof p.risk_volatility === 'number' ? p.risk_volatility : undefined);
+    const scRaw = p.cost?.score !== undefined 
+      ? p.cost.score 
+      : (typeof p.expense_ratio === 'number' ? p.expense_ratio : undefined);
+    const stRaw = p.track_record?.score !== undefined 
+      ? p.track_record.score 
+      : (typeof p.track_record === 'number' 
+        ? p.track_record 
+        : (p.track_record_pillar?.score !== undefined ? p.track_record_pillar.score : undefined));
+
+    const baseFallback = (fund.smart_score?.overall && fund.smart_score.overall > 0)
+      ? fund.smart_score.overall
+      : ((fund.suggester_score && fund.suggester_score > 0) ? fund.suggester_score / 10 : 6.0);
+
+    const sp = spRaw !== undefined ? spRaw : baseFallback;
+    const sr = srRaw !== undefined ? srRaw : baseFallback;
+    const sc = scRaw !== undefined ? scRaw : baseFallback;
+    const st = stRaw !== undefined ? stRaw : baseFallback;
 
     let raw = (w.perf * sp) + (w.risk * sr) + (w.cost * sc) + (w.track * st);
 
     // Fiduciary seasoning penalties strictly enforced across all moods
-    const age = fund.history_years !== undefined ? fund.history_years : 3.0;
+    const age = fund.history_years !== undefined 
+      ? fund.history_years 
+      : (fund.manager_tenure_years !== undefined ? fund.manager_tenure_years : 3.0);
     let seasoningCap: number | null = null;
     if (age < 1.0) {
       raw = Math.min(5.8, raw);
@@ -76,16 +97,22 @@ export function recalculateSmartScoresForMood(funds: FundSummary[], mood: Invest
 
     const overall = parseFloat(raw.toFixed(1));
 
+    const existingPillars = (fund.smart_score as any)?.pillars || {};
     const smart_score = {
-      ...(fund.smart_score || { pillars: { return_ratios: sp, track_record: st, risk_volatility: sr, expense_ratio: sc } }),
+      ...(fund.smart_score || {}),
       overall,
       seasoning_cap: seasoningCap,
-      pillars: (fund.smart_score?.pillars || {
+      pillars: {
+        ...existingPillars,
         return_ratios: sp,
         track_record: st,
         risk_volatility: sr,
-        expense_ratio: sc
-      }) as any
+        expense_ratio: sc,
+        performance: existingPillars.performance || { name: 'Performance & Compounding', score: sp },
+        risk: existingPillars.risk || { name: 'Risk & Downside Protection', score: sr },
+        cost: existingPillars.cost || { name: 'Cost & Direct Plan Fees', score: sc },
+        track_record_pillar: existingPillars.track_record_pillar || { name: 'Track Record & Seasoning', score: st }
+      } as any
     };
 
     return {
@@ -110,6 +137,7 @@ export function recalculateSmartScoresForMood(funds: FundSummary[], mood: Invest
       if (f.smart_score) {
         (f.smart_score as any).rank_in_category = rk;
         (f.smart_score as any).total_in_category = total;
+        (f.smart_score as any).category_name = catName;
         (f.smart_score as any).rank_text = `${rk}${suffix} of ${total} ${catName} funds`;
       }
     });

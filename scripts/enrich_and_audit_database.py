@@ -792,6 +792,11 @@ def run_full_enrichment():
 
         ov, pf, rk, cs, tr, pillars_dict = compute_absolute_smart_score(metrics, costs, track, category=cat, cat_bench=cb)
         
+        pillars_dict["return_ratios"] = pf
+        pillars_dict["risk_volatility"] = rk
+        pillars_dict["expense_ratio"] = cs
+        pillars_dict["track_record_score"] = tr
+
         f["_ov_score"] = ov
         f["_pf_score"] = pf
         f["_rk_score"] = rk

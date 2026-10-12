@@ -39,7 +39,7 @@ jobs:
         run: npm ci
 
       - name: Run institutional data enrichment pipeline
-        run: python scripts/enrich_and_audit_database.py
+        run: python scripts/update_funds.py
 
       - name: Slice master data into web bundles
         run: node scripts/generate_static_data.js

@@ -257,6 +257,118 @@ def calculate_suggester_score(fund, cat_avg):
 
     return min(100, max(0, score))
 
+def compute_and_attach_smart_scores(funds_data, categories_summary):
+    import sqlite3
+    import os
+    from scripts.enrich_and_audit_database import compute_absolute_smart_score
+
+    print("Computing SmartScore™ 5-Pillar Scorecards & Category Rankings...")
+    for f in funds_data:
+        cat = f["category"]
+        cb = categories_summary.get(cat, {})
+        c3 = f.get("cagr_3y")
+        c5 = f.get("cagr_5y")
+        c10 = f.get("cagr_10y")
+
+        f["ratio_3y"] = round(c3 / cb["avg_3y_cagr"], 2) if c3 is not None and cb.get("avg_3y_cagr", 0) > 0 else None
+        f["ratio_5y"] = round(c5 / cb["avg_5y_cagr"], 2) if c5 is not None and cb.get("avg_5y_cagr", 0) > 0 else None
+        f["ratio_10y"] = round(c10 / cb["avg_10y_cagr"], 2) if c10 is not None and cb.get("avg_10y_cagr", 0) > 0 else None
+
+        metrics = {
+            "cagr_1y": f.get("cagr_1y"),
+            "cagr_3y": c3,
+            "cagr_5y": c5,
+            "ratio_3y": f.get("ratio_3y"),
+            "ratio_5y": f.get("ratio_5y"),
+            "rolling_3y_avg": f.get("rolling_3y_avg"),
+            "growth_3m": f.get("growth_3m"),
+            "sharpe_ratio": f.get("sharpe_ratio"),
+            "volatility": f.get("volatility"),
+            "max_drawdown": f.get("max_drawdown"),
+            "sortino_ratio": f.get("sortino_ratio")
+        }
+        costs = {
+            "expense_ratio": f.get("expense_ratio"),
+            "exit_load_pct": f.get("exit_load_pct", 1.0)
+        }
+        history_years = f.get("history_years") or f.get("manager_tenure_years", 3.0)
+        track = {
+            "history_years": history_years,
+            "manager_tenure_years": f.get("manager_tenure_years", 3.0)
+        }
+
+        ov, pf, rk, cs, tr, pillars_dict = compute_absolute_smart_score(metrics, costs, track, category=cat, cat_bench=cb)
+
+        pillars_dict["return_ratios"] = pf
+        pillars_dict["risk_volatility"] = rk
+        pillars_dict["expense_ratio"] = cs
+        pillars_dict["track_record_score"] = tr
+
+        f["_ov_score"] = ov
+        f["_pf_score"] = pf
+        f["_rk_score"] = rk
+        f["_cs_score"] = cs
+        f["_tr_score"] = tr
+        f["_pillars_dict"] = pillars_dict
+
+    cat_grouped = {}
+    for f in funds_data:
+        cat_grouped.setdefault(f["category"], []).append(f)
+
+    for cat, cfunds in cat_grouped.items():
+        total_in_cat = len(cfunds)
+        cfunds.sort(key=lambda x: x["_ov_score"], reverse=True)
+        for rk, f in enumerate(cfunds, start=1):
+            suffix = "th"
+            if not (11 <= (rk % 100) <= 13):
+                suffix = {1: "st", 2: "nd", 3: "rd"}.get(rk % 10, "th")
+            rank_text = f"{rk}{suffix} of {total_in_cat} {cat} funds"
+
+            f["smart_score"] = {
+                "overall": f["_ov_score"],
+                "rank_in_category": rk,
+                "total_in_category": total_in_cat,
+                "category_name": cat,
+                "rank_text": rank_text,
+                "pillars": f["_pillars_dict"]
+            }
+            f["suggester_score"] = int(f["_ov_score"] * 10)
+            f["star_rating"] = 5 if f["_ov_score"] >= 8.2 else (4 if f["_ov_score"] >= 7.0 else (3 if f["_ov_score"] >= 5.5 else 2))
+
+            for tmp in ["_ov_score", "_pf_score", "_rk_score", "_cs_score", "_tr_score", "_pillars_dict"]:
+                f.pop(tmp, None)
+
+    # Sync into SQLite data/bickerbape.db if present
+    try:
+        db_path = "data/bickerbape.db"
+        if os.path.exists(db_path):
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM smart_scores;")
+            for f in funds_data:
+                ss = f.get("smart_score")
+                if not ss: continue
+                p = ss.get("pillars", {})
+                cursor.execute("""
+                INSERT INTO smart_scores (scheme_code, overall_score, perf_score, risk_score, cost_score, track_score, rank_in_category, total_in_category, rank_text)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    f["code"],
+                    ss["overall"],
+                    p.get("performance", {}).get("score", 6.0),
+                    p.get("risk", {}).get("score", 6.0),
+                    p.get("cost", {}).get("score", 6.0),
+                    p.get("track_record", {}).get("score", 6.0),
+                    ss["rank_in_category"],
+                    ss["total_in_category"],
+                    ss["rank_text"]
+                ))
+            conn.commit()
+            conn.close()
+            print("Synchronized smart_scores with SQLite data/bickerbape.db")
+    except Exception as e:
+        print(f"Warning: SQLite smart_scores sync skipped: {e}")
+
 def main():
     print("=== BickerBape Full Indian Mutual Fund Ingestion ===")
     schemes = fetch_amfi_equity_schemes()
@@ -393,8 +505,11 @@ def main():
             {"step": 10, "title": "Compounding Protection", "desc": "Avoid frequent switching to save 20% capital gains taxes & exit loads", "status": "pass"}
         ]
 
-    # Sort descending by Suggester Score
-    funds_data.sort(key=lambda x: x["suggester_score"], reverse=True)
+    # Compute 5-Pillar SmartScore™ & Category Rankings
+    compute_and_attach_smart_scores(funds_data, categories_summary)
+
+    # Sort descending by SmartScore overall
+    funds_data.sort(key=lambda x: x.get("smart_score", {}).get("overall", 0), reverse=True)
 
     with open("data/equity_funds.json", "w", encoding="utf-8") as out:
         json.dump(funds_data, out, indent=2)
@@ -404,12 +519,7 @@ def main():
         json.dump(categories_summary, out, indent=2)
     print("Saved data/categories_summary.json")
 
-    print(f"\nCompleted! Total Indian Equity Funds Indexed: {len(funds_data)}")
-    
-    # Compute 5-Pillar SmartScore (TM) & Database Enrichment
-    print("\nComputing SmartScore (TM) 5-Pillar Scorecards & Database Enrichment...")
-    import subprocess
-    subprocess.run([sys.executable, "scripts/enrich_and_audit_database.py"], check=True)
+    print(f"\nCompleted! Total Indian Equity Funds Indexed & Audited: {len(funds_data)}")
 
 if __name__ == "__main__":
     main()

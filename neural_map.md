@@ -67,7 +67,8 @@
 - **Tabular Numeric Figures**: Proportional geometric sans with `font-variant-numeric: tabular-nums lining-nums` and `font-feature-settings: 'tnum' 1, 'lnum' 1;` across all table columns, performance metrics, and simulation results.
 - **Monospace/Typewriter Eradication**: Complete elimination of typewriter code fonts (`monospace`, `font-mono`) from all UI elements, charts, badges, and counters.
 
-### 8. Automated Daily Data & Deployment Pipeline
+### 8. Automated Daily Data & Scoring Pipeline
 - `.github/workflows/daily-data-update.yml`: Scheduled GitHub Actions cron (`30 18 * * 1-5`, 00:00 AM IST Mon-Fri post-market).
-- **Execution Flow**: Runs `scripts/enrich_and_audit_database.py` (concurrent MFAPI daily NAV ingestion + 5-pillar SmartScore) -> `scripts/generate_static_data.js` -> commits dataset changes to git -> executes test suites & typechecks -> deploys static bundle to GitHub Pages.
+- **Execution Flow**: Runs `scripts/update_funds.py` (AMFI equity scheme discovery, MFAPI daily NAV ingestion, quantitative risk/return calculation, 5-pillar SmartScore™ evaluation, category ranking, and SQLite synchronization) -> `scripts/generate_static_data.js` (slices `data/equity_funds.json` into `public/data/funds_summary.json` preserving full `smart_score` scorecards) -> commits dataset changes to git -> executes test suites & typechecks -> deploys static export to GitHub Pages.
+- **Client Resilience**: `src/lib/smartscore.ts` dynamically recalibrates overall scores on investor mood change ('growth', 'safety', 'income'), safely parsing pillar schemas with dynamic fallbacks to prevent flatlining.
 
