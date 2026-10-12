@@ -181,8 +181,8 @@ Plans:
 
 Plans:
 
-- [ ] 09-01: Streamline cognitive ergonomics, filter information architecture, and distill unnecessary chrome.
-- [ ] 09-02: Refine typographic hierarchy, baseline grid rhythm, and complete full anti-slop craft audit.
+- [x] 09-01: Streamline cognitive ergonomics, filter information architecture, and distill unnecessary chrome.
+- [x] 09-02: Refine typographic hierarchy, baseline grid rhythm, and complete full anti-slop craft audit.
 
 ### Phase 10: Official GitHub Release Documentation & Launch Prep
 

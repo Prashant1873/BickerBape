@@ -230,13 +230,16 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
   return (
     <div className="space-y-4">
       {/* Table Outer Container with Horizontal Scroll */}
-      <div className="rounded-2xl border border-surface-container bg-surface-container-lowest overflow-hidden shadow-xs">
-        <div className="overflow-x-auto hide-scrollbar">
+      <div className="rounded-2xl border border-surface-container bg-surface-container-lowest overflow-hidden shadow-xs relative">
+        {/* Mobile horizontal scroll gradient hint */}
+        <div className="pointer-events-none absolute top-0 bottom-0 right-0 w-6 bg-gradient-to-l from-surface-container-lowest to-transparent sm:hidden z-20" />
+
+        <div className="overflow-x-auto max-h-[75vh] hide-scrollbar scroll-smooth">
           <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-surface-container-low/80 border-b border-surface-container text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
+            <thead className="sticky top-0 z-30 bg-surface-container-low/95 backdrop-blur-sm shadow-xs">
+              <tr className="border-b border-surface-container text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
                 {/* Sticky Left Header: Compare & Fund Name */}
-                <th className="sticky left-0 z-20 bg-surface-container-low py-3 px-4 min-w-[280px] sm:min-w-[360px] shadow-[2px_0_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
+                <th className="sticky left-0 top-0 z-40 bg-surface-container-low py-3 px-4 min-w-[280px] sm:min-w-[360px] border-r border-surface-container">
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] text-on-surface-variant/70 w-5">#</span>
                     <span className="text-[10px] text-[#00A86B] dark:text-[#00F090] font-bold">SimSim</span>
@@ -254,7 +257,7 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                     <th
                       key={colId}
                       onClick={() => handleSort(metric.sortKey)}
-                      className={`py-3 px-3 min-w-[110px] cursor-pointer select-none hover:bg-surface-container transition-colors ${metric.align}`}
+                      className={`py-3 px-3 min-w-[110px] cursor-pointer select-none hover:bg-surface-container/70 transition-colors group ${metric.align}`}
                       title={`Sort by ${metric.label}`}
                     >
                       <div className={`inline-flex items-center gap-1 ${metric.align === 'text-right' ? 'justify-end' : metric.align === 'text-center' ? 'justify-center' : 'justify-start'}`}>
@@ -289,13 +292,13 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                     className="hover:bg-surface-container-low/60 cursor-pointer transition-colors group"
                   >
                     {/* Sticky Left Column: Compare Checkbox, SimSim Button & Fund Identity */}
-                    <td className="sticky left-0 z-10 bg-surface-container-lowest group-hover:bg-surface-container-low/90 py-3 px-4 shadow-[2px_0_5px_rgba(0,0,0,0.03)] dark:shadow-[2px_0_5px_rgba(0,0,0,0.2)] transition-colors">
-                      <div className="flex items-center gap-2.5">
+                    <td className="sticky left-0 z-10 bg-surface-container-lowest group-hover:bg-surface-container-low/90 py-2.5 px-4 border-r border-surface-container transition-colors">
+                      <div className="flex items-center gap-2">
                         <span className="font-mono text-[11px] text-on-surface-variant/60 w-5 flex-shrink-0">
                           {idx + 1}
                         </span>
 
-                        {/* Quick SimSim Bucket Toggle Button */}
+                        {/* Quick SimSim Bucket Toggle Button (Fitts's Law 44px touch target) */}
                         <button
                           type="button"
                           onClick={(e) => {
@@ -306,7 +309,7 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                               addToBucket(fund.code);
                             }
                           }}
-                          className={`h-7 px-2 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 touch-spring border flex-shrink-0 select-none ${
+                          className={`min-h-[44px] px-3 rounded-xl text-[11px] font-bold transition-all flex items-center gap-1.5 touch-spring border flex-shrink-0 select-none cursor-pointer ${
                             inBucket
                               ? 'bg-[#00F090] text-black border-[#00F090] font-black shadow-2xs'
                               : 'bg-surface-container-low/80 border-surface-container text-on-surface-variant hover:text-[#00A86B] dark:hover:text-[#00F090] hover:border-[#00F090]/50 hover:bg-surface-container'
@@ -326,14 +329,14 @@ export const FundTable: React.FC<FundTableProps> = ({ funds }) => {
                             e.stopPropagation();
                             toggleComparison(fund.code);
                           }}
-                          className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-surface-container text-on-surface-variant touch-spring flex-shrink-0"
+                          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center hover:bg-surface-container text-on-surface-variant touch-spring flex-shrink-0 cursor-pointer"
                           title={isCompared ? 'Remove from compare' : 'Add to compare'}
                         >
                           <input
                             type="checkbox"
                             checked={isCompared}
                             onChange={() => {}}
-                            className="w-3.5 h-3.5 rounded text-primary focus:ring-primary/40 cursor-pointer"
+                            className="w-4 h-4 rounded text-primary focus:ring-primary/40 cursor-pointer"
                           />
                         </div>
 

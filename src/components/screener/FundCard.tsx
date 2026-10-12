@@ -96,7 +96,7 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             <button
               type="button"
               onClick={handleSimSimClick}
-              className={`min-h-[36px] px-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 touch-spring border shadow-2xs cursor-pointer ${
+              className={`min-h-[44px] px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 touch-spring border shadow-2xs cursor-pointer ${
                 inBucket
                   ? 'bg-[#00F090] text-black border-[#00F090] font-extrabold shadow-sm'
                   : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-[#00F090] hover:border-[#00F090]/40 hover:bg-surface-container'
@@ -114,7 +114,7 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             <button
               type="button"
               onClick={handleCompareClick}
-              className={`min-h-[36px] px-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 touch-spring border shadow-2xs cursor-pointer ${
+              className={`min-h-[44px] px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 touch-spring border shadow-2xs cursor-pointer ${
                 isCompared
                   ? 'bg-primary text-white border-primary shadow-xs'
                   : 'bg-surface-container-low/70 border-surface-container text-on-surface-variant hover:text-on-surface hover:border-primary/30 hover:bg-surface-container'
@@ -134,28 +134,28 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
         <div className="mb-3.5">
           <div className="flex items-center gap-1.5 flex-wrap mb-1">
             <AmcBadge fundHouse={fund.fund_house} size="sm" />
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant">
+            <span className="text-[0.75rem] font-bold tracking-[0.04em] uppercase px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant">
               {fund.category}
             </span>
             {fund.is_young_fund && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-warning/15 text-warning-text border border-warning/30" title="Scheme <3Y track record seasoning cap applied">
+              <span className="text-[0.75rem] font-bold tracking-[0.04em] uppercase px-1.5 py-0.5 rounded bg-warning/15 text-warning-text border border-warning/30" title="Scheme <3Y track record seasoning cap applied">
                 Young (&lt;3Y)
               </span>
             )}
           </div>
-          <h3 className="font-headline-md font-bold text-sm text-on-surface line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-[1.125rem] leading-[1.3] text-on-surface line-clamp-2 group-hover:text-primary transition-colors">
             {fund.name}
           </h3>
-          <p className="text-xs text-on-surface-variant mt-0.5 truncate">
+          <p className="text-[0.9375rem] font-normal text-on-surface-variant mt-0.5 truncate leading-[1.45]">
             {fund.fund_house}
           </p>
         </div>
 
-        {/* Key Metrics Grid */}
-        <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-surface-container-low/60 border border-surface-container mb-3 text-center">
+        {/* Key Metrics Grid (Distilled without redundant inner border - UX-02) */}
+        <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-surface-container-low/60 mb-3 text-center" data-testid="fund-card-metrics-grid">
           <div>
             <div className="flex items-center justify-center gap-1 mb-0.5">
-              <span className="text-[10px] uppercase font-bold text-on-surface-variant">1Y CAGR</span>
+              <span className="text-[0.75rem] uppercase font-bold tracking-[0.04em] text-on-surface-variant">1Y CAGR</span>
               <InfoBadge term="1Y CAGR" definition={GLOSSARY['1Y CAGR']} />
             </div>
             <span className={`font-bold text-xs tabular-nums ${fund.cagr_1y && fund.cagr_1y >= 0 ? 'text-gain' : 'text-loss'}`}>
@@ -163,16 +163,16 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             </span>
           </div>
 
-          <div>
+          <div className="relative">
             <div className="flex items-center justify-center gap-1 mb-0.5">
-              <span className="text-[10px] uppercase font-bold text-on-surface-variant">3Y CAGR</span>
+              <span className="text-[0.75rem] uppercase font-bold tracking-[0.04em] text-primary">3Y CAGR</span>
               <InfoBadge term="3Y CAGR" definition={GLOSSARY['3Y CAGR']} />
             </div>
-            <span className={`font-bold text-xs tabular-nums ${fund.cagr_3y && fund.cagr_3y >= 0 ? 'text-gain' : 'text-loss'}`}>
+            <span className={`font-black text-xs sm:text-sm tabular-nums ${fund.cagr_3y && fund.cagr_3y >= 0 ? 'text-gain' : 'text-loss'}`}>
               {fund.cagr_3y !== null && fund.cagr_3y !== undefined ? `${fund.cagr_3y > 0 ? '+' : ''}${fund.cagr_3y.toFixed(1)}%` : 'N/A'}
             </span>
             {fund.ratio_3y && (
-              <span className="block text-[9px] font-bold text-primary tabular-nums">
+              <span className="block text-[10px] font-bold text-primary tabular-nums">
                 {fund.ratio_3y}x cat
               </span>
             )}
@@ -180,7 +180,7 @@ export const FundCard: React.FC<FundCardProps> = ({ fund }) => {
 
           <div>
             <div className="flex items-center justify-center gap-1 mb-0.5">
-              <span className="text-[10px] uppercase font-bold text-on-surface-variant">5Y CAGR</span>
+              <span className="text-[0.75rem] uppercase font-bold tracking-[0.04em] text-on-surface-variant">5Y CAGR</span>
               <InfoBadge term="5Y CAGR" definition={GLOSSARY['5Y CAGR']} />
             </div>
             <span className={`font-bold text-xs tabular-nums ${fund.cagr_5y && fund.cagr_5y >= 0 ? 'text-gain' : 'text-loss'}`}>

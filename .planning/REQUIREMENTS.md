@@ -51,9 +51,9 @@
 
 ### Comprehensive UI/UX Craft Overhaul & Anti-Slop Audit (/frontend-skill)
 
-- [ ] **UX-01**: Apply cognitive UX laws: Hick's Law (streamlined filter density), Jakob's Law (standard table controls), Miller's Law (chunked metrics), and Doherty threshold (<400ms feedback)
-- [ ] **UX-02**: Distill visual noise by stripping unearned borders, gratuitous shadows, and redundant nested card containers for clean institutional aesthetics
-- [ ] **UX-03**: Complete pre-flight anti-slop audit across all viewports to guarantee typography scale, baseline grid rhythm, and craft excellence
+- [x] **UX-01**: Apply cognitive UX laws: Hick's Law (streamlined filter density), Jakob's Law (standard table controls), Miller's Law (chunked metrics), and Doherty threshold (<400ms feedback)
+- [x] **UX-02**: Distill visual noise by stripping unearned borders, gratuitous shadows, and redundant nested card containers for clean institutional aesthetics
+- [x] **UX-03**: Complete pre-flight anti-slop audit across all viewports to guarantee typography scale, baseline grid rhythm, and craft excellence
 
 ### Official GitHub Release & Launch Readiness
 
@@ -102,9 +102,9 @@
 | ANIM-02 | Phase 7 | Satisfied |
 | LOAD-01 | Phase 8 | Satisfied |
 | LOAD-02 | Phase 8 | Satisfied |
-| UX-01 | Phase 9 | Pending |
-| UX-02 | Phase 9 | Pending |
-| UX-03 | Phase 9 | Pending |
+| UX-01 | Phase 9 | Satisfied |
+| UX-02 | Phase 9 | Satisfied |
+| UX-03 | Phase 9 | Satisfied |
 | REL-01 | Phase 10 | Pending |
 | REL-02 | Phase 10 | Pending |
 | REL-03 | Phase 10 | Pending |

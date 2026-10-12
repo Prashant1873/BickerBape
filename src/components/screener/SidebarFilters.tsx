@@ -21,6 +21,24 @@ const INSIGHTS = [
   "Single-sector thematic funds carry 100% idiosyncratic risk. Keep them capped at max 10-15% as satellite plays in your portfolio."
 ];
 
+export const CATEGORY_GROUPS = [
+  {
+    id: 'core',
+    name: 'Core Market-Cap',
+    categories: ['Large Cap', 'Large & Mid Cap', 'Flexi Cap', 'Multi Cap', 'Mid Cap', 'Small Cap']
+  },
+  {
+    id: 'strategy',
+    name: 'Strategy & Specialized',
+    categories: ['Value / Contra', 'Focused Fund', 'Dividend Yield', 'ELSS Tax Saver', 'Index Funds']
+  },
+  {
+    id: 'thematic',
+    name: 'Thematic & Sectoral',
+    categories: ['Sectoral / Thematic']
+  }
+];
+
 export const SidebarFilters: React.FC = () => {
   const {
     funds,
@@ -74,19 +92,19 @@ export const SidebarFilters: React.FC = () => {
 
   const filterBody = (
     <div className="space-y-5">
-      {/* 1. Reset Filters Action Header */}
+      {/* 1. Filter Section Header with Active Count Indicator */}
       <div className="flex items-center justify-between pt-1">
         <div className="flex items-center gap-1.5 text-primary font-bold text-xs">
           <span className="material-symbols-outlined text-base">tune</span>
           <span>Screener Filters</span>
         </div>
-        <button
-          type="button"
-          onClick={resetFilters}
-          className="px-2 py-1 text-xs text-primary hover:underline font-bold cursor-pointer touch-spring"
-        >
-          Reset All
-        </button>
+        {activeFilterCount > 0 ? (
+          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
+            {activeFilterCount} active
+          </span>
+        ) : (
+          <span className="text-[10px] font-semibold text-on-surface-variant">Default</span>
+        )}
       </div>
 
       {/* 2. Strategy Presets (1-Click Strategies) */}
@@ -113,7 +131,7 @@ export const SidebarFilters: React.FC = () => {
                 key={p.id}
                 type="button"
                 onClick={() => updateFilter('preset', p.id)}
-                className={`w-full text-left p-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-all touch-spring border ${
+                className={`w-full text-left min-h-[44px] p-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-all touch-spring border cursor-pointer ${
                   active
                     ? 'bg-primary-container text-white border-primary shadow-xs'
                     : 'bg-surface-container-low border-surface-container text-on-surface hover:bg-surface-container hover:border-primary/30'
@@ -134,7 +152,7 @@ export const SidebarFilters: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. Equity Categories Universe (Legacy Vertical Pill List) */}
+      {/* 3. Equity Categories Universe (Chunked by Asset Class - Hick's Law) */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
@@ -150,27 +168,60 @@ export const SidebarFilters: React.FC = () => {
             </button>
           )}
         </div>
-        <div className="space-y-1 max-h-56 overflow-y-auto hide-scrollbar pr-1" id="sidebar-categories-list">
-          {categoriesList.map(cat => {
-            const active = filters.category === cat;
+
+        {/* All Funds universal button */}
+        <div className="mb-2">
+          <button
+            type="button"
+            onClick={() => updateFilter('category', 'All Funds')}
+            className={`w-full text-left min-h-[44px] px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-all touch-spring border cursor-pointer ${
+              filters.category === 'All Funds'
+                ? 'bg-primary/10 border-primary text-primary font-bold shadow-2xs'
+                : 'bg-surface-container-lowest dark:bg-surface-container-low border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
+            }`}
+          >
+            <span className="truncate pr-2 font-bold">All Equity Funds</span>
+            <span className={`text-[0.75rem] font-mono px-2 py-0.5 rounded-md font-bold ${
+              filters.category === 'All Funds' ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'
+            }`}>
+              {funds.length}
+            </span>
+          </button>
+        </div>
+
+        {/* Categorized Cognitive Chunks */}
+        <div className="space-y-3 max-h-60 overflow-y-auto hide-scrollbar pr-1" id="sidebar-categories-list">
+          {CATEGORY_GROUPS.map(group => {
+            const groupCats = group.categories.filter(cat => categoryCounts[cat] !== undefined);
+            if (groupCats.length === 0) return null;
             return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => updateFilter('category', cat)}
-                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-all touch-spring border ${
-                  active
-                    ? 'bg-primary/10 border-primary text-primary font-bold shadow-2xs'
-                    : 'bg-surface-container-lowest dark:bg-surface-container-low border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
-                }`}
-              >
-                <span className="truncate pr-2">{cat === 'All Funds' ? 'All Equity Funds' : cat}</span>
-                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
-                  active ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'
-                }`}>
-                  {categoryCounts[cat] || 0}
-                </span>
-              </button>
+              <div key={group.id} className="space-y-1" data-testid={`category-group-${group.id}`}>
+                <div className="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant/70 px-1 pt-1">
+                  {group.name}
+                </div>
+                {groupCats.map(cat => {
+                  const active = filters.category === cat;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => updateFilter('category', cat)}
+                      className={`w-full text-left min-h-[40px] px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-all touch-spring border cursor-pointer ${
+                        active
+                          ? 'bg-primary/10 border-primary text-primary font-bold shadow-2xs'
+                          : 'bg-surface-container-lowest dark:bg-surface-container-low border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
+                      }`}
+                    >
+                      <span className="truncate pr-2">{cat}</span>
+                      <span className={`text-[0.75rem] font-mono px-2 py-0.5 rounded-md font-bold ${
+                        active ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'
+                      }`}>
+                        {categoryCounts[cat] || 0}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             );
           })}
         </div>
@@ -269,7 +320,7 @@ export const SidebarFilters: React.FC = () => {
         onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && nextInsight()}
         tabIndex={0}
         role="button"
-        className="p-3.5 rounded-2xl bg-gradient-to-br from-primary/10 via-surface-container-low to-primary/5 border border-primary/20 cursor-pointer touch-spring group select-none"
+        className="p-3.5 rounded-2xl bg-surface-container-low border border-surface-container hover:bg-surface-container transition-colors cursor-pointer touch-spring group select-none"
         title="Click to cycle quant strategy insights"
       >
         <div className="flex items-center justify-between text-[10px] font-bold text-primary uppercase mb-1.5">
@@ -313,7 +364,7 @@ export const SidebarFilters: React.FC = () => {
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="px-2 py-1 rounded-lg text-[10px] font-bold text-primary hover:bg-primary/10 transition-colors touch-spring cursor-pointer"
+                  className="min-h-[36px] px-2.5 py-1 rounded-lg text-xs font-bold text-primary hover:bg-primary/10 transition-colors touch-spring cursor-pointer flex items-center"
                   title="Reset all filters"
                 >
                   Reset
