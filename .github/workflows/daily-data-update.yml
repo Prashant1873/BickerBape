@@ -39,6 +39,8 @@ jobs:
         run: npm ci
 
       - name: Run institutional data enrichment pipeline
+        env:
+          PYTHONPATH: .
         run: python scripts/update_funds.py
 
       - name: Slice master data into web bundles

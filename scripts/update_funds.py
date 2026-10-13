@@ -14,6 +14,13 @@ import time
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+# Ensure repository root and scripts directory are in sys.path
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(SCRIPT_DIR)
+for p in (REPO_ROOT, SCRIPT_DIR):
+    if p not in sys.path:
+        sys.path.insert(0, p)
+
 if sys.platform == 'win32':
     try:
         sys.stdout.reconfigure(encoding='utf-8')
@@ -260,7 +267,10 @@ def calculate_suggester_score(fund, cat_avg):
 def compute_and_attach_smart_scores(funds_data, categories_summary):
     import sqlite3
     import os
-    from scripts.enrich_and_audit_database import compute_absolute_smart_score
+    try:
+        from scripts.enrich_and_audit_database import compute_absolute_smart_score
+    except (ImportError, ModuleNotFoundError):
+        from enrich_and_audit_database import compute_absolute_smart_score
 
     print("Computing SmartScore™ 5-Pillar Scorecards & Category Rankings...")
     for f in funds_data:
