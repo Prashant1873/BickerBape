@@ -154,6 +154,10 @@ export const ActiveFiltersBar: React.FC = () => {
                 viewMode === 'cards'
                   ? 'text-primary font-extrabold'
                   : 'text-on-surface-variant hover:text-on-surface'
+              } ${
+                !viewPinStyle.ready && viewMode === 'cards'
+                  ? 'bg-surface shadow-xs btn-specular border border-black/5 dark:border-white/10'
+                  : ''
               }`}
               aria-label="Cards View"
             >
@@ -168,6 +172,10 @@ export const ActiveFiltersBar: React.FC = () => {
                 viewMode === 'table'
                   ? 'text-primary font-extrabold'
                   : 'text-on-surface-variant hover:text-on-surface'
+              } ${
+                !viewPinStyle.ready && viewMode === 'table'
+                  ? 'bg-surface shadow-xs btn-specular border border-black/5 dark:border-white/10'
+                  : ''
               }`}
               aria-label="Table View"
             >

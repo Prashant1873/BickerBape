@@ -294,6 +294,10 @@ export const Navbar: React.FC = () => {
               appMode === 'screener'
                 ? 'text-primary dark:text-white font-extrabold'
                 : 'text-on-surface-variant hover:text-on-surface'
+            } ${
+              !modePinStyle.ready && appMode === 'screener'
+                ? 'bg-surface-container-lowest dark:bg-white/10 shadow-xs border border-black/5 dark:border-white/10 btn-specular'
+                : ''
             }`}
             aria-label="Switch to Screener Mode"
             title="Mutual Fund Screener"
@@ -310,6 +314,10 @@ export const Navbar: React.FC = () => {
               appMode === 'simsim'
                 ? 'text-[#0A0E18] font-black'
                 : 'text-on-surface-variant hover:text-[#00A86B] dark:hover:text-[#00F090]'
+            } ${
+              !modePinStyle.ready && appMode === 'simsim'
+                ? 'bg-[#00F090] shadow-[0_0_16px_rgba(0,240,144,0.35)] border border-[#00F090]'
+                : ''
             }`}
             aria-label="Switch to SimSim Backtest Engine"
             title="Launch SimSim™ Backtester"
@@ -386,7 +394,15 @@ export const Navbar: React.FC = () => {
                   type="button"
                   onClick={() => handleSwitchMood(m)}
                   className={`relative z-10 min-h-[40px] sm:min-h-[44px] px-2.5 sm:px-3 rounded-lg text-xs font-bold transition-colors duration-150 flex items-center gap-1 select-none cursor-pointer ${
-                    active ? 'text-on-surface font-extrabold' : 'text-on-surface-variant hover:text-on-surface'
+                    active ? 'text-white font-extrabold' : 'text-on-surface-variant hover:text-on-surface'
+                  } ${
+                    !moodPinStyle.ready && active
+                      ? mood === 'growth'
+                        ? 'mood-btn-growth-active shadow-xs'
+                        : mood === 'safety'
+                        ? 'mood-btn-safety-active shadow-xs'
+                        : 'mood-btn-income-active shadow-xs'
+                      : ''
                   }`}
                   title={`${cfg.label} Mood: ${cfg.focus}`}
                   aria-checked={active}
