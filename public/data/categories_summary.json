@@ -1,9 +1,9 @@
 {
   "Dividend Yield": {
     "fund_count": 12,
-    "avg_3y_cagr": 11.67,
-    "avg_5y_cagr": 11.58,
-    "avg_10y_cagr": 13.18,
+    "avg_3y_cagr": 11.78,
+    "avg_5y_cagr": 11.53,
+    "avg_10y_cagr": 13.13,
     "avg_rolling_3y": 16.9,
     "avg_volatility": 13.93
   },
@@ -17,33 +17,33 @@
   },
   "Value / Contra": {
     "fund_count": 26,
-    "avg_3y_cagr": 12.07,
-    "avg_5y_cagr": 11.05,
+    "avg_3y_cagr": 12.11,
+    "avg_5y_cagr": 11.04,
     "avg_10y_cagr": 13.05,
     "avg_rolling_3y": 17.66,
     "avg_volatility": 14.47
   },
   "Flexi Cap": {
     "fund_count": 45,
-    "avg_3y_cagr": 11.88,
-    "avg_5y_cagr": 9.53,
-    "avg_10y_cagr": 12.88,
+    "avg_3y_cagr": 11.89,
+    "avg_5y_cagr": 9.52,
+    "avg_10y_cagr": 12.87,
     "avg_rolling_3y": 16.51,
     "avg_volatility": 14.37
   },
   "Focused Fund": {
     "fund_count": 28,
-    "avg_3y_cagr": 11.71,
-    "avg_5y_cagr": 9.66,
+    "avg_3y_cagr": 11.72,
+    "avg_5y_cagr": 9.65,
     "avg_10y_cagr": 12.93,
     "avg_rolling_3y": 16.63,
     "avg_volatility": 14.67
   },
   "Large & Mid Cap": {
     "fund_count": 36,
-    "avg_3y_cagr": 12.75,
-    "avg_5y_cagr": 10.83,
-    "avg_10y_cagr": 13.43,
+    "avg_3y_cagr": 12.78,
+    "avg_5y_cagr": 10.82,
+    "avg_10y_cagr": 13.42,
     "avg_rolling_3y": 18.0,
     "avg_volatility": 14.98
   },
@@ -73,10 +73,10 @@
   },
   "Sectoral / Thematic": {
     "fund_count": 249,
-    "avg_3y_cagr": 13.31,
-    "avg_5y_cagr": 11.27,
+    "avg_3y_cagr": 13.36,
+    "avg_5y_cagr": 11.25,
     "avg_10y_cagr": 13.65,
-    "avg_rolling_3y": 17.44,
+    "avg_rolling_3y": 17.43,
     "avg_volatility": 15.73
   },
   "Small Cap": {
