@@ -1,98 +1,98 @@
 {
-  "Dividend Yield": {
-    "fund_count": 12,
-    "avg_3y_cagr": 11.78,
-    "avg_5y_cagr": 11.53,
-    "avg_10y_cagr": 13.13,
-    "avg_rolling_3y": 16.9,
-    "avg_volatility": 13.93
-  },
   "ELSS Tax Saver": {
-    "fund_count": 38,
-    "avg_3y_cagr": 10.59,
-    "avg_5y_cagr": 9.31,
-    "avg_10y_cagr": 12.96,
-    "avg_rolling_3y": 15.93,
-    "avg_volatility": 14.39
+    "fund_count": 5,
+    "avg_3y_cagr": 9.89,
+    "avg_5y_cagr": 9.05,
+    "avg_10y_cagr": 11.96,
+    "avg_rolling_3y": 16.26,
+    "avg_volatility": 13.01
   },
-  "Value / Contra": {
-    "fund_count": 26,
-    "avg_3y_cagr": 12.11,
-    "avg_5y_cagr": 11.04,
-    "avg_10y_cagr": 13.05,
-    "avg_rolling_3y": 17.66,
-    "avg_volatility": 14.47
+  "Dividend Yield": {
+    "fund_count": 6,
+    "avg_3y_cagr": 9.84,
+    "avg_5y_cagr": 11.32,
+    "avg_10y_cagr": 11.47,
+    "avg_rolling_3y": 16.18,
+    "avg_volatility": 13.62
   },
   "Flexi Cap": {
-    "fund_count": 45,
-    "avg_3y_cagr": 11.89,
-    "avg_5y_cagr": 9.52,
-    "avg_10y_cagr": 12.87,
-    "avg_rolling_3y": 16.51,
-    "avg_volatility": 14.37
-  },
-  "Focused Fund": {
-    "fund_count": 28,
-    "avg_3y_cagr": 11.72,
-    "avg_5y_cagr": 9.65,
-    "avg_10y_cagr": 12.93,
-    "avg_rolling_3y": 16.63,
-    "avg_volatility": 14.67
-  },
-  "Large & Mid Cap": {
-    "fund_count": 36,
-    "avg_3y_cagr": 12.78,
-    "avg_5y_cagr": 10.82,
-    "avg_10y_cagr": 13.42,
-    "avg_rolling_3y": 18.0,
-    "avg_volatility": 14.98
+    "fund_count": 4,
+    "avg_3y_cagr": 12.99,
+    "avg_5y_cagr": 8.86,
+    "avg_10y_cagr": 12.55,
+    "avg_rolling_3y": 16.64,
+    "avg_volatility": 14.51
   },
   "Large Cap": {
-    "fund_count": 34,
-    "avg_3y_cagr": 9.64,
-    "avg_5y_cagr": 7.52,
-    "avg_10y_cagr": 11.53,
-    "avg_rolling_3y": 14.5,
-    "avg_volatility": 13.6
+    "fund_count": 4,
+    "avg_3y_cagr": 9.22,
+    "avg_5y_cagr": 6.62,
+    "avg_10y_cagr": 11.62,
+    "avg_rolling_3y": 14.2,
+    "avg_volatility": 12.88
   },
-  "Mid Cap": {
-    "fund_count": 35,
-    "avg_3y_cagr": 14.8,
-    "avg_5y_cagr": 13.0,
-    "avg_10y_cagr": 14.63,
-    "avg_rolling_3y": 20.53,
-    "avg_volatility": 16.32
-  },
-  "Multi Cap": {
-    "fund_count": 32,
-    "avg_3y_cagr": 13.08,
-    "avg_5y_cagr": 12.08,
-    "avg_10y_cagr": 14.34,
-    "avg_rolling_3y": 18.07,
-    "avg_volatility": 14.84
+  "Focused Fund": {
+    "fund_count": 4,
+    "avg_3y_cagr": 11.09,
+    "avg_5y_cagr": 9.17,
+    "avg_10y_cagr": 13.26,
+    "avg_rolling_3y": 17.11,
+    "avg_volatility": 15.72
   },
   "Sectoral / Thematic": {
-    "fund_count": 249,
-    "avg_3y_cagr": 13.36,
+    "fund_count": 38,
+    "avg_3y_cagr": 11.68,
+    "avg_5y_cagr": 10.19,
+    "avg_10y_cagr": 14.48,
+    "avg_rolling_3y": 17.73,
+    "avg_volatility": 15.59
+  },
+  "Value / Contra": {
+    "fund_count": 6,
+    "avg_3y_cagr": 12.51,
+    "avg_5y_cagr": 12.33,
+    "avg_10y_cagr": 14.64,
+    "avg_rolling_3y": 17.86,
+    "avg_volatility": 14.17
+  },
+  "Multi Cap": {
+    "fund_count": 6,
+    "avg_3y_cagr": 13.09,
     "avg_5y_cagr": 11.25,
-    "avg_10y_cagr": 13.65,
-    "avg_rolling_3y": 17.43,
-    "avg_volatility": 15.73
+    "avg_10y_cagr": 13.28,
+    "avg_rolling_3y": 18.18,
+    "avg_volatility": 14.01
+  },
+  "Large & Mid Cap": {
+    "fund_count": 4,
+    "avg_3y_cagr": 12.98,
+    "avg_5y_cagr": 9.9,
+    "avg_10y_cagr": 14.52,
+    "avg_rolling_3y": 20.67,
+    "avg_volatility": 14.84
+  },
+  "Mid Cap": {
+    "fund_count": 3,
+    "avg_3y_cagr": 13.9,
+    "avg_5y_cagr": 12.67,
+    "avg_10y_cagr": 13.5,
+    "avg_rolling_3y": 24.54,
+    "avg_volatility": 15.13
   },
   "Small Cap": {
-    "fund_count": 36,
-    "avg_3y_cagr": 14.09,
-    "avg_5y_cagr": 14.12,
-    "avg_10y_cagr": 15.32,
-    "avg_rolling_3y": 22.42,
-    "avg_volatility": 16.94
+    "fund_count": 3,
+    "avg_3y_cagr": 16.15,
+    "avg_5y_cagr": 15.66,
+    "avg_10y_cagr": 18.0,
+    "avg_rolling_3y": 25.04,
+    "avg_volatility": 16.96
   },
   "Index Funds": {
-    "fund_count": 71,
-    "avg_3y_cagr": 10.97,
-    "avg_5y_cagr": 10.15,
+    "fund_count": 7,
+    "avg_3y_cagr": 9.82,
+    "avg_5y_cagr": 12.82,
     "avg_10y_cagr": 13.5,
-    "avg_rolling_3y": 16.02,
-    "avg_volatility": 16.01
+    "avg_rolling_3y": 15.44,
+    "avg_volatility": 17.43
   }
 }
