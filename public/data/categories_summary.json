@@ -1,98 +1,98 @@
 {
   "Dividend Yield": {
-    "fund_count": 10,
-    "avg_3y_cagr": 12.47,
-    "avg_5y_cagr": 12.15,
-    "avg_10y_cagr": 13.27,
+    "fund_count": 9,
+    "avg_3y_cagr": 12.79,
+    "avg_5y_cagr": 12.47,
+    "avg_10y_cagr": 13.42,
     "avg_rolling_3y": 17.0,
-    "avg_volatility": 14.18
+    "avg_volatility": 14.17
   },
   "ELSS Tax Saver": {
-    "fund_count": 19,
-    "avg_3y_cagr": 11.76,
-    "avg_5y_cagr": 10.53,
-    "avg_10y_cagr": 13.8,
-    "avg_rolling_3y": 15.99,
-    "avg_volatility": 14.49
+    "fund_count": 20,
+    "avg_3y_cagr": 12.19,
+    "avg_5y_cagr": 11.08,
+    "avg_10y_cagr": 14.19,
+    "avg_rolling_3y": 16.07,
+    "avg_volatility": 14.48
   },
   "Value / Contra": {
-    "fund_count": 5,
-    "avg_3y_cagr": 11.99,
-    "avg_5y_cagr": 12.66,
-    "avg_10y_cagr": 15.63,
-    "avg_rolling_3y": 18.54,
-    "avg_volatility": 15.29
+    "fund_count": 6,
+    "avg_3y_cagr": 14.25,
+    "avg_5y_cagr": 12.98,
+    "avg_10y_cagr": 15.69,
+    "avg_rolling_3y": 18.6,
+    "avg_volatility": 14.56
   },
   "Flexi Cap": {
     "fund_count": 32,
-    "avg_3y_cagr": 12.8,
-    "avg_5y_cagr": 10.12,
-    "avg_10y_cagr": 13.75,
-    "avg_rolling_3y": 16.02,
-    "avg_volatility": 14.26
+    "avg_3y_cagr": 13.41,
+    "avg_5y_cagr": 10.63,
+    "avg_10y_cagr": 13.83,
+    "avg_rolling_3y": 16.37,
+    "avg_volatility": 14.34
   },
   "Focused Fund": {
-    "fund_count": 17,
-    "avg_3y_cagr": 13.35,
-    "avg_5y_cagr": 11.37,
-    "avg_10y_cagr": 13.97,
-    "avg_rolling_3y": 15.75,
-    "avg_volatility": 14.66
+    "fund_count": 19,
+    "avg_3y_cagr": 13.44,
+    "avg_5y_cagr": 11.46,
+    "avg_10y_cagr": 13.92,
+    "avg_rolling_3y": 16.17,
+    "avg_volatility": 14.78
   },
   "Large & Mid Cap": {
     "fund_count": 7,
-    "avg_3y_cagr": 13.96,
-    "avg_5y_cagr": 11.51,
-    "avg_10y_cagr": 14.43,
-    "avg_rolling_3y": 18.88,
-    "avg_volatility": 13.9
+    "avg_3y_cagr": 13.82,
+    "avg_5y_cagr": 10.51,
+    "avg_10y_cagr": 14.02,
+    "avg_rolling_3y": 17.87,
+    "avg_volatility": 14.94
   },
   "Large Cap": {
-    "fund_count": 5,
-    "avg_3y_cagr": 11.29,
-    "avg_5y_cagr": 7.77,
-    "avg_10y_cagr": 11.63,
-    "avg_rolling_3y": 13.87,
-    "avg_volatility": 13.33
+    "fund_count": 7,
+    "avg_3y_cagr": 12.81,
+    "avg_5y_cagr": 9.73,
+    "avg_10y_cagr": 12.52,
+    "avg_rolling_3y": 14.57,
+    "avg_volatility": 13.92
   },
   "Mid Cap": {
     "fund_count": 4,
-    "avg_3y_cagr": 14.36,
-    "avg_5y_cagr": 12.85,
-    "avg_10y_cagr": 13.46,
-    "avg_rolling_3y": 21.48,
-    "avg_volatility": 15.92
+    "avg_3y_cagr": 13.5,
+    "avg_5y_cagr": 11.95,
+    "avg_10y_cagr": 13.9,
+    "avg_rolling_3y": 19.68,
+    "avg_volatility": 14.8
   },
   "Multi Cap": {
-    "fund_count": 5,
-    "avg_3y_cagr": 13.62,
-    "avg_5y_cagr": 11.48,
-    "avg_10y_cagr": 14.4,
-    "avg_rolling_3y": 16.97,
-    "avg_volatility": 15.08
+    "fund_count": 6,
+    "avg_3y_cagr": 14.72,
+    "avg_5y_cagr": 12.28,
+    "avg_10y_cagr": 13.5,
+    "avg_rolling_3y": 16.38,
+    "avg_volatility": 14.18
   },
   "Sectoral / Thematic": {
-    "fund_count": 33,
-    "avg_3y_cagr": 16.11,
-    "avg_5y_cagr": 13.58,
-    "avg_10y_cagr": 15.59,
-    "avg_rolling_3y": 18.24,
-    "avg_volatility": 15.57
+    "fund_count": 38,
+    "avg_3y_cagr": 14.64,
+    "avg_5y_cagr": 13.46,
+    "avg_10y_cagr": 14.32,
+    "avg_rolling_3y": 16.68,
+    "avg_volatility": 15.49
   },
   "Small Cap": {
     "fund_count": 5,
-    "avg_3y_cagr": 13.69,
-    "avg_5y_cagr": 14.29,
-    "avg_10y_cagr": 15.98,
-    "avg_rolling_3y": 19.78,
-    "avg_volatility": 17.55
+    "avg_3y_cagr": 14.63,
+    "avg_5y_cagr": 14.86,
+    "avg_10y_cagr": 17.45,
+    "avg_rolling_3y": 24.09,
+    "avg_volatility": 16.64
   },
   "Index Funds": {
-    "fund_count": 11,
-    "avg_3y_cagr": 13.57,
-    "avg_5y_cagr": 12.58,
+    "fund_count": 12,
+    "avg_3y_cagr": 12.44,
+    "avg_5y_cagr": 11.28,
     "avg_10y_cagr": 13.5,
-    "avg_rolling_3y": 18.93,
-    "avg_volatility": 16.01
+    "avg_rolling_3y": 16.58,
+    "avg_volatility": 15.27
   }
 }
