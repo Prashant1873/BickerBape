@@ -1,98 +1,98 @@
 {
   "Dividend Yield": {
-    "fund_count": 10,
-    "avg_3y_cagr": 12.35,
-    "avg_5y_cagr": 12.32,
-    "avg_10y_cagr": 14.36,
-    "avg_rolling_3y": 16.71,
-    "avg_volatility": 14.02
+    "fund_count": 9,
+    "avg_3y_cagr": 12.05,
+    "avg_5y_cagr": 12.71,
+    "avg_10y_cagr": 14.2,
+    "avg_rolling_3y": 16.95,
+    "avg_volatility": 14.16
   },
   "ELSS Tax Saver": {
     "fund_count": 20,
-    "avg_3y_cagr": 12.3,
-    "avg_5y_cagr": 11.43,
-    "avg_10y_cagr": 15.02,
-    "avg_rolling_3y": 16.23,
+    "avg_3y_cagr": 10.97,
+    "avg_5y_cagr": 11.22,
+    "avg_10y_cagr": 14.71,
+    "avg_rolling_3y": 15.31,
     "avg_volatility": 14.54
   },
   "Value / Contra": {
-    "fund_count": 4,
-    "avg_3y_cagr": 12.99,
-    "avg_5y_cagr": 14.46,
-    "avg_10y_cagr": 16.51,
-    "avg_rolling_3y": 17.9,
-    "avg_volatility": 13.34
+    "fund_count": 6,
+    "avg_3y_cagr": 14.27,
+    "avg_5y_cagr": 13.37,
+    "avg_10y_cagr": 15.8,
+    "avg_rolling_3y": 18.05,
+    "avg_volatility": 14.97
   },
   "Flexi Cap": {
-    "fund_count": 33,
-    "avg_3y_cagr": 13.29,
-    "avg_5y_cagr": 11.21,
-    "avg_10y_cagr": 14.76,
-    "avg_rolling_3y": 16.53,
-    "avg_volatility": 14.34
+    "fund_count": 32,
+    "avg_3y_cagr": 12.75,
+    "avg_5y_cagr": 11.04,
+    "avg_10y_cagr": 14.77,
+    "avg_rolling_3y": 15.98,
+    "avg_volatility": 14.29
   },
   "Focused Fund": {
-    "fund_count": 17,
-    "avg_3y_cagr": 13.28,
-    "avg_5y_cagr": 11.98,
-    "avg_10y_cagr": 14.8,
-    "avg_rolling_3y": 15.88,
-    "avg_volatility": 14.8
+    "fund_count": 20,
+    "avg_3y_cagr": 13.35,
+    "avg_5y_cagr": 12.02,
+    "avg_10y_cagr": 14.91,
+    "avg_rolling_3y": 16.06,
+    "avg_volatility": 14.83
   },
   "Large & Mid Cap": {
-    "fund_count": 9,
-    "avg_3y_cagr": 14.71,
-    "avg_5y_cagr": 12.52,
-    "avg_10y_cagr": 15.1,
-    "avg_rolling_3y": 19.79,
-    "avg_volatility": 15.24
+    "fund_count": 6,
+    "avg_3y_cagr": 15.25,
+    "avg_5y_cagr": 13.85,
+    "avg_10y_cagr": 15.43,
+    "avg_rolling_3y": 19.29,
+    "avg_volatility": 15.75
   },
   "Large Cap": {
-    "fund_count": 4,
-    "avg_3y_cagr": 12.57,
-    "avg_5y_cagr": 11.47,
-    "avg_10y_cagr": 14.45,
-    "avg_rolling_3y": 15.11,
-    "avg_volatility": 14.37
+    "fund_count": 7,
+    "avg_3y_cagr": 13.23,
+    "avg_5y_cagr": 10.75,
+    "avg_10y_cagr": 13.16,
+    "avg_rolling_3y": 13.21,
+    "avg_volatility": 13.3
   },
   "Mid Cap": {
-    "fund_count": 6,
-    "avg_3y_cagr": 17.86,
-    "avg_5y_cagr": 16.48,
-    "avg_10y_cagr": 17.36,
-    "avg_rolling_3y": 20.01,
-    "avg_volatility": 16.28
+    "fund_count": 5,
+    "avg_3y_cagr": 16.19,
+    "avg_5y_cagr": 13.68,
+    "avg_10y_cagr": 14.96,
+    "avg_rolling_3y": 21.82,
+    "avg_volatility": 16.64
   },
   "Multi Cap": {
     "fund_count": 5,
-    "avg_3y_cagr": 15.89,
-    "avg_5y_cagr": 15.28,
+    "avg_3y_cagr": 15.44,
+    "avg_5y_cagr": 14.0,
     "avg_10y_cagr": 13.5,
-    "avg_rolling_3y": 18.54,
-    "avg_volatility": 15.45
+    "avg_rolling_3y": 18.37,
+    "avg_volatility": 15.23
   },
   "Sectoral / Thematic": {
-    "fund_count": 36,
-    "avg_3y_cagr": 13.04,
-    "avg_5y_cagr": 12.03,
-    "avg_10y_cagr": 15.47,
-    "avg_rolling_3y": 17.1,
-    "avg_volatility": 15.6
+    "fund_count": 37,
+    "avg_3y_cagr": 13.72,
+    "avg_5y_cagr": 14.18,
+    "avg_10y_cagr": 15.53,
+    "avg_rolling_3y": 16.89,
+    "avg_volatility": 16.23
   },
   "Small Cap": {
     "fund_count": 6,
-    "avg_3y_cagr": 14.51,
-    "avg_5y_cagr": 16.28,
-    "avg_10y_cagr": 17.96,
-    "avg_rolling_3y": 21.76,
-    "avg_volatility": 17.14
+    "avg_3y_cagr": 11.7,
+    "avg_5y_cagr": 15.0,
+    "avg_10y_cagr": 18.35,
+    "avg_rolling_3y": 17.49,
+    "avg_volatility": 16.28
   },
   "Index Funds": {
-    "fund_count": 9,
-    "avg_3y_cagr": 9.72,
-    "avg_5y_cagr": 11.86,
+    "fund_count": 13,
+    "avg_3y_cagr": 13.75,
+    "avg_5y_cagr": 11.04,
     "avg_10y_cagr": 13.5,
-    "avg_rolling_3y": 14.23,
-    "avg_volatility": 15.0
+    "avg_rolling_3y": 17.53,
+    "avg_volatility": 16.98
   }
 }
