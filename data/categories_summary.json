@@ -1,98 +1,98 @@
 {
   "Dividend Yield": {
-    "fund_count": 7,
-    "avg_3y_cagr": 11.99,
-    "avg_5y_cagr": 12.48,
-    "avg_10y_cagr": 14.14,
-    "avg_rolling_3y": 16.65,
-    "avg_volatility": 14.1
+    "fund_count": 9,
+    "avg_3y_cagr": 12.47,
+    "avg_5y_cagr": 12.96,
+    "avg_10y_cagr": 14.48,
+    "avg_rolling_3y": 16.93,
+    "avg_volatility": 14.17
   },
   "ELSS Tax Saver": {
-    "fund_count": 19,
-    "avg_3y_cagr": 12.54,
-    "avg_5y_cagr": 11.33,
-    "avg_10y_cagr": 15.17,
-    "avg_rolling_3y": 16.6,
-    "avg_volatility": 14.57
+    "fund_count": 20,
+    "avg_3y_cagr": 12.64,
+    "avg_5y_cagr": 11.59,
+    "avg_10y_cagr": 15.36,
+    "avg_rolling_3y": 16.01,
+    "avg_volatility": 14.6
   },
   "Value / Contra": {
-    "fund_count": 6,
-    "avg_3y_cagr": 12.85,
-    "avg_5y_cagr": 13.28,
-    "avg_10y_cagr": 15.61,
-    "avg_rolling_3y": 17.48,
-    "avg_volatility": 13.42
+    "fund_count": 5,
+    "avg_3y_cagr": 13.68,
+    "avg_5y_cagr": 13.49,
+    "avg_10y_cagr": 15.44,
+    "avg_rolling_3y": 17.14,
+    "avg_volatility": 13.13
   },
   "Flexi Cap": {
     "fund_count": 33,
-    "avg_3y_cagr": 13.47,
-    "avg_5y_cagr": 11.47,
-    "avg_10y_cagr": 14.99,
-    "avg_rolling_3y": 16.35,
-    "avg_volatility": 14.32
+    "avg_3y_cagr": 13.72,
+    "avg_5y_cagr": 11.63,
+    "avg_10y_cagr": 15.19,
+    "avg_rolling_3y": 16.59,
+    "avg_volatility": 14.41
   },
   "Focused Fund": {
-    "fund_count": 19,
-    "avg_3y_cagr": 13.7,
-    "avg_5y_cagr": 12.2,
-    "avg_10y_cagr": 15.24,
-    "avg_rolling_3y": 15.93,
-    "avg_volatility": 14.77
+    "fund_count": 20,
+    "avg_3y_cagr": 13.52,
+    "avg_5y_cagr": 11.75,
+    "avg_10y_cagr": 15.09,
+    "avg_rolling_3y": 15.96,
+    "avg_volatility": 14.72
   },
   "Large & Mid Cap": {
     "fund_count": 9,
-    "avg_3y_cagr": 14.92,
-    "avg_5y_cagr": 13.1,
-    "avg_10y_cagr": 16.46,
-    "avg_rolling_3y": 19.08,
-    "avg_volatility": 15.61
+    "avg_3y_cagr": 14.88,
+    "avg_5y_cagr": 12.87,
+    "avg_10y_cagr": 15.75,
+    "avg_rolling_3y": 17.15,
+    "avg_volatility": 15.14
   },
   "Large Cap": {
-    "fund_count": 6,
-    "avg_3y_cagr": 13.41,
-    "avg_5y_cagr": 10.39,
-    "avg_10y_cagr": 13.94,
-    "avg_rolling_3y": 14.35,
-    "avg_volatility": 13.39
+    "fund_count": 7,
+    "avg_3y_cagr": 12.92,
+    "avg_5y_cagr": 9.87,
+    "avg_10y_cagr": 13.89,
+    "avg_rolling_3y": 14.63,
+    "avg_volatility": 13.74
   },
   "Mid Cap": {
-    "fund_count": 5,
-    "avg_3y_cagr": 14.77,
-    "avg_5y_cagr": 13.57,
-    "avg_10y_cagr": 16.76,
-    "avg_rolling_3y": 20.01,
-    "avg_volatility": 16.5
+    "fund_count": 4,
+    "avg_3y_cagr": 15.99,
+    "avg_5y_cagr": 14.64,
+    "avg_10y_cagr": 17.25,
+    "avg_rolling_3y": 20.5,
+    "avg_volatility": 17.43
   },
   "Multi Cap": {
-    "fund_count": 5,
-    "avg_3y_cagr": 14.47,
-    "avg_5y_cagr": 14.09,
-    "avg_10y_cagr": 16.39,
-    "avg_rolling_3y": 18.37,
-    "avg_volatility": 14.93
+    "fund_count": 7,
+    "avg_3y_cagr": 16.12,
+    "avg_5y_cagr": 13.74,
+    "avg_10y_cagr": 15.58,
+    "avg_rolling_3y": 19.19,
+    "avg_volatility": 15.22
   },
   "Sectoral / Thematic": {
-    "fund_count": 40,
-    "avg_3y_cagr": 14.98,
-    "avg_5y_cagr": 11.76,
-    "avg_10y_cagr": 16.27,
-    "avg_rolling_3y": 17.42,
-    "avg_volatility": 15.38
+    "fund_count": 41,
+    "avg_3y_cagr": 14.2,
+    "avg_5y_cagr": 12.47,
+    "avg_10y_cagr": 14.65,
+    "avg_rolling_3y": 16.55,
+    "avg_volatility": 15.87
   },
   "Small Cap": {
     "fund_count": 6,
-    "avg_3y_cagr": 14.86,
-    "avg_5y_cagr": 15.84,
-    "avg_10y_cagr": 17.46,
-    "avg_rolling_3y": 21.95,
-    "avg_volatility": 17.23
+    "avg_3y_cagr": 13.79,
+    "avg_5y_cagr": 13.73,
+    "avg_10y_cagr": 17.2,
+    "avg_rolling_3y": 18.32,
+    "avg_volatility": 17.16
   },
   "Index Funds": {
     "fund_count": 11,
-    "avg_3y_cagr": 15.4,
-    "avg_5y_cagr": 14.0,
+    "avg_3y_cagr": 9.61,
+    "avg_5y_cagr": 14.57,
     "avg_10y_cagr": 13.5,
-    "avg_rolling_3y": 20.66,
-    "avg_volatility": 17.4
+    "avg_rolling_3y": 14.92,
+    "avg_volatility": 15.0
   }
 }
